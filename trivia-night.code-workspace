@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "./frontend"
+    },
+    {
+      "path": "./backend"
+    },
+    {
+      "path": "./hasura"
+    },
+    {
+      "path": "graphql-codegen"
+    },
+    {
+      "path": "k8s"
+    }
+  ]
+}

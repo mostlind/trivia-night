@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: trivia-night-hasura
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: trivia-night-hasura
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trivia-night-hasura
+spec:
+  selector:
+    matchLabels:
+      app: trivia-night-hasura
+  template:
+    metadata:
+      labels:
+        app: trivia-night-hasura
+    spec:
+      containers:
+        - name: trivia-night-hasura
+          image: trivia-night-hasura
+          ports:
+            - containerPort: 8080
+          env:
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: trivia-night-config
+                  key: connection-string
+            - name: HASURA_GRAPHQL_ENABLE_CONSOLE
+              value: "false" # set to "false" to disable console
+            - name: HASURA_GRAPHQL_ENABLED_LOG_TYPES
+              value: startup, http-log, webhook-log, websocket-log, query-log
+            - name: HASURA_GRAPHQL_ADMIN_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: trivia-night-config
+                  key: hasura-admin-secret
+            - name: HASURA_GRAPHQL_AUTH_HOOK
+              valueFrom:
+                configMapKeyRef:
+                  name: trivia-night-config
+                  key: hasura-auth-webhook-url
+            - name: HASURA_GRAPHQL_AUTH_HOOK_MODE
+              value: POST
+            - name: HASURA_GRAPHQL_CORS_DOMAIN
+              value: http://*.trivianight.mattostlind.com, http://*.localhost, http://localhost:9695, http://trivianight.mattostlind.com
+            - name: HASURA_GRAPHQL_MIGRATIONS_DIR
+              value: /hasura-migrations

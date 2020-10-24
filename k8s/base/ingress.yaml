@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+spec:
+  rules:
+    - host: storybook.trivianight.localhost
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: trivia-night-storybook
+              servicePort: 6006
+    - host: trivianight.localhost
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: trivia-night-frontend
+              servicePort: 3000
+    - host: api.trivianight.localhost
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: trivia-night-backend
+              servicePort: 3001
+    - host: hasura.trivianight.localhost
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: trivia-night-hasura
+              servicePort: 8080
+    - host: grafana.trivianight.localhost
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: trivia-night-grafana
+              servicePort: 8082

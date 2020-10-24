@@ -1,0 +1,4 @@
+fragment ProjectSummaryComponent on project {
+  id
+  name
+}

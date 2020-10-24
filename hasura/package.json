@@ -1,0 +1,16 @@
+{
+  "name": "hasura",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "console": "./hasura console",
+    "migrate": "./hasura migrate apply",
+    "seed": "./hasura seeds apply"
+  },
+  "dependencies": {
+    "hasura-cli": "^1.3.2"
+  },
+  "author": "",
+  "license": "ISC"
+}

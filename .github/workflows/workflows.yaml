@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    name: Build, push, and deploy
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout master
+      uses: actions/checkout@master
+    
+    - name: Install Skaffold
+      run: curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && sudo install skaffold /usr/local/bin/
+    
+    - name: Install Kustomize
+      run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+    - name: Save Kubeconfig
+      run: doctl kubernetes cluster kubeconfig save matts-k8s
+    
+    - name: Log in to Container Registry with short-lived credentials
+      run: doctl registry login --expiry-seconds 600      
+
+    - name: Deploy
+      # removing status check because image pulls take too long
+      # should check the status on a real project
+      run: skaffold run --default-repo registry.digitalocean.com/mostlind -p prod --status-check=false

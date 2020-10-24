@@ -1,0 +1,22 @@
+overwrite: true
+
+schema:
+  - http://localhost:8080/v1/graphql:
+      headers:
+        Authorization: "Bearer user 99967dce-e72e-481e-b911-e03d3216d61c"
+documents: "src/**/*.graphql"
+watch:
+  - "../hasura/migrations/**/*.yaml"
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      withHooks: true
+      withComponent: false
+
+  graphql.schema.json:
+    plugins:
+      - introspection

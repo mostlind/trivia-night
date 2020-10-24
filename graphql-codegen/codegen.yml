@@ -1,0 +1,19 @@
+overwrite: true
+
+schema:
+  - http://hasura.trivianight.localhost/v1/graphql:
+      headers:
+        Authorization: "Bearer user 2902a982-0e02-446b-b65a-c8ceed50fcc1"
+documents: "../frontend/src/**/*.graphql"
+watch:
+  - "hasura/migrations/**/*.yaml"
+  - "../frontend/src/**/*.graphql"
+generates:
+  ../frontend/src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      withHooks: true
+      withComponent: false

@@ -1,0 +1,10 @@
+resources:
+  - ../../base
+
+patchesJson6902:
+  - target:
+      group: networking.k8s.io
+      version: v1beta1
+      kind: Ingress
+      name: minimal-ingress
+    path: ingress-patch.yaml

@@ -1,0 +1,73 @@
+apiVersion: skaffold/v2beta8
+kind: Config
+build:
+  artifacts:
+    - image: trivia-night-frontend
+      context: frontend
+    - image: trivia-night-backend
+      context: backend
+    - image: trivia-night-hasura
+      context: hasura
+
+profiles:
+  - name: dev
+    activation:
+      - command: dev
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/local
+    build:
+      artifacts:
+        - image: trivia-night-frontend
+          context: frontend
+          docker:
+            buildArgs:
+              ENV: development
+          sync:
+            manual:
+              # Sync all the  files that are in the src folder
+              # with the container src folder
+              # TODO: make this only typescript and graphql files
+              - src: "src/**/*"
+                dest: .
+        - image: trivia-night-storybook
+          context: frontend
+          docker:
+            dockerfile: Dockerfile.storybook
+          sync:
+            manual:
+              # Sync all the  files that are in the src folder
+              # with the container src folder
+              # TODO: make this only typescript and graphql files
+              - src: "src/**/*"
+                dest: .
+        - image: trivia-night-backend
+          context: backend
+        - image: trivia-night-hasura
+          context: hasura
+  - name: prod
+    activation:
+      - command: prod
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/prod
+    build:
+      local:
+        tryImportMissing: true
+        concurrency: 0
+      artifacts:
+        - image: trivia-night-frontend
+          context: frontend
+          docker:
+            buildArgs:
+              ENV: development
+        - image: trivia-night-storybook
+          context: frontend
+          docker:
+            dockerfile: Dockerfile.storybook
+        - image: trivia-night-backend
+          context: backend
+        - image: trivia-night-hasura
+          context: hasura

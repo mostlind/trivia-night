@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: trivia-night-frontend
+spec:
+  ports:
+    - port: 3000
+  selector:
+    app: trivia-night-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trivia-night-frontend
+spec:
+  selector:
+    matchLabels:
+      app: trivia-night-frontend
+  template:
+    metadata:
+      labels:
+        app: trivia-night-frontend
+    spec:
+      securityContext:
+        runAsUser: 1000
+      containers:
+        - name: trivia-night-frontend
+          image: trivia-night-frontend
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_TODO_APP_BACKEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: trivia-night-config
+                  key: frontend-server-url
