@@ -1,0 +1,17 @@
+mutation InsertQuestion(
+  $question_text: String!
+  $point_value: Int!
+  $game_id: uuid!
+) {
+  insert_question_one(
+    object: {
+      question_text: $question_text
+      point_value: $point_value
+      game_id: $game_id
+    }
+  ) {
+    id
+    question_text
+    point_value
+  }
+}

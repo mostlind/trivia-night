@@ -1,0 +1,14 @@
+mutation UpdateQuestion(
+  $question_id: uuid!
+  $question_text: String!
+  $point_value: Int!
+) {
+  update_question_by_pk(
+    pk_columns: { id: $question_id }
+    _set: { question_text: $question_text, point_value: $point_value }
+  ) {
+    id
+    question_text
+    point_value
+  }
+}

@@ -1,0 +1,5 @@
+fragment QuestionFormComponent on question {
+  id
+  question_text
+  point_value
+}

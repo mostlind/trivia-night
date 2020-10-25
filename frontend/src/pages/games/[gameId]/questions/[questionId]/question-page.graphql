@@ -1,0 +1,5 @@
+query QuestionPage($questionId: uuid!) {
+  question_by_pk(id: $questionId) {
+    ...QuestionComponent
+  }
+}

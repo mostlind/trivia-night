@@ -1,0 +1,9 @@
+query GamePage($gameId: uuid!) {
+  game_by_pk(id: $gameId) {
+    id
+    name
+    questions {
+      ...QuestionComponent
+    }
+  }
+}

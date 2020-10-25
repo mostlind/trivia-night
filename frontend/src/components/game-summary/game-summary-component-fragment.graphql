@@ -1,0 +1,7 @@
+fragment GameSummaryComponent on game {
+  id
+  name
+  questions {
+    ...QuestionComponent
+  }
+}

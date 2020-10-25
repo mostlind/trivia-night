@@ -23,7 +23,7 @@ const client = createClient({
   url: process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL!,
   fetchOptions: () => ({
     headers: {
-      Authorization: "Bearer user 2902a982-0e02-446b-b65a-c8ceed50fcc1",
+      Authorization: "Bearer host c2f05ad2-0d9a-437e-9bdb-cd9f05aad209",
     },
   }),
   exchanges: [devtoolsExchange, dedupExchange, cacheExchange, fetchExchange],

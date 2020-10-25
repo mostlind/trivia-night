@@ -1,0 +1,22 @@
+- args:
+    permission:
+      allow_aggregations: false
+      backend_only: false
+      columns:
+      - point_value
+      - question_text
+      - created_at
+      - updated_at
+      - game_id
+      - id
+      computed_fields: []
+      filter:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
+      limit: null
+    role: host
+    table:
+      name: question
+      schema: public
+  type: create_select_permission

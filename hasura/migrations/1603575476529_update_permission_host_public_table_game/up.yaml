@@ -1,0 +1,18 @@
+- args:
+    permission:
+      allow_upsert: true
+      backend_only: false
+      check:
+        id:
+          _eq: X-Hasura-User-Id
+      columns:
+      - created_at
+      - id
+      - name
+      - updated_at
+      set: {}
+    role: host
+    table:
+      name: game
+      schema: public
+  type: create_insert_permission

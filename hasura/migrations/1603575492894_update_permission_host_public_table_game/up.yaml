@@ -1,0 +1,19 @@
+- args:
+    permission:
+      allow_aggregations: false
+      backend_only: false
+      columns:
+      - created_at
+      - id
+      - name
+      - updated_at
+      computed_fields: []
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      limit: null
+    role: host
+    table:
+      name: game
+      schema: public
+  type: create_select_permission

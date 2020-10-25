@@ -1,3 +1,0 @@
-fragment TodoListComponent on todo {
-  ...TodoComponent
-}

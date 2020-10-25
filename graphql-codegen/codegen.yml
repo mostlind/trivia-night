@@ -3,7 +3,7 @@ overwrite: true
 schema:
   - http://hasura.trivianight.localhost/v1/graphql:
       headers:
-        Authorization: "Bearer user 2902a982-0e02-446b-b65a-c8ceed50fcc1"
+        "x-hasura-admin-secret": ${HASURA_ADMIN_SECRET}
 documents: "../frontend/src/**/*.graphql"
 watch:
   - "hasura/migrations/**/*.yaml"
@@ -17,3 +17,8 @@ generates:
     config:
       withHooks: true
       withComponent: false
+  ../frontend/schema.graphql:
+    plugins:
+      - schema-ast
+    config:
+      includeDirectives: true

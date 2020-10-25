@@ -1,0 +1,6 @@
+fragment QuestionComponent on question {
+  id
+  game_id
+  question_text
+  point_value
+}
