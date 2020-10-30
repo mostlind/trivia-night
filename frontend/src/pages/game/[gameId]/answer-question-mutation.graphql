@@ -1,0 +1,7 @@
+mutation AnswerQuestion($question_state_id: uuid!, $value: String!) {
+  insert_answer_one(
+    object: { question_state_id: $question_state_id, value: $value }
+  ) {
+    id
+  }
+}

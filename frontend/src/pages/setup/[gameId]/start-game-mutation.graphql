@@ -1,0 +1,5 @@
+mutation StartGame($gameId: uuid!) {
+  insert_game_state_one(object: { game_id: $gameId }) {
+    id
+  }
+}

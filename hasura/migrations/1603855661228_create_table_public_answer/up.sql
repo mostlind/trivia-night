@@ -1,0 +1,2 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE TABLE "public"."answer"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "question_state_id" uuid NOT NULL, "value" text NOT NULL, "correct" boolean, "team_id" uuid NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("question_state_id") REFERENCES "public"."question_state"("id") ON UPDATE cascade ON DELETE cascade, FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON UPDATE cascade ON DELETE cascade, UNIQUE ("team_id", "question_state_id")); COMMENT ON TABLE "public"."answer" IS E'A team\'s answer to a question';

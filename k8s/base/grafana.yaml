@@ -27,5 +27,12 @@ spec:
       containers:
         - name: trivia-night-grafana
           image: grafana/grafana
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "25m"
+            limits:
+              memory: "32Mi"
+              cpu: "100m"
           ports:
             - containerPort: 3000

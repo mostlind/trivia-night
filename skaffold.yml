@@ -31,21 +31,21 @@ profiles:
               # TODO: make this only typescript and graphql files
               - src: "src/**/*"
                 dest: .
-        - image: trivia-night-storybook
-          context: frontend
-          docker:
-            dockerfile: Dockerfile.storybook
-          sync:
-            manual:
-              # Sync all the  files that are in the src folder
-              # with the container src folder
-              # TODO: make this only typescript and graphql files
-              - src: "src/**/*"
-                dest: .
+        # - image: trivia-night-storybook
+        #   context: frontend
+        #   docker:
+        #     dockerfile: Dockerfile.storybook
+        #   sync:
+        #     manual:
+        #       # Sync all the  files that are in the src folder
+        #       # with the container src folder
+        #       # TODO: make this only typescript and graphql files
+        #       - src: "src/**/*"
+        #         dest: .
         - image: trivia-night-backend
           context: backend
         - image: trivia-night-hasura
-          context: hasura
+          context: hasura/dev-dockerfile
   - name: prod
     activation:
       - command: prod

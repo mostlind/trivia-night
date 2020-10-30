@@ -2,10 +2,10 @@ module.exports = {
   async redirects() {
     return [
       {
-        source: '/games/:gameId/questions',
-        destination: '/games/:gameId',
-        permanent: false
+        source: "/setup/:gameId/questions",
+        destination: "/setup/:gameId",
+        permanent: false,
       },
-    ]
+    ];
   },
-}
+};

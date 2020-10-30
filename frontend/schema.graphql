@@ -3,6 +3,18 @@ schema {
   mutation: mutation_root
   subscription: subscription_root
 }
+"""expression to compare columns of type Boolean. All fields are combined with logical 'AND'."""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
 """expression to compare columns of type Int. All fields are combined with logical 'AND'."""
 input Int_comparison_exp {
   _eq: Int
@@ -34,6 +46,201 @@ input String_comparison_exp {
   _similar: String
 }
 """
+A team's answer to a question
+
+
+columns and relationships of "answer"
+"""
+type answer {
+  correct: Boolean
+  id: uuid!
+  """An object relationship"""
+  question_state: question_state!
+  question_state_id: uuid!
+  """An object relationship"""
+  team: team!
+  team_id: uuid!
+  value: String!
+}
+"""
+aggregated selection of "answer"
+"""
+type answer_aggregate {
+  aggregate: answer_aggregate_fields
+  nodes: [answer!]!
+}
+"""
+aggregate fields of "answer"
+"""
+type answer_aggregate_fields {
+  count(columns: [answer_select_column!], distinct: Boolean): Int
+  max: answer_max_fields
+  min: answer_min_fields
+}
+"""
+order by aggregate values of table "answer"
+"""
+input answer_aggregate_order_by {
+  count: order_by
+  max: answer_max_order_by
+  min: answer_min_order_by
+}
+"""
+input type for inserting array relation for remote table "answer"
+"""
+input answer_arr_rel_insert_input {
+  data: [answer_insert_input!]!
+  on_conflict: answer_on_conflict
+}
+"""Boolean expression to filter rows from the table "answer". All fields are combined with a logical 'AND'."""
+input answer_bool_exp {
+  _and: [answer_bool_exp]
+  _not: answer_bool_exp
+  _or: [answer_bool_exp]
+  correct: Boolean_comparison_exp
+  id: uuid_comparison_exp
+  question_state: question_state_bool_exp
+  question_state_id: uuid_comparison_exp
+  team: team_bool_exp
+  team_id: uuid_comparison_exp
+  value: String_comparison_exp
+}
+"""
+unique or primary key constraints on table "answer"
+"""
+enum answer_constraint {
+  """unique or primary key constraint"""
+  answer_pkey
+  """unique or primary key constraint"""
+  answer_team_id_question_state_id_key
+}
+"""
+input type for inserting data into table "answer"
+"""
+input answer_insert_input {
+  correct: Boolean
+  id: uuid
+  question_state: question_state_obj_rel_insert_input
+  question_state_id: uuid
+  team: team_obj_rel_insert_input
+  team_id: uuid
+  value: String
+}
+"""aggregate max on columns"""
+type answer_max_fields {
+  id: uuid
+  question_state_id: uuid
+  team_id: uuid
+  value: String
+}
+"""
+order by max() on columns of table "answer"
+"""
+input answer_max_order_by {
+  id: order_by
+  question_state_id: order_by
+  team_id: order_by
+  value: order_by
+}
+"""aggregate min on columns"""
+type answer_min_fields {
+  id: uuid
+  question_state_id: uuid
+  team_id: uuid
+  value: String
+}
+"""
+order by min() on columns of table "answer"
+"""
+input answer_min_order_by {
+  id: order_by
+  question_state_id: order_by
+  team_id: order_by
+  value: order_by
+}
+"""
+response of any mutation on the table "answer"
+"""
+type answer_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+  """data of the affected rows by the mutation"""
+  returning: [answer!]!
+}
+"""
+input type for inserting object relation for remote table "answer"
+"""
+input answer_obj_rel_insert_input {
+  data: answer_insert_input!
+  on_conflict: answer_on_conflict
+}
+"""
+on conflict condition type for table "answer"
+"""
+input answer_on_conflict {
+  constraint: answer_constraint!
+  update_columns: [answer_update_column!]!
+  where: answer_bool_exp
+}
+"""
+ordering options when selecting data from "answer"
+"""
+input answer_order_by {
+  correct: order_by
+  id: order_by
+  question_state: question_state_order_by
+  question_state_id: order_by
+  team: team_order_by
+  team_id: order_by
+  value: order_by
+}
+"""
+primary key columns input for table: "answer"
+"""
+input answer_pk_columns_input {
+  id: uuid!
+}
+"""
+select columns of table "answer"
+"""
+enum answer_select_column {
+  """column name"""
+  correct
+  """column name"""
+  id
+  """column name"""
+  question_state_id
+  """column name"""
+  team_id
+  """column name"""
+  value
+}
+"""
+input type for updating data in table "answer"
+"""
+input answer_set_input {
+  correct: Boolean
+  id: uuid
+  question_state_id: uuid
+  team_id: uuid
+  value: String
+}
+"""
+update columns of table "answer"
+"""
+enum answer_update_column {
+  """column name"""
+  correct
+  """column name"""
+  id
+  """column name"""
+  question_state_id
+  """column name"""
+  team_id
+  """column name"""
+  value
+}
+"""
 A game belonging to a host
 
 
@@ -41,6 +248,32 @@ columns and relationships of "game"
 """
 type game {
   created_at: timestamptz!
+  """An array relationship"""
+  game_states(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): [game_state!]!
+  """An aggregated array relationship"""
+  game_states_aggregate(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): game_state_aggregate!
   """An object relationship"""
   host: host!
   host_id: uuid!
@@ -110,6 +343,7 @@ input game_bool_exp {
   _not: game_bool_exp
   _or: [game_bool_exp]
   created_at: timestamptz_comparison_exp
+  game_states: game_state_bool_exp
   host: host_bool_exp
   host_id: uuid_comparison_exp
   id: uuid_comparison_exp
@@ -129,6 +363,7 @@ input type for inserting data into table "game"
 """
 input game_insert_input {
   created_at: timestamptz
+  game_states: game_state_arr_rel_insert_input
   host: host_obj_rel_insert_input
   host_id: uuid
   id: uuid
@@ -201,6 +436,7 @@ ordering options when selecting data from "game"
 """
 input game_order_by {
   created_at: order_by
+  game_states_aggregate: game_state_aggregate_order_by
   host: host_order_by
   host_id: order_by
   id: order_by
@@ -238,6 +474,420 @@ input game_set_input {
   id: uuid
   name: String
   updated_at: timestamptz
+}
+"""
+columns and relationships of "game_state"
+"""
+type game_state {
+  """An object relationship"""
+  current_question: question_state!
+  current_question_id: uuid!
+  """An object relationship"""
+  game: game!
+  game_id: uuid!
+  """An object relationship"""
+  game_state_enum: game_state_enum!
+  id: uuid!
+  """An array relationship"""
+  question_states(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): [question_state!]!
+  """An aggregated array relationship"""
+  question_states_aggregate(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): question_state_aggregate!
+  state: game_state_enum_enum!
+  """An array relationship"""
+  teams(
+    """distinct select on columns"""
+    distinct_on: [team_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [team_order_by!]
+    """filter the rows returned"""
+    where: team_bool_exp
+  ): [team!]!
+  """An aggregated array relationship"""
+  teams_aggregate(
+    """distinct select on columns"""
+    distinct_on: [team_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [team_order_by!]
+    """filter the rows returned"""
+    where: team_bool_exp
+  ): team_aggregate!
+}
+"""
+aggregated selection of "game_state"
+"""
+type game_state_aggregate {
+  aggregate: game_state_aggregate_fields
+  nodes: [game_state!]!
+}
+"""
+aggregate fields of "game_state"
+"""
+type game_state_aggregate_fields {
+  count(columns: [game_state_select_column!], distinct: Boolean): Int
+  max: game_state_max_fields
+  min: game_state_min_fields
+}
+"""
+order by aggregate values of table "game_state"
+"""
+input game_state_aggregate_order_by {
+  count: order_by
+  max: game_state_max_order_by
+  min: game_state_min_order_by
+}
+"""
+input type for inserting array relation for remote table "game_state"
+"""
+input game_state_arr_rel_insert_input {
+  data: [game_state_insert_input!]!
+  on_conflict: game_state_on_conflict
+}
+"""Boolean expression to filter rows from the table "game_state". All fields are combined with a logical 'AND'."""
+input game_state_bool_exp {
+  _and: [game_state_bool_exp]
+  _not: game_state_bool_exp
+  _or: [game_state_bool_exp]
+  current_question: question_state_bool_exp
+  current_question_id: uuid_comparison_exp
+  game: game_bool_exp
+  game_id: uuid_comparison_exp
+  game_state_enum: game_state_enum_bool_exp
+  id: uuid_comparison_exp
+  question_states: question_state_bool_exp
+  state: game_state_enum_enum_comparison_exp
+  teams: team_bool_exp
+}
+"""
+unique or primary key constraints on table "game_state"
+"""
+enum game_state_constraint {
+  """unique or primary key constraint"""
+  game_state_pkey
+}
+"""
+columns and relationships of "game_state_enum"
+"""
+type game_state_enum {
+  """An array relationship"""
+  game_states(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): [game_state!]!
+  """An aggregated array relationship"""
+  game_states_aggregate(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): game_state_aggregate!
+  value: String!
+}
+"""
+aggregated selection of "game_state_enum"
+"""
+type game_state_enum_aggregate {
+  aggregate: game_state_enum_aggregate_fields
+  nodes: [game_state_enum!]!
+}
+"""
+aggregate fields of "game_state_enum"
+"""
+type game_state_enum_aggregate_fields {
+  count(columns: [game_state_enum_select_column!], distinct: Boolean): Int
+  max: game_state_enum_max_fields
+  min: game_state_enum_min_fields
+}
+"""
+order by aggregate values of table "game_state_enum"
+"""
+input game_state_enum_aggregate_order_by {
+  count: order_by
+  max: game_state_enum_max_order_by
+  min: game_state_enum_min_order_by
+}
+"""
+input type for inserting array relation for remote table "game_state_enum"
+"""
+input game_state_enum_arr_rel_insert_input {
+  data: [game_state_enum_insert_input!]!
+  on_conflict: game_state_enum_on_conflict
+}
+"""Boolean expression to filter rows from the table "game_state_enum". All fields are combined with a logical 'AND'."""
+input game_state_enum_bool_exp {
+  _and: [game_state_enum_bool_exp]
+  _not: game_state_enum_bool_exp
+  _or: [game_state_enum_bool_exp]
+  game_states: game_state_bool_exp
+  value: String_comparison_exp
+}
+"""
+unique or primary key constraints on table "game_state_enum"
+"""
+enum game_state_enum_constraint {
+  """unique or primary key constraint"""
+  game_state_enum_pkey
+}
+enum game_state_enum_enum {
+  ended
+  not_started
+  ongoing
+}
+"""expression to compare columns of type game_state_enum_enum. All fields are combined with logical 'AND'."""
+input game_state_enum_enum_comparison_exp {
+  _eq: game_state_enum_enum
+  _in: [game_state_enum_enum!]
+  _is_null: Boolean
+  _neq: game_state_enum_enum
+  _nin: [game_state_enum_enum!]
+}
+"""
+input type for inserting data into table "game_state_enum"
+"""
+input game_state_enum_insert_input {
+  game_states: game_state_arr_rel_insert_input
+  value: String
+}
+"""aggregate max on columns"""
+type game_state_enum_max_fields {
+  value: String
+}
+"""
+order by max() on columns of table "game_state_enum"
+"""
+input game_state_enum_max_order_by {
+  value: order_by
+}
+"""aggregate min on columns"""
+type game_state_enum_min_fields {
+  value: String
+}
+"""
+order by min() on columns of table "game_state_enum"
+"""
+input game_state_enum_min_order_by {
+  value: order_by
+}
+"""
+response of any mutation on the table "game_state_enum"
+"""
+type game_state_enum_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+  """data of the affected rows by the mutation"""
+  returning: [game_state_enum!]!
+}
+"""
+input type for inserting object relation for remote table "game_state_enum"
+"""
+input game_state_enum_obj_rel_insert_input {
+  data: game_state_enum_insert_input!
+  on_conflict: game_state_enum_on_conflict
+}
+"""
+on conflict condition type for table "game_state_enum"
+"""
+input game_state_enum_on_conflict {
+  constraint: game_state_enum_constraint!
+  update_columns: [game_state_enum_update_column!]!
+  where: game_state_enum_bool_exp
+}
+"""
+ordering options when selecting data from "game_state_enum"
+"""
+input game_state_enum_order_by {
+  game_states_aggregate: game_state_aggregate_order_by
+  value: order_by
+}
+"""
+primary key columns input for table: "game_state_enum"
+"""
+input game_state_enum_pk_columns_input {
+  value: String!
+}
+"""
+select columns of table "game_state_enum"
+"""
+enum game_state_enum_select_column {
+  """column name"""
+  value
+}
+"""
+input type for updating data in table "game_state_enum"
+"""
+input game_state_enum_set_input {
+  value: String
+}
+"""
+update columns of table "game_state_enum"
+"""
+enum game_state_enum_update_column {
+  """column name"""
+  value
+}
+"""
+input type for inserting data into table "game_state"
+"""
+input game_state_insert_input {
+  current_question: question_state_obj_rel_insert_input
+  current_question_id: uuid
+  game: game_obj_rel_insert_input
+  game_id: uuid
+  game_state_enum: game_state_enum_obj_rel_insert_input
+  id: uuid
+  question_states: question_state_arr_rel_insert_input
+  state: game_state_enum_enum
+  teams: team_arr_rel_insert_input
+}
+"""aggregate max on columns"""
+type game_state_max_fields {
+  current_question_id: uuid
+  game_id: uuid
+  id: uuid
+}
+"""
+order by max() on columns of table "game_state"
+"""
+input game_state_max_order_by {
+  current_question_id: order_by
+  game_id: order_by
+  id: order_by
+}
+"""aggregate min on columns"""
+type game_state_min_fields {
+  current_question_id: uuid
+  game_id: uuid
+  id: uuid
+}
+"""
+order by min() on columns of table "game_state"
+"""
+input game_state_min_order_by {
+  current_question_id: order_by
+  game_id: order_by
+  id: order_by
+}
+"""
+response of any mutation on the table "game_state"
+"""
+type game_state_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+  """data of the affected rows by the mutation"""
+  returning: [game_state!]!
+}
+"""
+input type for inserting object relation for remote table "game_state"
+"""
+input game_state_obj_rel_insert_input {
+  data: game_state_insert_input!
+  on_conflict: game_state_on_conflict
+}
+"""
+on conflict condition type for table "game_state"
+"""
+input game_state_on_conflict {
+  constraint: game_state_constraint!
+  update_columns: [game_state_update_column!]!
+  where: game_state_bool_exp
+}
+"""
+ordering options when selecting data from "game_state"
+"""
+input game_state_order_by {
+  current_question: question_state_order_by
+  current_question_id: order_by
+  game: game_order_by
+  game_id: order_by
+  game_state_enum: game_state_enum_order_by
+  id: order_by
+  question_states_aggregate: question_state_aggregate_order_by
+  state: order_by
+  teams_aggregate: team_aggregate_order_by
+}
+"""
+primary key columns input for table: "game_state"
+"""
+input game_state_pk_columns_input {
+  id: uuid!
+}
+"""
+select columns of table "game_state"
+"""
+enum game_state_select_column {
+  """column name"""
+  current_question_id
+  """column name"""
+  game_id
+  """column name"""
+  id
+  """column name"""
+  state
+}
+"""
+input type for updating data in table "game_state"
+"""
+input game_state_set_input {
+  current_question_id: uuid
+  game_id: uuid
+  id: uuid
+  state: game_state_enum_enum
+}
+"""
+update columns of table "game_state"
+"""
+enum game_state_update_column {
+  """column name"""
+  current_question_id
+  """column name"""
+  game_id
+  """column name"""
+  id
+  """column name"""
+  state
 }
 """
 update columns of table "game"
@@ -447,6 +1097,17 @@ enum host_update_column {
 """mutation root"""
 type mutation_root {
   """
+  delete data from the table: "answer"
+  """
+  delete_answer(
+    """filter the rows which have to be deleted"""
+    where: answer_bool_exp!
+  ): answer_mutation_response
+  """
+  delete single row from the table: "answer"
+  """
+  delete_answer_by_pk(id: uuid!): answer
+  """
   delete data from the table: "game"
   """
   delete_game(
@@ -457,6 +1118,28 @@ type mutation_root {
   delete single row from the table: "game"
   """
   delete_game_by_pk(id: uuid!): game
+  """
+  delete data from the table: "game_state"
+  """
+  delete_game_state(
+    """filter the rows which have to be deleted"""
+    where: game_state_bool_exp!
+  ): game_state_mutation_response
+  """
+  delete single row from the table: "game_state"
+  """
+  delete_game_state_by_pk(id: uuid!): game_state
+  """
+  delete data from the table: "game_state_enum"
+  """
+  delete_game_state_enum(
+    """filter the rows which have to be deleted"""
+    where: game_state_enum_bool_exp!
+  ): game_state_enum_mutation_response
+  """
+  delete single row from the table: "game_state_enum"
+  """
+  delete_game_state_enum_by_pk(value: String!): game_state_enum
   """
   delete data from the table: "host"
   """
@@ -480,6 +1163,57 @@ type mutation_root {
   """
   delete_question_by_pk(id: uuid!): question
   """
+  delete data from the table: "question_state"
+  """
+  delete_question_state(
+    """filter the rows which have to be deleted"""
+    where: question_state_bool_exp!
+  ): question_state_mutation_response
+  """
+  delete single row from the table: "question_state"
+  """
+  delete_question_state_by_pk(id: uuid!): question_state
+  """
+  delete data from the table: "question_state_enum"
+  """
+  delete_question_state_enum(
+    """filter the rows which have to be deleted"""
+    where: question_state_enum_bool_exp!
+  ): question_state_enum_mutation_response
+  """
+  delete single row from the table: "question_state_enum"
+  """
+  delete_question_state_enum_by_pk(value: String!): question_state_enum
+  """
+  delete data from the table: "team"
+  """
+  delete_team(
+    """filter the rows which have to be deleted"""
+    where: team_bool_exp!
+  ): team_mutation_response
+  """
+  delete single row from the table: "team"
+  """
+  delete_team_by_pk(id: uuid!): team
+  """
+  insert data into the table: "answer"
+  """
+  insert_answer(
+    """the rows to be inserted"""
+    objects: [answer_insert_input!]!
+    """on conflict condition"""
+    on_conflict: answer_on_conflict
+  ): answer_mutation_response
+  """
+  insert a single row into the table: "answer"
+  """
+  insert_answer_one(
+    """the row to be inserted"""
+    object: answer_insert_input!
+    """on conflict condition"""
+    on_conflict: answer_on_conflict
+  ): answer
+  """
   insert data into the table: "game"
   """
   insert_game(
@@ -497,6 +1231,42 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: game_on_conflict
   ): game
+  """
+  insert data into the table: "game_state"
+  """
+  insert_game_state(
+    """the rows to be inserted"""
+    objects: [game_state_insert_input!]!
+    """on conflict condition"""
+    on_conflict: game_state_on_conflict
+  ): game_state_mutation_response
+  """
+  insert data into the table: "game_state_enum"
+  """
+  insert_game_state_enum(
+    """the rows to be inserted"""
+    objects: [game_state_enum_insert_input!]!
+    """on conflict condition"""
+    on_conflict: game_state_enum_on_conflict
+  ): game_state_enum_mutation_response
+  """
+  insert a single row into the table: "game_state_enum"
+  """
+  insert_game_state_enum_one(
+    """the row to be inserted"""
+    object: game_state_enum_insert_input!
+    """on conflict condition"""
+    on_conflict: game_state_enum_on_conflict
+  ): game_state_enum
+  """
+  insert a single row into the table: "game_state"
+  """
+  insert_game_state_one(
+    """the row to be inserted"""
+    object: game_state_insert_input!
+    """on conflict condition"""
+    on_conflict: game_state_on_conflict
+  ): game_state
   """
   insert data into the table: "host"
   """
@@ -534,6 +1304,77 @@ type mutation_root {
     on_conflict: question_on_conflict
   ): question
   """
+  insert data into the table: "question_state"
+  """
+  insert_question_state(
+    """the rows to be inserted"""
+    objects: [question_state_insert_input!]!
+    """on conflict condition"""
+    on_conflict: question_state_on_conflict
+  ): question_state_mutation_response
+  """
+  insert data into the table: "question_state_enum"
+  """
+  insert_question_state_enum(
+    """the rows to be inserted"""
+    objects: [question_state_enum_insert_input!]!
+    """on conflict condition"""
+    on_conflict: question_state_enum_on_conflict
+  ): question_state_enum_mutation_response
+  """
+  insert a single row into the table: "question_state_enum"
+  """
+  insert_question_state_enum_one(
+    """the row to be inserted"""
+    object: question_state_enum_insert_input!
+    """on conflict condition"""
+    on_conflict: question_state_enum_on_conflict
+  ): question_state_enum
+  """
+  insert a single row into the table: "question_state"
+  """
+  insert_question_state_one(
+    """the row to be inserted"""
+    object: question_state_insert_input!
+    """on conflict condition"""
+    on_conflict: question_state_on_conflict
+  ): question_state
+  """
+  insert data into the table: "team"
+  """
+  insert_team(
+    """the rows to be inserted"""
+    objects: [team_insert_input!]!
+    """on conflict condition"""
+    on_conflict: team_on_conflict
+  ): team_mutation_response
+  """
+  insert a single row into the table: "team"
+  """
+  insert_team_one(
+    """the row to be inserted"""
+    object: team_insert_input!
+    """on conflict condition"""
+    on_conflict: team_on_conflict
+  ): team
+  """
+  update data of the table: "answer"
+  """
+  update_answer(
+    """sets the columns of the filtered rows to the given values"""
+    _set: answer_set_input
+    """filter the rows which have to be updated"""
+    where: answer_bool_exp!
+  ): answer_mutation_response
+  """
+  update single row of the table: "answer"
+  """
+  update_answer_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: answer_set_input
+    pk_columns: answer_pk_columns_input!
+  ): answer
+  """
   update data of the table: "game"
   """
   update_game(
@@ -550,6 +1391,40 @@ type mutation_root {
     _set: game_set_input
     pk_columns: game_pk_columns_input!
   ): game
+  """
+  update data of the table: "game_state"
+  """
+  update_game_state(
+    """sets the columns of the filtered rows to the given values"""
+    _set: game_state_set_input
+    """filter the rows which have to be updated"""
+    where: game_state_bool_exp!
+  ): game_state_mutation_response
+  """
+  update single row of the table: "game_state"
+  """
+  update_game_state_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: game_state_set_input
+    pk_columns: game_state_pk_columns_input!
+  ): game_state
+  """
+  update data of the table: "game_state_enum"
+  """
+  update_game_state_enum(
+    """sets the columns of the filtered rows to the given values"""
+    _set: game_state_enum_set_input
+    """filter the rows which have to be updated"""
+    where: game_state_enum_bool_exp!
+  ): game_state_enum_mutation_response
+  """
+  update single row of the table: "game_state_enum"
+  """
+  update_game_state_enum_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: game_state_enum_set_input
+    pk_columns: game_state_enum_pk_columns_input!
+  ): game_state_enum
   """
   update data of the table: "host"
   """
@@ -588,6 +1463,57 @@ type mutation_root {
     _set: question_set_input
     pk_columns: question_pk_columns_input!
   ): question
+  """
+  update data of the table: "question_state"
+  """
+  update_question_state(
+    """sets the columns of the filtered rows to the given values"""
+    _set: question_state_set_input
+    """filter the rows which have to be updated"""
+    where: question_state_bool_exp!
+  ): question_state_mutation_response
+  """
+  update single row of the table: "question_state"
+  """
+  update_question_state_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: question_state_set_input
+    pk_columns: question_state_pk_columns_input!
+  ): question_state
+  """
+  update data of the table: "question_state_enum"
+  """
+  update_question_state_enum(
+    """sets the columns of the filtered rows to the given values"""
+    _set: question_state_enum_set_input
+    """filter the rows which have to be updated"""
+    where: question_state_enum_bool_exp!
+  ): question_state_enum_mutation_response
+  """
+  update single row of the table: "question_state_enum"
+  """
+  update_question_state_enum_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: question_state_enum_set_input
+    pk_columns: question_state_enum_pk_columns_input!
+  ): question_state_enum
+  """
+  update data of the table: "team"
+  """
+  update_team(
+    """sets the columns of the filtered rows to the given values"""
+    _set: team_set_input
+    """filter the rows which have to be updated"""
+    where: team_bool_exp!
+  ): team_mutation_response
+  """
+  update single row of the table: "team"
+  """
+  update_team_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: team_set_input
+    pk_columns: team_pk_columns_input!
+  ): team
 }
 """column ordering options"""
 enum order_by {
@@ -606,6 +1532,38 @@ enum order_by {
 }
 """query root"""
 type query_root {
+  """
+  fetch data from the table: "answer"
+  """
+  answer(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): [answer!]!
+  """
+  fetch aggregated fields from the table: "answer"
+  """
+  answer_aggregate(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): answer_aggregate!
+  """fetch data from the table: "answer" using primary key columns"""
+  answer_by_pk(id: uuid!): answer
   """
   fetch data from the table: "game"
   """
@@ -638,6 +1596,70 @@ type query_root {
   ): game_aggregate!
   """fetch data from the table: "game" using primary key columns"""
   game_by_pk(id: uuid!): game
+  """
+  fetch data from the table: "game_state"
+  """
+  game_state(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): [game_state!]!
+  """
+  fetch aggregated fields from the table: "game_state"
+  """
+  game_state_aggregate(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): game_state_aggregate!
+  """fetch data from the table: "game_state" using primary key columns"""
+  game_state_by_pk(id: uuid!): game_state
+  """
+  fetch data from the table: "game_state_enum"
+  """
+  game_state_enum(
+    """distinct select on columns"""
+    distinct_on: [game_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_enum_order_by!]
+    """filter the rows returned"""
+    where: game_state_enum_bool_exp
+  ): [game_state_enum!]!
+  """
+  fetch aggregated fields from the table: "game_state_enum"
+  """
+  game_state_enum_aggregate(
+    """distinct select on columns"""
+    distinct_on: [game_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_enum_order_by!]
+    """filter the rows returned"""
+    where: game_state_enum_bool_exp
+  ): game_state_enum_aggregate!
+  """fetch data from the table: "game_state_enum" using primary key columns"""
+  game_state_enum_by_pk(value: String!): game_state_enum
   """
   fetch data from the table: "host"
   """
@@ -702,6 +1724,102 @@ type query_root {
   ): question_aggregate!
   """fetch data from the table: "question" using primary key columns"""
   question_by_pk(id: uuid!): question
+  """
+  fetch data from the table: "question_state"
+  """
+  question_state(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): [question_state!]!
+  """
+  fetch aggregated fields from the table: "question_state"
+  """
+  question_state_aggregate(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): question_state_aggregate!
+  """fetch data from the table: "question_state" using primary key columns"""
+  question_state_by_pk(id: uuid!): question_state
+  """
+  fetch data from the table: "question_state_enum"
+  """
+  question_state_enum(
+    """distinct select on columns"""
+    distinct_on: [question_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_enum_order_by!]
+    """filter the rows returned"""
+    where: question_state_enum_bool_exp
+  ): [question_state_enum!]!
+  """
+  fetch aggregated fields from the table: "question_state_enum"
+  """
+  question_state_enum_aggregate(
+    """distinct select on columns"""
+    distinct_on: [question_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_enum_order_by!]
+    """filter the rows returned"""
+    where: question_state_enum_bool_exp
+  ): question_state_enum_aggregate!
+  """fetch data from the table: "question_state_enum" using primary key columns"""
+  question_state_enum_by_pk(value: String!): question_state_enum
+  """
+  fetch data from the table: "team"
+  """
+  team(
+    """distinct select on columns"""
+    distinct_on: [team_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [team_order_by!]
+    """filter the rows returned"""
+    where: team_bool_exp
+  ): [team!]!
+  """
+  fetch aggregated fields from the table: "team"
+  """
+  team_aggregate(
+    """distinct select on columns"""
+    distinct_on: [team_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [team_order_by!]
+    """filter the rows returned"""
+    where: team_bool_exp
+  ): team_aggregate!
+  """fetch data from the table: "team" using primary key columns"""
+  team_by_pk(id: uuid!): team
 }
 """
 A question belonging to a game
@@ -716,6 +1834,33 @@ type question {
   game_id: uuid!
   id: uuid!
   point_value: Int!
+  question_order: Int!
+  """An array relationship"""
+  question_states(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): [question_state!]!
+  """An aggregated array relationship"""
+  question_states_aggregate(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): question_state_aggregate!
   question_text: String!
   updated_at: timestamptz!
 }
@@ -768,12 +1913,14 @@ input question_arr_rel_insert_input {
 """aggregate avg on columns"""
 type question_avg_fields {
   point_value: Float
+  question_order: Float
 }
 """
 order by avg() on columns of table "question"
 """
 input question_avg_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """Boolean expression to filter rows from the table "question". All fields are combined with a logical 'AND'."""
 input question_bool_exp {
@@ -785,6 +1932,8 @@ input question_bool_exp {
   game_id: uuid_comparison_exp
   id: uuid_comparison_exp
   point_value: Int_comparison_exp
+  question_order: Int_comparison_exp
+  question_states: question_state_bool_exp
   question_text: String_comparison_exp
   updated_at: timestamptz_comparison_exp
 }
@@ -800,6 +1949,7 @@ input type for incrementing integer column in table "question"
 """
 input question_inc_input {
   point_value: Int
+  question_order: Int
 }
 """
 input type for inserting data into table "question"
@@ -810,6 +1960,8 @@ input question_insert_input {
   game_id: uuid
   id: uuid
   point_value: Int
+  question_order: Int
+  question_states: question_state_arr_rel_insert_input
   question_text: String
   updated_at: timestamptz
 }
@@ -819,6 +1971,7 @@ type question_max_fields {
   game_id: uuid
   id: uuid
   point_value: Int
+  question_order: Int
   question_text: String
   updated_at: timestamptz
 }
@@ -830,6 +1983,7 @@ input question_max_order_by {
   game_id: order_by
   id: order_by
   point_value: order_by
+  question_order: order_by
   question_text: order_by
   updated_at: order_by
 }
@@ -839,6 +1993,7 @@ type question_min_fields {
   game_id: uuid
   id: uuid
   point_value: Int
+  question_order: Int
   question_text: String
   updated_at: timestamptz
 }
@@ -850,6 +2005,7 @@ input question_min_order_by {
   game_id: order_by
   id: order_by
   point_value: order_by
+  question_order: order_by
   question_text: order_by
   updated_at: order_by
 }
@@ -886,6 +2042,8 @@ input question_order_by {
   game_id: order_by
   id: order_by
   point_value: order_by
+  question_order: order_by
+  question_states_aggregate: question_state_aggregate_order_by
   question_text: order_by
   updated_at: order_by
 }
@@ -908,6 +2066,8 @@ enum question_select_column {
   """column name"""
   point_value
   """column name"""
+  question_order
+  """column name"""
   question_text
   """column name"""
   updated_at
@@ -920,48 +2080,472 @@ input question_set_input {
   game_id: uuid
   id: uuid
   point_value: Int
+  question_order: Int
   question_text: String
   updated_at: timestamptz
+}
+"""
+columns and relationships of "question_state"
+"""
+type question_state {
+  """An array relationship"""
+  answers(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): [answer!]!
+  """An aggregated array relationship"""
+  answers_aggregate(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): answer_aggregate!
+  """An object relationship"""
+  game_state: game_state!
+  game_state_id: uuid!
+  """An array relationship"""
+  game_states(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): [game_state!]!
+  """An aggregated array relationship"""
+  game_states_aggregate(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): game_state_aggregate!
+  id: uuid!
+  """An object relationship"""
+  question: question!
+  question_id: uuid!
+  """An object relationship"""
+  question_state_enum: question_state_enum!
+  state: question_state_enum_enum!
+}
+"""
+aggregated selection of "question_state"
+"""
+type question_state_aggregate {
+  aggregate: question_state_aggregate_fields
+  nodes: [question_state!]!
+}
+"""
+aggregate fields of "question_state"
+"""
+type question_state_aggregate_fields {
+  count(columns: [question_state_select_column!], distinct: Boolean): Int
+  max: question_state_max_fields
+  min: question_state_min_fields
+}
+"""
+order by aggregate values of table "question_state"
+"""
+input question_state_aggregate_order_by {
+  count: order_by
+  max: question_state_max_order_by
+  min: question_state_min_order_by
+}
+"""
+input type for inserting array relation for remote table "question_state"
+"""
+input question_state_arr_rel_insert_input {
+  data: [question_state_insert_input!]!
+  on_conflict: question_state_on_conflict
+}
+"""Boolean expression to filter rows from the table "question_state". All fields are combined with a logical 'AND'."""
+input question_state_bool_exp {
+  _and: [question_state_bool_exp]
+  _not: question_state_bool_exp
+  _or: [question_state_bool_exp]
+  answers: answer_bool_exp
+  game_state: game_state_bool_exp
+  game_state_id: uuid_comparison_exp
+  game_states: game_state_bool_exp
+  id: uuid_comparison_exp
+  question: question_bool_exp
+  question_id: uuid_comparison_exp
+  question_state_enum: question_state_enum_bool_exp
+  state: question_state_enum_enum_comparison_exp
+}
+"""
+unique or primary key constraints on table "question_state"
+"""
+enum question_state_constraint {
+  """unique or primary key constraint"""
+  question_state_pkey
+}
+"""
+columns and relationships of "question_state_enum"
+"""
+type question_state_enum {
+  """An array relationship"""
+  question_states(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): [question_state!]!
+  """An aggregated array relationship"""
+  question_states_aggregate(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): question_state_aggregate!
+  value: String!
+}
+"""
+aggregated selection of "question_state_enum"
+"""
+type question_state_enum_aggregate {
+  aggregate: question_state_enum_aggregate_fields
+  nodes: [question_state_enum!]!
+}
+"""
+aggregate fields of "question_state_enum"
+"""
+type question_state_enum_aggregate_fields {
+  count(columns: [question_state_enum_select_column!], distinct: Boolean): Int
+  max: question_state_enum_max_fields
+  min: question_state_enum_min_fields
+}
+"""
+order by aggregate values of table "question_state_enum"
+"""
+input question_state_enum_aggregate_order_by {
+  count: order_by
+  max: question_state_enum_max_order_by
+  min: question_state_enum_min_order_by
+}
+"""
+input type for inserting array relation for remote table "question_state_enum"
+"""
+input question_state_enum_arr_rel_insert_input {
+  data: [question_state_enum_insert_input!]!
+  on_conflict: question_state_enum_on_conflict
+}
+"""Boolean expression to filter rows from the table "question_state_enum". All fields are combined with a logical 'AND'."""
+input question_state_enum_bool_exp {
+  _and: [question_state_enum_bool_exp]
+  _not: question_state_enum_bool_exp
+  _or: [question_state_enum_bool_exp]
+  question_states: question_state_bool_exp
+  value: String_comparison_exp
+}
+"""
+unique or primary key constraints on table "question_state_enum"
+"""
+enum question_state_enum_constraint {
+  """unique or primary key constraint"""
+  question_state_enum_pkey
+}
+enum question_state_enum_enum {
+  closed
+  not_opened
+  open
+  scored
+}
+"""expression to compare columns of type question_state_enum_enum. All fields are combined with logical 'AND'."""
+input question_state_enum_enum_comparison_exp {
+  _eq: question_state_enum_enum
+  _in: [question_state_enum_enum!]
+  _is_null: Boolean
+  _neq: question_state_enum_enum
+  _nin: [question_state_enum_enum!]
+}
+"""
+input type for inserting data into table "question_state_enum"
+"""
+input question_state_enum_insert_input {
+  question_states: question_state_arr_rel_insert_input
+  value: String
+}
+"""aggregate max on columns"""
+type question_state_enum_max_fields {
+  value: String
+}
+"""
+order by max() on columns of table "question_state_enum"
+"""
+input question_state_enum_max_order_by {
+  value: order_by
+}
+"""aggregate min on columns"""
+type question_state_enum_min_fields {
+  value: String
+}
+"""
+order by min() on columns of table "question_state_enum"
+"""
+input question_state_enum_min_order_by {
+  value: order_by
+}
+"""
+response of any mutation on the table "question_state_enum"
+"""
+type question_state_enum_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+  """data of the affected rows by the mutation"""
+  returning: [question_state_enum!]!
+}
+"""
+input type for inserting object relation for remote table "question_state_enum"
+"""
+input question_state_enum_obj_rel_insert_input {
+  data: question_state_enum_insert_input!
+  on_conflict: question_state_enum_on_conflict
+}
+"""
+on conflict condition type for table "question_state_enum"
+"""
+input question_state_enum_on_conflict {
+  constraint: question_state_enum_constraint!
+  update_columns: [question_state_enum_update_column!]!
+  where: question_state_enum_bool_exp
+}
+"""
+ordering options when selecting data from "question_state_enum"
+"""
+input question_state_enum_order_by {
+  question_states_aggregate: question_state_aggregate_order_by
+  value: order_by
+}
+"""
+primary key columns input for table: "question_state_enum"
+"""
+input question_state_enum_pk_columns_input {
+  value: String!
+}
+"""
+select columns of table "question_state_enum"
+"""
+enum question_state_enum_select_column {
+  """column name"""
+  value
+}
+"""
+input type for updating data in table "question_state_enum"
+"""
+input question_state_enum_set_input {
+  value: String
+}
+"""
+update columns of table "question_state_enum"
+"""
+enum question_state_enum_update_column {
+  """column name"""
+  value
+}
+"""
+input type for inserting data into table "question_state"
+"""
+input question_state_insert_input {
+  answers: answer_arr_rel_insert_input
+  game_state: game_state_obj_rel_insert_input
+  game_state_id: uuid
+  game_states: game_state_arr_rel_insert_input
+  id: uuid
+  question: question_obj_rel_insert_input
+  question_id: uuid
+  question_state_enum: question_state_enum_obj_rel_insert_input
+  state: question_state_enum_enum
+}
+"""aggregate max on columns"""
+type question_state_max_fields {
+  game_state_id: uuid
+  id: uuid
+  question_id: uuid
+}
+"""
+order by max() on columns of table "question_state"
+"""
+input question_state_max_order_by {
+  game_state_id: order_by
+  id: order_by
+  question_id: order_by
+}
+"""aggregate min on columns"""
+type question_state_min_fields {
+  game_state_id: uuid
+  id: uuid
+  question_id: uuid
+}
+"""
+order by min() on columns of table "question_state"
+"""
+input question_state_min_order_by {
+  game_state_id: order_by
+  id: order_by
+  question_id: order_by
+}
+"""
+response of any mutation on the table "question_state"
+"""
+type question_state_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+  """data of the affected rows by the mutation"""
+  returning: [question_state!]!
+}
+"""
+input type for inserting object relation for remote table "question_state"
+"""
+input question_state_obj_rel_insert_input {
+  data: question_state_insert_input!
+  on_conflict: question_state_on_conflict
+}
+"""
+on conflict condition type for table "question_state"
+"""
+input question_state_on_conflict {
+  constraint: question_state_constraint!
+  update_columns: [question_state_update_column!]!
+  where: question_state_bool_exp
+}
+"""
+ordering options when selecting data from "question_state"
+"""
+input question_state_order_by {
+  answers_aggregate: answer_aggregate_order_by
+  game_state: game_state_order_by
+  game_state_id: order_by
+  game_states_aggregate: game_state_aggregate_order_by
+  id: order_by
+  question: question_order_by
+  question_id: order_by
+  question_state_enum: question_state_enum_order_by
+  state: order_by
+}
+"""
+primary key columns input for table: "question_state"
+"""
+input question_state_pk_columns_input {
+  id: uuid!
+}
+"""
+select columns of table "question_state"
+"""
+enum question_state_select_column {
+  """column name"""
+  game_state_id
+  """column name"""
+  id
+  """column name"""
+  question_id
+  """column name"""
+  state
+}
+"""
+input type for updating data in table "question_state"
+"""
+input question_state_set_input {
+  game_state_id: uuid
+  id: uuid
+  question_id: uuid
+  state: question_state_enum_enum
+}
+"""
+update columns of table "question_state"
+"""
+enum question_state_update_column {
+  """column name"""
+  game_state_id
+  """column name"""
+  id
+  """column name"""
+  question_id
+  """column name"""
+  state
 }
 """aggregate stddev on columns"""
 type question_stddev_fields {
   point_value: Float
+  question_order: Float
 }
 """
 order by stddev() on columns of table "question"
 """
 input question_stddev_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """aggregate stddev_pop on columns"""
 type question_stddev_pop_fields {
   point_value: Float
+  question_order: Float
 }
 """
 order by stddev_pop() on columns of table "question"
 """
 input question_stddev_pop_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """aggregate stddev_samp on columns"""
 type question_stddev_samp_fields {
   point_value: Float
+  question_order: Float
 }
 """
 order by stddev_samp() on columns of table "question"
 """
 input question_stddev_samp_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """aggregate sum on columns"""
 type question_sum_fields {
   point_value: Int
+  question_order: Int
 }
 """
 order by sum() on columns of table "question"
 """
 input question_sum_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """
 update columns of table "question"
@@ -976,6 +2560,8 @@ enum question_update_column {
   """column name"""
   point_value
   """column name"""
+  question_order
+  """column name"""
   question_text
   """column name"""
   updated_at
@@ -983,35 +2569,73 @@ enum question_update_column {
 """aggregate var_pop on columns"""
 type question_var_pop_fields {
   point_value: Float
+  question_order: Float
 }
 """
 order by var_pop() on columns of table "question"
 """
 input question_var_pop_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """aggregate var_samp on columns"""
 type question_var_samp_fields {
   point_value: Float
+  question_order: Float
 }
 """
 order by var_samp() on columns of table "question"
 """
 input question_var_samp_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """aggregate variance on columns"""
 type question_variance_fields {
   point_value: Float
+  question_order: Float
 }
 """
 order by variance() on columns of table "question"
 """
 input question_variance_order_by {
   point_value: order_by
+  question_order: order_by
 }
 """subscription root"""
 type subscription_root {
+  """
+  fetch data from the table: "answer"
+  """
+  answer(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): [answer!]!
+  """
+  fetch aggregated fields from the table: "answer"
+  """
+  answer_aggregate(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): answer_aggregate!
+  """fetch data from the table: "answer" using primary key columns"""
+  answer_by_pk(id: uuid!): answer
   """
   fetch data from the table: "game"
   """
@@ -1044,6 +2668,70 @@ type subscription_root {
   ): game_aggregate!
   """fetch data from the table: "game" using primary key columns"""
   game_by_pk(id: uuid!): game
+  """
+  fetch data from the table: "game_state"
+  """
+  game_state(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): [game_state!]!
+  """
+  fetch aggregated fields from the table: "game_state"
+  """
+  game_state_aggregate(
+    """distinct select on columns"""
+    distinct_on: [game_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_order_by!]
+    """filter the rows returned"""
+    where: game_state_bool_exp
+  ): game_state_aggregate!
+  """fetch data from the table: "game_state" using primary key columns"""
+  game_state_by_pk(id: uuid!): game_state
+  """
+  fetch data from the table: "game_state_enum"
+  """
+  game_state_enum(
+    """distinct select on columns"""
+    distinct_on: [game_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_enum_order_by!]
+    """filter the rows returned"""
+    where: game_state_enum_bool_exp
+  ): [game_state_enum!]!
+  """
+  fetch aggregated fields from the table: "game_state_enum"
+  """
+  game_state_enum_aggregate(
+    """distinct select on columns"""
+    distinct_on: [game_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [game_state_enum_order_by!]
+    """filter the rows returned"""
+    where: game_state_enum_bool_exp
+  ): game_state_enum_aggregate!
+  """fetch data from the table: "game_state_enum" using primary key columns"""
+  game_state_enum_by_pk(value: String!): game_state_enum
   """
   fetch data from the table: "host"
   """
@@ -1108,6 +2796,297 @@ type subscription_root {
   ): question_aggregate!
   """fetch data from the table: "question" using primary key columns"""
   question_by_pk(id: uuid!): question
+  """
+  fetch data from the table: "question_state"
+  """
+  question_state(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): [question_state!]!
+  """
+  fetch aggregated fields from the table: "question_state"
+  """
+  question_state_aggregate(
+    """distinct select on columns"""
+    distinct_on: [question_state_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_order_by!]
+    """filter the rows returned"""
+    where: question_state_bool_exp
+  ): question_state_aggregate!
+  """fetch data from the table: "question_state" using primary key columns"""
+  question_state_by_pk(id: uuid!): question_state
+  """
+  fetch data from the table: "question_state_enum"
+  """
+  question_state_enum(
+    """distinct select on columns"""
+    distinct_on: [question_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_enum_order_by!]
+    """filter the rows returned"""
+    where: question_state_enum_bool_exp
+  ): [question_state_enum!]!
+  """
+  fetch aggregated fields from the table: "question_state_enum"
+  """
+  question_state_enum_aggregate(
+    """distinct select on columns"""
+    distinct_on: [question_state_enum_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [question_state_enum_order_by!]
+    """filter the rows returned"""
+    where: question_state_enum_bool_exp
+  ): question_state_enum_aggregate!
+  """fetch data from the table: "question_state_enum" using primary key columns"""
+  question_state_enum_by_pk(value: String!): question_state_enum
+  """
+  fetch data from the table: "team"
+  """
+  team(
+    """distinct select on columns"""
+    distinct_on: [team_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [team_order_by!]
+    """filter the rows returned"""
+    where: team_bool_exp
+  ): [team!]!
+  """
+  fetch aggregated fields from the table: "team"
+  """
+  team_aggregate(
+    """distinct select on columns"""
+    distinct_on: [team_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [team_order_by!]
+    """filter the rows returned"""
+    where: team_bool_exp
+  ): team_aggregate!
+  """fetch data from the table: "team" using primary key columns"""
+  team_by_pk(id: uuid!): team
+}
+"""
+A team for a game
+
+
+columns and relationships of "team"
+"""
+type team {
+  """An array relationship"""
+  answers(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): [answer!]!
+  """An aggregated array relationship"""
+  answers_aggregate(
+    """distinct select on columns"""
+    distinct_on: [answer_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [answer_order_by!]
+    """filter the rows returned"""
+    where: answer_bool_exp
+  ): answer_aggregate!
+  """An object relationship"""
+  game_state: game_state!
+  game_state_id: uuid!
+  id: uuid!
+  name: String!
+}
+"""
+aggregated selection of "team"
+"""
+type team_aggregate {
+  aggregate: team_aggregate_fields
+  nodes: [team!]!
+}
+"""
+aggregate fields of "team"
+"""
+type team_aggregate_fields {
+  count(columns: [team_select_column!], distinct: Boolean): Int
+  max: team_max_fields
+  min: team_min_fields
+}
+"""
+order by aggregate values of table "team"
+"""
+input team_aggregate_order_by {
+  count: order_by
+  max: team_max_order_by
+  min: team_min_order_by
+}
+"""
+input type for inserting array relation for remote table "team"
+"""
+input team_arr_rel_insert_input {
+  data: [team_insert_input!]!
+  on_conflict: team_on_conflict
+}
+"""Boolean expression to filter rows from the table "team". All fields are combined with a logical 'AND'."""
+input team_bool_exp {
+  _and: [team_bool_exp]
+  _not: team_bool_exp
+  _or: [team_bool_exp]
+  answers: answer_bool_exp
+  game_state: game_state_bool_exp
+  game_state_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+}
+"""
+unique or primary key constraints on table "team"
+"""
+enum team_constraint {
+  """unique or primary key constraint"""
+  team_pkey
+}
+"""
+input type for inserting data into table "team"
+"""
+input team_insert_input {
+  answers: answer_arr_rel_insert_input
+  game_state: game_state_obj_rel_insert_input
+  game_state_id: uuid
+  id: uuid
+  name: String
+}
+"""aggregate max on columns"""
+type team_max_fields {
+  game_state_id: uuid
+  id: uuid
+  name: String
+}
+"""
+order by max() on columns of table "team"
+"""
+input team_max_order_by {
+  game_state_id: order_by
+  id: order_by
+  name: order_by
+}
+"""aggregate min on columns"""
+type team_min_fields {
+  game_state_id: uuid
+  id: uuid
+  name: String
+}
+"""
+order by min() on columns of table "team"
+"""
+input team_min_order_by {
+  game_state_id: order_by
+  id: order_by
+  name: order_by
+}
+"""
+response of any mutation on the table "team"
+"""
+type team_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+  """data of the affected rows by the mutation"""
+  returning: [team!]!
+}
+"""
+input type for inserting object relation for remote table "team"
+"""
+input team_obj_rel_insert_input {
+  data: team_insert_input!
+  on_conflict: team_on_conflict
+}
+"""
+on conflict condition type for table "team"
+"""
+input team_on_conflict {
+  constraint: team_constraint!
+  update_columns: [team_update_column!]!
+  where: team_bool_exp
+}
+"""
+ordering options when selecting data from "team"
+"""
+input team_order_by {
+  answers_aggregate: answer_aggregate_order_by
+  game_state: game_state_order_by
+  game_state_id: order_by
+  id: order_by
+  name: order_by
+}
+"""
+primary key columns input for table: "team"
+"""
+input team_pk_columns_input {
+  id: uuid!
+}
+"""
+select columns of table "team"
+"""
+enum team_select_column {
+  """column name"""
+  game_state_id
+  """column name"""
+  id
+  """column name"""
+  name
+}
+"""
+input type for updating data in table "team"
+"""
+input team_set_input {
+  game_state_id: uuid
+  id: uuid
+  name: String
+}
+"""
+update columns of table "team"
+"""
+enum team_update_column {
+  """column name"""
+  game_state_id
+  """column name"""
+  id
+  """column name"""
+  name
 }
 scalar timestamptz
 """expression to compare columns of type timestamptz. All fields are combined with logical 'AND'."""

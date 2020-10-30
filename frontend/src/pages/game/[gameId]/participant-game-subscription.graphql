@@ -1,0 +1,20 @@
+subscription ParticipantGame($gameId: uuid!) {
+  game_state_by_pk(id: $gameId) {
+    state
+    game {
+      name
+    }
+    teams {
+      name
+    }
+    current_question {
+      state
+      question {
+        question_text
+      }
+      answers {
+        value
+      }
+    }
+  }
+}

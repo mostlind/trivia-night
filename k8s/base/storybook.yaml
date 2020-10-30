@@ -26,5 +26,12 @@ spec:
       containers:
         - name: trivia-night-storybook
           image: trivia-night-storybook
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
           ports:
             - containerPort: 6006

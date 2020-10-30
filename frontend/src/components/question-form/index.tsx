@@ -1,3 +1,4 @@
+import { Stack } from "components/stack";
 import { QuestionComponentFragment } from "generated/graphql";
 import React from "react";
 
@@ -38,19 +39,22 @@ export function QuestionForm({ question, onSubmit }: QuestionProps) {
         });
       }}
     >
-      <textarea
-        name="question-text"
-        id="question-text"
-        defaultValue={question?.question_text ?? ""}
-      ></textarea>
-      <label htmlFor="point-value">Point Value</label>
-      <input
-        type="number"
-        name="point-value"
-        id="point-value"
-        defaultValue={question?.point_value ?? 1}
-      />
-      <button type="submit">Save</button>
+      <Stack direction="vertical" space={10}>
+        <label htmlFor={"question-text"}>Question</label>
+        <textarea
+          name="question-text"
+          id="question-text"
+          defaultValue={question?.question_text ?? ""}
+        ></textarea>
+        <label htmlFor="point-value">Point Value</label>
+        <input
+          type="number"
+          name="point-value"
+          id="point-value"
+          defaultValue={question?.point_value ?? 1}
+        />
+        <button type="submit">Save</button>
+      </Stack>
     </form>
   );
 }

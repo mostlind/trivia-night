@@ -26,6 +26,13 @@ spec:
       containers:
         - name: trivia-night-backend
           image: trivia-night-backend
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "25m"
+            limits:
+              memory: "32Mi"
+              cpu: "100m"
           ports:
             - containerPort: 3001
           env:

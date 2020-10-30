@@ -1,0 +1,21 @@
+mutation SwapQuestionOrder(
+  $question1Id: uuid!
+  $question1Order: Int!
+  $question2Id: uuid!
+  $question2Order: Int!
+) {
+  second_question: update_question_by_pk(
+    pk_columns: { id: $question1Id }
+    _set: { question_order: $question2Order }
+  ) {
+    id
+    question_order
+  }
+  first_question: update_question_by_pk(
+    pk_columns: { id: $question2Id }
+    _set: { question_order: $question1Order }
+  ) {
+    id
+    question_order
+  }
+}

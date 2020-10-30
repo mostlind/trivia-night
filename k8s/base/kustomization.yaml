@@ -2,6 +2,6 @@ resources:
   - backend.yaml
   - frontend.yaml
   - grafana.yaml
-  - storybook.yaml
+  # - storybook.yaml
   - ingress.yaml
   - hasura.yaml

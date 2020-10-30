@@ -1,0 +1,2 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE TABLE "public"."game_state"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "current_question_id" uuid NOT NULL, "game_id" uuid NOT NULL, "state" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("current_question_id") REFERENCES "public"."question_state"("id") ON UPDATE set null ON DELETE set null, FOREIGN KEY ("game_id") REFERENCES "public"."game"("id") ON UPDATE cascade ON DELETE cascade, FOREIGN KEY ("state") REFERENCES "public"."game_state_enum"("value") ON UPDATE cascade ON DELETE cascade);

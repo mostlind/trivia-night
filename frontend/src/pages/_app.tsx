@@ -3,30 +3,66 @@ import React from "react";
 import { NextWebVitalsMetric } from "next/app";
 import { withUrqlClient } from "next-urql";
 import { devtoolsExchange } from "@urql/devtools";
+import { SubscriptionClient } from "subscriptions-transport-ws";
 import {
   cacheExchange,
   dedupExchange,
   fetchExchange,
   createClient,
   Provider,
+  subscriptionExchange,
+  Exchange,
 } from "urql";
 
 if (
-  [process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL].some(
-    (envVar) => envVar === undefined
-  )
+  [
+    process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL,
+    process.env.NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL,
+  ].some((envVar) => envVar === undefined)
 ) {
   throw new Error("Must provide all environment variables");
 }
 
+const clientOnlyExchanges: Exchange[] = [];
+
+if (typeof window !== "undefined") {
+  const subscriptionClient = new SubscriptionClient(
+    process.env.NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL!,
+    {
+      reconnect: true,
+      connectionParams: {
+        headers: {
+          Authorization: "Bearer host c2f05ad2-0d9a-437e-9bdb-cd9f05aad209",
+        },
+      },
+    }
+  );
+
+  clientOnlyExchanges.push(
+    subscriptionExchange({
+      forwardSubscription(operation) {
+        return subscriptionClient.request(operation);
+      },
+    })
+  );
+}
+
 const client = createClient({
   url: process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL!,
-  fetchOptions: () => ({
-    headers: {
-      Authorization: "Bearer host c2f05ad2-0d9a-437e-9bdb-cd9f05aad209",
-    },
-  }),
-  exchanges: [devtoolsExchange, dedupExchange, cacheExchange, fetchExchange],
+  fetchOptions() {
+    return {
+      headers: {
+        Authorization: "Bearer host c2f05ad2-0d9a-437e-9bdb-cd9f05aad209",
+      },
+    };
+  },
+  exchanges: [
+    devtoolsExchange,
+    dedupExchange,
+    cacheExchange,
+    fetchExchange,
+    ...clientOnlyExchanges,
+  ],
 });
 
 export function reportWebVitals(metric: NextWebVitalsMetric) {

@@ -1,0 +1,6 @@
+mutation RenameGame($gameId: uuid!, $name: String!) {
+  update_game_by_pk(pk_columns: { id: $gameId }, _set: { name: $name }) {
+    id
+    name
+  }
+}

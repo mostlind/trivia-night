@@ -27,6 +27,7 @@
     "next-urql": "^1.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "subscriptions-transport-ws": "^0.9.18",
     "urql": "^1.10.1",
     "urql-exchange-schema": "^0.1.0"
   },

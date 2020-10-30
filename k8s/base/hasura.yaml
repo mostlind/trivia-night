@@ -24,6 +24,13 @@ spec:
       containers:
         - name: trivia-night-hasura
           image: trivia-night-hasura
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
           ports:
             - containerPort: 8080
           env:

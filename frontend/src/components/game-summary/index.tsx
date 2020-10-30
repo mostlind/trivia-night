@@ -8,8 +8,8 @@ interface GameProps {
 
 export function GameSummary({ game }: GameProps) {
   return (
-    <Link href={`/games/${game.id}`}>
-      <h3>{game.name}</h3>
-    </Link>
+    <h3>
+      <Link href={`/setup/${game.id}`}>{game.name}</Link>
+    </h3>
   );
 }
