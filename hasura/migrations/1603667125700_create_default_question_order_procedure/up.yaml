@@ -1,8 +1,0 @@
-- args:
-    cascade: false
-    read_only: false
-    sql: "create or replace function create_default_question_order()\n  returns trigger\nas\n$$\nbegin\n
-      \   select coalesce(max(question_order), 0) + 1 \n        into new.question_order\n
-      \       from question \n        where game_id = new.game_id;\n  return new;\nend;\n$$\nlanguage
-      plpgsql;"
-  type: run_sql
