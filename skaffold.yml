@@ -22,6 +22,7 @@ profiles:
         - image: trivia-night-frontend
           context: frontend
           docker:
+            dockerfile: Dockerfile
             buildArgs:
               ENV: development
           sync:
@@ -61,12 +62,9 @@ profiles:
         - image: trivia-night-frontend
           context: frontend
           docker:
+            dockerfile: Dockerfile.prod
             buildArgs:
-              ENV: development
-        - image: trivia-night-storybook
-          context: frontend
-          docker:
-            dockerfile: Dockerfile.storybook
+              ENV: production
         - image: trivia-night-backend
           context: backend
         - image: trivia-night-hasura
