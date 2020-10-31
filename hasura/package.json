@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "console": "./hasura console",
-    "migrate": "./hasura migrate apply",
+    "migrate": "./hasura migrate apply && ./hasura metadata apply",
     "seed": "./hasura seeds apply"
   },
   "dependencies": {
