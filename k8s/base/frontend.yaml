@@ -35,14 +35,4 @@ spec:
               cpu: "1000m"
           ports:
             - containerPort: 3000
-          env:
-            - name: NEXT_PUBLIC_TODO_APP_BACKEND_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: trivia-night-config
-                  key: frontend-server-url
-            - name: NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: trivia-night-config
-                  key: frontend-server-websocket-url
+
