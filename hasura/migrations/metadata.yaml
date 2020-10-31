@@ -10,6 +10,33 @@ tables:
   - name: team
     using:
       foreign_key_constraint_on: team_id
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - correct
+      - id
+      - question_state_id
+      - team_id
+      - value
+      filter:
+        question_state:
+          game_state:
+            game:
+              host_id:
+                _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: host
+    permission:
+      columns:
+      - correct
+      filter:
+        question_state:
+          game_state:
+            game:
+              host_id:
+                _eq: X-Hasura-User-Id
+      check: null
 - table:
     schema: public
     name: game
@@ -43,19 +70,45 @@ tables:
       columns:
       - name
       backend_only: false
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - created_at
+      - id
+      - name
+      - updated_at
+      filter:
+        host_id:
+          _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: host
+    permission:
+      columns:
+      - name
+      filter:
+        host_id:
+          _eq: X-Hasura-User-Id
+      check: null
+  delete_permissions:
+  - role: host
+    permission:
+      filter:
+        host_id:
+          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: game_state
   object_relationships:
+  - name: current_question
+    using:
+      foreign_key_constraint_on: current_question_id
   - name: game
     using:
       foreign_key_constraint_on: game_id
   - name: game_state_enum
     using:
       foreign_key_constraint_on: state
-  - name: question_state
-    using:
-      foreign_key_constraint_on: current_question_id
   array_relationships:
   - name: question_states
     using:
@@ -64,9 +117,50 @@ tables:
         table:
           schema: public
           name: question_state
+  - name: teams
+    using:
+      foreign_key_constraint_on:
+        column: game_state_id
+        table:
+          schema: public
+          name: team
+  insert_permissions:
+  - role: host
+    permission:
+      check:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
+      columns:
+      - game_id
+      backend_only: false
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - current_question_id
+      - game_id
+      - id
+      - state
+      filter:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: host
+    permission:
+      columns:
+      - current_question_id
+      - state
+      filter:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
+      check: null
 - table:
     schema: public
     name: game_state_enum
+  is_enum: true
   array_relationships:
   - name: game_states
     using:
@@ -75,6 +169,12 @@ tables:
         table:
           schema: public
           name: game_state
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - value
+      filter: {}
 - table:
     schema: public
     name: host
@@ -101,6 +201,52 @@ tables:
         table:
           schema: public
           name: question_state
+  insert_permissions:
+  - role: host
+    permission:
+      check:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
+      columns:
+      - game_id
+      - point_value
+      - question_text
+      backend_only: false
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - created_at
+      - game_id
+      - id
+      - point_value
+      - question_order
+      - question_text
+      - updated_at
+      filter:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: host
+    permission:
+      columns:
+      - point_value
+      - question_order
+      - question_text
+      filter:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
+      check: null
+  delete_permissions:
+  - role: host
+    permission:
+      filter:
+        game:
+          host_id:
+            _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: question_state
@@ -129,9 +275,46 @@ tables:
         table:
           schema: public
           name: game_state
+  insert_permissions:
+  - role: host
+    permission:
+      check:
+        game_state:
+          game:
+            host_id:
+              _eq: X-Hasura-User-Id
+      columns:
+      - game_state_id
+      - question_id
+      backend_only: false
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - game_state_id
+      - id
+      - question_id
+      - state
+      filter:
+        game_state:
+          game:
+            host_id:
+              _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: host
+    permission:
+      columns:
+      - state
+      filter:
+        game_state:
+          game:
+            host_id:
+              _eq: X-Hasura-User-Id
+      check: null
 - table:
     schema: public
     name: question_state_enum
+  is_enum: true
   array_relationships:
   - name: question_states
     using:
@@ -140,9 +323,19 @@ tables:
         table:
           schema: public
           name: question_state
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - value
+      filter: {}
 - table:
     schema: public
     name: team
+  object_relationships:
+  - name: game_state
+    using:
+      foreign_key_constraint_on: game_state_id
   array_relationships:
   - name: answers
     using:
@@ -151,3 +344,16 @@ tables:
         table:
           schema: public
           name: answer
+  select_permissions:
+  - role: host
+    permission:
+      columns:
+      - game_state_id
+      - id
+      - name
+      filter:
+        game_state:
+          game:
+            host_id:
+              _eq: X-Hasura-User-Id
+

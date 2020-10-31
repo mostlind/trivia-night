@@ -32,7 +32,7 @@ if (typeof window !== "undefined") {
       reconnect: true,
       connectionParams: {
         headers: {
-          Authorization: "Bearer host c2f05ad2-0d9a-437e-9bdb-cd9f05aad209",
+          Authorization: "Bearer host 405ade9c-c2cd-4843-8f67-d996d7238e8e",
         },
       },
     }
@@ -52,7 +52,7 @@ const client = createClient({
   fetchOptions() {
     return {
       headers: {
-        Authorization: "Bearer host c2f05ad2-0d9a-437e-9bdb-cd9f05aad209",
+        Authorization: "Bearer host 405ade9c-c2cd-4843-8f67-d996d7238e8e",
       },
     };
   },
