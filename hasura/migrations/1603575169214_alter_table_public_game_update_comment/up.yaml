@@ -1,5 +1,0 @@
-- args:
-    cascade: false
-    read_only: false
-    sql: COMMENT ON TABLE "public"."game" IS E'A game belonging to a host';
-  type: run_sql

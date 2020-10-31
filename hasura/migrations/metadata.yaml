@@ -1,0 +1,164 @@
+version: 2
+tables:
+- table:
+    schema: public
+    name: answer
+  object_relationships:
+  - name: question_state
+    using:
+      foreign_key_constraint_on: question_state_id
+  - name: team
+    using:
+      foreign_key_constraint_on: team_id
+- table:
+    schema: public
+    name: game
+  object_relationships:
+  - name: host
+    using:
+      foreign_key_constraint_on: host_id
+  array_relationships:
+  - name: game_states
+    using:
+      foreign_key_constraint_on:
+        column: game_id
+        table:
+          schema: public
+          name: game_state
+  - name: questions
+    using:
+      foreign_key_constraint_on:
+        column: game_id
+        table:
+          schema: public
+          name: question
+  - name: teams
+    using:
+      foreign_key_constraint_on:
+        column: game_id
+        table:
+          schema: public
+          name: team
+  insert_permissions:
+  - role: host
+    permission:
+      check:
+        host_id:
+          _eq: X-Hasura-User-Id
+      set:
+        host_id: x-hasura-User-Id
+      columns:
+      - name
+      backend_only: false
+- table:
+    schema: public
+    name: game_state
+  object_relationships:
+  - name: game
+    using:
+      foreign_key_constraint_on: game_id
+  - name: game_state_enum
+    using:
+      foreign_key_constraint_on: state
+  - name: question_state
+    using:
+      foreign_key_constraint_on: current_question_id
+  array_relationships:
+  - name: question_states
+    using:
+      foreign_key_constraint_on:
+        column: game_state_id
+        table:
+          schema: public
+          name: question_state
+- table:
+    schema: public
+    name: game_state_enum
+  array_relationships:
+  - name: game_states
+    using:
+      foreign_key_constraint_on:
+        column: state
+        table:
+          schema: public
+          name: game_state
+- table:
+    schema: public
+    name: host
+  array_relationships:
+  - name: games
+    using:
+      foreign_key_constraint_on:
+        column: host_id
+        table:
+          schema: public
+          name: game
+- table:
+    schema: public
+    name: question
+  object_relationships:
+  - name: game
+    using:
+      foreign_key_constraint_on: game_id
+  array_relationships:
+  - name: question_states
+    using:
+      foreign_key_constraint_on:
+        column: question_id
+        table:
+          schema: public
+          name: question_state
+- table:
+    schema: public
+    name: question_state
+  object_relationships:
+  - name: game_state
+    using:
+      foreign_key_constraint_on: game_state_id
+  - name: question
+    using:
+      foreign_key_constraint_on: question_id
+  - name: question_state_enum
+    using:
+      foreign_key_constraint_on: state
+  array_relationships:
+  - name: answers
+    using:
+      foreign_key_constraint_on:
+        column: question_state_id
+        table:
+          schema: public
+          name: answer
+  - name: game_states
+    using:
+      foreign_key_constraint_on:
+        column: current_question_id
+        table:
+          schema: public
+          name: game_state
+- table:
+    schema: public
+    name: question_state_enum
+  array_relationships:
+  - name: question_states
+    using:
+      foreign_key_constraint_on:
+        column: state
+        table:
+          schema: public
+          name: question_state
+- table:
+    schema: public
+    name: team
+  object_relationships:
+  - name: game
+    using:
+      foreign_key_constraint_on: game_id
+  array_relationships:
+  - name: answers
+    using:
+      foreign_key_constraint_on:
+        column: team_id
+        table:
+          schema: public
+          name: answer
