@@ -32,13 +32,6 @@ tables:
         table:
           schema: public
           name: question
-  - name: teams
-    using:
-      foreign_key_constraint_on:
-        column: game_id
-        table:
-          schema: public
-          name: team
   insert_permissions:
   - role: host
     permission:
@@ -150,10 +143,6 @@ tables:
 - table:
     schema: public
     name: team
-  object_relationships:
-  - name: game
-    using:
-      foreign_key_constraint_on: game_id
   array_relationships:
   - name: answers
     using:
