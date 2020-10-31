@@ -22,7 +22,7 @@ profiles:
         - image: trivia-night-frontend
           context: frontend
           docker:
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.dev
             buildArgs:
               ENV: development
           sync:
@@ -56,13 +56,11 @@ profiles:
           - k8s/overlays/prod
     build:
       local:
-        tryImportMissing: true
         concurrency: 0
       artifacts:
         - image: trivia-night-frontend
           context: frontend
           docker:
-            dockerfile: Dockerfile.prod
             buildArgs:
               ENV: production
         - image: trivia-night-backend
