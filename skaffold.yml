@@ -22,26 +22,15 @@ profiles:
         - image: trivia-night-frontend
           context: frontend
           docker:
+            dockerfile: Dockerfile.dev
             buildArgs:
               ENV: development
+              NEXT_PUBLIC_TODO_APP_BACKEND_URL: http://hasura.trivianight.localhost/v1/graphql
+              NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL: ws://hasura.trivianight.localhost/v1/graphql
           sync:
             manual:
-              # Sync all the  files that are in the src folder
-              # with the container src folder
-              # TODO: make this only typescript and graphql files
               - src: "src/**/*"
                 dest: .
-        # - image: trivia-night-storybook
-        #   context: frontend
-        #   docker:
-        #     dockerfile: Dockerfile.storybook
-        #   sync:
-        #     manual:
-        #       # Sync all the  files that are in the src folder
-        #       # with the container src folder
-        #       # TODO: make this only typescript and graphql files
-        #       - src: "src/**/*"
-        #         dest: .
         - image: trivia-night-backend
           context: backend
         - image: trivia-night-hasura
@@ -54,20 +43,30 @@ profiles:
         paths:
           - k8s/overlays/prod
     build:
-      local:
-        tryImportMissing: true
-        concurrency: 0
       artifacts:
         - image: trivia-night-frontend
           context: frontend
           docker:
             buildArgs:
-              ENV: development
-        - image: trivia-night-storybook
-          context: frontend
-          docker:
-            dockerfile: Dockerfile.storybook
+              ENV: production
+              NEXT_PUBLIC_TODO_APP_BACKEND_URL: http://hasura.trivianight.mattostlind.com/v1/graphql
+              NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL: ws://hasura.trivianight.mattostlind.com/v1/graphql
         - image: trivia-night-backend
           context: backend
         - image: trivia-night-hasura
           context: hasura
+  - name: storybook
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/storybook
+    build:
+      artifacts:
+        - image: trivia-night-storybook
+          context: frontend
+          docker:
+            dockerfile: Dockerfile.storybook
+          sync:
+            manual:
+              - src: "src/**/*"
+                dest: .

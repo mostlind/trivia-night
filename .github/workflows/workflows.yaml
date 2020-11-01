@@ -32,6 +32,4 @@ jobs:
       run: doctl registry login --expiry-seconds 600      
 
     - name: Deploy
-      # removing status check because image pulls take too long
-      # should check the status on a real project
       run: skaffold run --default-repo registry.digitalocean.com/mostlind -p prod

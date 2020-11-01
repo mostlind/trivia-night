@@ -1,9 +1,5 @@
 import React from "react";
 import Head from "next/head";
-import { TodoList } from "../components/todo-list";
-import { InsertTodo } from "../components/create-todo";
-import { useIndexPageQuery } from "generated/graphql";
-import { Stack } from "components/stack";
 
 export default function Index() {
   // const [result, _refetch] = useIndexPageQuery();
@@ -23,5 +19,5 @@ export default function Index() {
   //   </Stack>
   // );
 
-  return <h1>hey</h1>
+  return <h1>hey</h1>;
 }

@@ -1,7 +1,6 @@
 import "../styles/globals.css";
 import React from "react";
 import { NextWebVitalsMetric } from "next/app";
-import { withUrqlClient } from "next-urql";
 import { devtoolsExchange } from "@urql/devtools";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import {
@@ -88,21 +87,3 @@ export default function App({ Component, pageProps }: any) {
     </Provider>
   );
 }
-
-// export default withUrqlClient((ssrExchange, ctx) => {
-//   return {
-//     url: process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL!,
-//     fetchOptions: () => ({
-//       headers: {
-//         Authorization: "Bearer user 2902a982-0e02-446b-b65a-c8ceed50fcc1",
-//       },
-//     }),
-//     exchanges: [
-//       devtoolsExchange,
-//       dedupExchange,
-//       cacheExchange,
-//       ssrExchange,
-//       fetchExchange,
-//     ],
-//   };
-// })(App);
