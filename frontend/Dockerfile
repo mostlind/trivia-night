@@ -1,4 +1,3 @@
-
 FROM node:12-alpine as builder
 
 ARG NEXT_PUBLIC_TODO_APP_BACKEND_URL
@@ -25,6 +24,3 @@ COPY --chown=node:node . .
 RUN npm run build
 
 CMD npm run start
-
-
-
