@@ -92,15 +92,21 @@ TODO: set up metrics example
 
 - install skaffold
 - install dnsmasq
-- set up dnsmasq https://passingcuriosity.com/2013/dnsmasq-dev-osx/
-- write `address=/.localhost/127.0.0.1` to `/etc/dnsmasq.conf`
-- install kustomize
+<!-- - set up dnsmasq https://passingcuriosity.com/2013/dnsmasq-dev-osx/ -->
+- create file `/etc/resolver/localhost` and write `nameserver 127.0.0.1` to it
+- `brew install dnsmasq`
+- start dnsmasq service using instructions provided by brew
+- write `address=/.localhost/127.0.0.1` to `/usr/local/etc/dnsmasq.conf`
+- write `nameserver 127.0.0.1` (I think) to `/etc/resolvers/localhost`
+- restart computer
 - apply `todo-txt-config` config map to cluster. e.g. `kubectl apply -f k8s/config/local-config-map.yaml`
+- `brew install kustomize`
 - `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.0/deploy/static/provider/cloud/deploy.yaml`
 - `skaffold run`
 
-
 ## Deploy (for now)
+
 - switch kubectl to point to remote cluster
 - `skaffold dev --default-repo registry.digitalocean.com/mostlind -p prod`
+
 ### Working on github actions CI
