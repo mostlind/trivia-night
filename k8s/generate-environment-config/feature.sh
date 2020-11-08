@@ -18,7 +18,7 @@ if [ $2 -lt 1 ]
 fi
 
 
-echo "Generating Kubernetes config file for feature environmnet PR-$2..."
+echo "Generating Kubernetes config file for feature environment PR-$2..."
 
 cd "$1"
 mkdir -p "generated"
