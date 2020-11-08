@@ -5,6 +5,9 @@ on:
     types:
       - closed
 
+env:
+  GITHUB_PR_NUMBER: ${{github.event.pull_request.number}}
+
 jobs:
 
   build:
@@ -33,8 +36,8 @@ jobs:
     - name: Save Kubeconfig
       run: doctl kubernetes cluster kubeconfig save matts-k8s
     
-    - name: Log in to Container Registry with short-lived credentials
-      run: doctl registry login --expiry-seconds 600
+    # - name: Log in to Container Registry with short-lived credentials
+    #   run: doctl registry login --expiry-seconds 600
 
-    - name: Deploy
-      run: ./scripts/deploy-feature-env.sh $(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+    - name: Tear Down
+      run: ./scripts/deploy-feature-env.sh $GITHUB_PR_NUMBER
