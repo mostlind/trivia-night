@@ -62,7 +62,7 @@ let hasuraService
         , image = environment.appName ++ "-hasura"
         , host = "hasura." ++ environment.baseHost
         , port = 8080
-        , requests = { memory = "32Mi", cpu = "25m" }
+        , requests = { memory = "32Mi", cpu = "10m" }
         , limits = { memory = "256Mi", cpu = "200m" }
         , envVars = envVars environment
         }

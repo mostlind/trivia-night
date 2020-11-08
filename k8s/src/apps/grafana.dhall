@@ -15,7 +15,7 @@ let grafanaService
         , host = "grafana." ++ environment.baseHost
         , image = "grafana/grafana"
         , port = 3000
-        , requests = { memory = "32Mi", cpu = "25m" }
+        , requests = { memory = "32Mi", cpu = "10m" }
         , limits = { memory = "32Mi", cpu = "100m" }
         , envVars = [] : List kubernetes.EnvVar.Type
         }
