@@ -1,13 +1,13 @@
 apiVersion: skaffold/v2beta8
 kind: Config
-build:
-  artifacts:
-    - image: trivia-night-frontend
-      context: frontend
-    - image: trivia-night-backend
-      context: backend
-    - image: trivia-night-hasura
-      context: hasura
+# build:
+#   artifacts:
+#     - image: trivia-night-frontend
+#       context: frontend
+#     - image: trivia-night-backend
+#       context: backend
+#     - image: trivia-night-hasura
+#       context: hasura
 
 profiles:
   - name: dev
@@ -18,6 +18,8 @@ profiles:
         manifests:
           - k8s/generated/*.yaml
     build:
+      local:
+        useBuildkit: true
       artifacts:
         - image: trivia-night-frontend
           context: frontend
@@ -25,8 +27,8 @@ profiles:
             dockerfile: Dockerfile.dev
             buildArgs:
               ENV: development
-              NEXT_PUBLIC_TODO_APP_BACKEND_URL: http://hasura.trivianight.localhost/v1/graphql
-              NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL: ws://hasura.trivianight.localhost/v1/graphql
+              NEXT_PUBLIC_TODO_APP_BACKEND_URL: http://hasura.{{.BASE_HOST}}/v1/graphql
+              NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL: ws://hasura.{{.BASE_HOST}}/v1/graphql
           sync:
             manual:
               - src: "src/**/*"
@@ -43,14 +45,16 @@ profiles:
         manifests:
           - k8s/generated/*.yaml
     build:
+      local:
+        useBuildkit: true
       artifacts:
         - image: trivia-night-frontend
           context: frontend
           docker:
             buildArgs:
-              ENV: production
-              NEXT_PUBLIC_TODO_APP_BACKEND_URL: http://hasura.trivianight.mattostlind.com/v1/graphql
-              NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL: ws://hasura.trivianight.mattostlind.com/v1/graphql
+              # ENV: production
+              NEXT_PUBLIC_TODO_APP_BACKEND_URL: http://hasura.{{.BASE_HOST}}/v1/graphql
+              NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL: ws://hasura.{{.BASE_HOST}}/v1/graphql
         - image: trivia-night-backend
           context: backend
         - image: trivia-night-hasura

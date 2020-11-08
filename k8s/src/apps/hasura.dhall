@@ -8,6 +8,16 @@ let Environment = ../types/Environment.dhall
 
 let Text/concatSep = https://prelude.dhall-lang.org/Text/concatSep
 
+let authHookUrl =
+      λ(environment : Environment) →
+        let backend = ./backend.dhall environment
+
+        in      "http://"
+            ++  backend.name
+            ++  ":"
+            ++  Natural/show backend.port
+            ++  "/auth"
+
 let envVars =
       λ(environment : Environment) →
         [ envVar { name = "HASURA_GRAPHQL_ENABLE_CONSOLE", value = "false" }
@@ -31,17 +41,16 @@ let envVars =
             }
         , configMapEnvVar
             { name = "HASURA_GRAPHQL_ADMIN_SECRET"
-            , configMap = environment.prefixedName "config"
+            , configMap = environment.appName ++ "-config"
             , key = "hasura-admin-secret"
             }
-        , configMapEnvVar
+        , envVar
             { name = "HASURA_GRAPHQL_AUTH_HOOK"
-            , configMap = environment.prefixedName "config"
-            , key = "hasura-auth-webhook-url"
+            , value = authHookUrl environment
             }
         , configMapEnvVar
             { name = "HASURA_GRAPHQL_DATABASE_URL"
-            , configMap = environment.prefixedName "config"
+            , configMap = environment.appName ++ "-config"
             , key = "connection-string"
             }
         ]
@@ -50,7 +59,7 @@ let hasuraService
     : Environment → AppConfig
     = λ(environment : Environment) →
         { name = environment.prefixedName "hasura"
-        , image = environment.prefixedName "hasura"
+        , image = environment.appName ++ "-hasura"
         , host = "hasura." ++ environment.baseHost
         , port = 8080
         , requests = { memory = "32Mi", cpu = "25m" }

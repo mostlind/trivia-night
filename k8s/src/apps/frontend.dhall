@@ -10,7 +10,7 @@ let frontendService
     : Environment → AppConfig
     = λ(environment : Environment) →
         { name = environment.prefixedName "frontend"
-        , image = environment.prefixedName "frontend"
+        , image = environment.appName ++ "-frontend"
         , host = environment.baseHost
         , port = 3000
         , requests = { memory = "64Mi", cpu = "25m" }
