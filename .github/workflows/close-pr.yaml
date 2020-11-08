@@ -33,4 +33,4 @@ jobs:
       run: doctl registry login --expiry-seconds 600
 
     - name: Deploy
-      run: ./scripts/deploy-feature-env.sh $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+      run: ./scripts/deploy-feature-env.sh $(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }'
