@@ -16,6 +16,6 @@ mkdir -p "generated"
 
 echo "./src/prod.dhall \"trivia-night\"" |  dhall-to-yaml --output "generated/out.yaml" --documents --generated-comment
 
-echo "(./src/environments/prod.dhall \"trivia-night\" $2).baseHost" | dhall-to-json | jq -r > generated/baseHost
+echo "(./src/environments/prod.dhall \"trivia-night\" $2).baseHost" | dhall-to-json | xargs > generated/baseHost
 
 echo "Config file written to $1/generated/out.yaml"
