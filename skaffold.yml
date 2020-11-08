@@ -14,9 +14,9 @@ profiles:
     activation:
       - command: dev
     deploy:
-      kustomize:
-        paths:
-          - k8s/overlays/local
+      kubectl:
+        manifests:
+          - k8s/generated/*.yaml
     build:
       artifacts:
         - image: trivia-night-frontend
@@ -39,9 +39,9 @@ profiles:
     activation:
       - command: prod
     deploy:
-      kustomize:
-        paths:
-          - k8s/overlays/prod
+      kubectl:
+        manifests:
+          - k8s/generated/*.yaml
     build:
       artifacts:
         - image: trivia-night-frontend
