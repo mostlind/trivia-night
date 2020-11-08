@@ -22,7 +22,7 @@ let backendService
         , host = "api." ++ environment.baseHost
         , image = environment.appName ++ "-backend"
         , port = 3001
-        , requests = { memory = "32Mi", cpu = "25m" }
+        , requests = { memory = "32Mi", cpu = "10m" }
         , limits = { memory = "32Mi", cpu = "100m" }
         , envVars = envVars environment
         }

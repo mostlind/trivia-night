@@ -13,7 +13,7 @@ let frontendService
         , image = environment.appName ++ "-frontend"
         , host = environment.baseHost
         , port = 3000
-        , requests = { memory = "64Mi", cpu = "25m" }
+        , requests = { memory = "64Mi", cpu = "10m" }
         , limits = { memory = "512Mi", cpu = "1000m" }
         , envVars = [] : List kubernetes.EnvVar.Type
         }
