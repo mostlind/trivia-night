@@ -1,4 +1,4 @@
-name: Deploy Main
+name: Deploy Feature Environment
 
 on:
   pull_request:
@@ -13,19 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Checkout master
-      uses: actions/checkout@master
+    - name: Checkout
+      uses: actions/checkout@v2
     
     - name: Install Skaffold
       run: curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && sudo install skaffold /usr/local/bin/
-    
-    - name: Install Kustomize
-      run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
 
     - name: Install doctl
       uses: digitalocean/action-doctl@v2
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+    - name: Install Dhall
+      run: ./scripts/install-dhall-linux.sh
 
     - name: Save Kubeconfig
       run: doctl kubernetes cluster kubeconfig save matts-k8s
@@ -33,9 +33,5 @@ jobs:
     - name: Log in to Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 600
 
-      # $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-    - name: Generate Kubernetes Definitions
-      run: cd k8s && ./generate "pr-$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH").trivianight.mattostlind.com"
-
     - name: Deploy
-      run: skaffold run --default-repo registry.digitalocean.com/mostlind -p prod
+      run: ./scripts/deploy-feature-env.sh $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")

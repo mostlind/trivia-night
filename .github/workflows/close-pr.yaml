@@ -1,8 +1,9 @@
-name: Deploy Main
+name: Tear Down Feature Environment
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
+    types:
+      - closed
 
 jobs:
 
@@ -32,4 +33,4 @@ jobs:
       run: doctl registry login --expiry-seconds 600
 
     - name: Deploy
-      run: ./scripts/deploy.sh
+      run: ./scripts/deploy-feature-env.sh $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
