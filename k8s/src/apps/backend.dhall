@@ -10,7 +10,7 @@ let envVars =
       λ(environment : Environment) →
         [ configMapEnvVar
             { name = "DB_CONNECTION_STRING"
-            , configMap = environment.prefixedName "config"
+            , configMap = environment.appName ++ "-config"
             , key = "connection-string"
             }
         ]
@@ -20,7 +20,7 @@ let backendService
     = λ(environment : Environment) →
         { name = environment.prefixedName "backend"
         , host = "api." ++ environment.baseHost
-        , image = environment.prefixedName "backend"
+        , image = environment.appName ++ "-backend"
         , port = 3001
         , requests = { memory = "32Mi", cpu = "25m" }
         , limits = { memory = "32Mi", cpu = "100m" }

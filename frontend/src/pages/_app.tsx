@@ -22,6 +22,12 @@ if (
   throw new Error("Must provide all environment variables");
 }
 
+console.log(
+  "vars",
+  process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL,
+  process.env.NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL
+);
+
 const clientOnlyExchanges: Exchange[] = [];
 
 if (typeof window !== "undefined") {
