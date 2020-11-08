@@ -1,7 +1,0 @@
-resources:
-  - backend.yaml
-  - frontend.yaml
-  - grafana.yaml
-  # - storybook.yaml
-  - ingress.yaml
-  - hasura.yaml
