@@ -34,9 +34,23 @@ jobs:
     - name: Log in to Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 600
 
-    - name: Use Docker Build Caching
-      uses: satackey/action-docker-layer-caching@v0.0.8
-      continue-on-error: true
+    - name: Cache Dhall
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/dhall*
+        key: ${{ runner.os }}-${{ hashFiles('k8s/src/imports/*') }}
+
+
+    - name: Cache Skaffold
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.skaffold/cache
+        key: ${{ runner.os }}-skaffold-${{ hashFiles('**') }}
+        restore-keys: |
+          ${{ runner.os }}-skaffold-
+
 
     - name: Deploy
       run: ./scripts/deploy.sh
