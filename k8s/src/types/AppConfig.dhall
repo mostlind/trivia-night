@@ -6,7 +6,7 @@ in  { name : Text
     , image : Text
     , host : Text
     , requests : Resources
-    , limits : Resources
+    , limits : Optional Resources
     , envVars : List kubernetes.EnvVar.Type
     , port : Natural
     }

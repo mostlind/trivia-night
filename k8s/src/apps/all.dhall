@@ -13,4 +13,9 @@ in  λ(environment : Environment) →
         (Environment → AppConfig)
         AppConfig
         (apply Environment AppConfig environment)
-        [ ./backend.dhall, ./frontend.dhall, ./hasura.dhall, ./grafana.dhall ]
+        [ ./backend.dhall
+        , ./frontend.dhall
+        , ./hasura.dhall
+        , ./grafana.dhall
+        , ./storybook.dhall
+        ]

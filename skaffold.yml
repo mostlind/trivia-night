@@ -37,6 +37,14 @@ profiles:
           context: backend
         - image: trivia-night-hasura
           context: hasura/dev-dockerfile
+        - image: trivia-night-storybook
+          context: frontend
+          docker:
+            dockerfile: Dockerfile.storybook.dev
+          sync:
+            manual:
+              - src: "src/**/*"
+                dest: .
   - name: prod
     activation:
       - command: prod
@@ -59,18 +67,8 @@ profiles:
           context: backend
         - image: trivia-night-hasura
           context: hasura
-  - name: storybook
-    deploy:
-      kustomize:
-        paths:
-          - k8s/overlays/storybook
-    build:
-      artifacts:
         - image: trivia-night-storybook
           context: frontend
           docker:
             dockerfile: Dockerfile.storybook
-          sync:
-            manual:
-              - src: "src/**/*"
-                dest: .
+

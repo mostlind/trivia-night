@@ -12,6 +12,7 @@ import {
   subscriptionExchange,
   Exchange,
 } from "urql";
+import Head from "next/head";
 
 if (
   [
@@ -21,12 +22,6 @@ if (
 ) {
   throw new Error("Must provide all environment variables");
 }
-
-console.log(
-  "vars",
-  process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL,
-  process.env.NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL
-);
 
 const clientOnlyExchanges: Exchange[] = [];
 
@@ -88,8 +83,17 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
 
 export default function App({ Component, pageProps }: any) {
   return (
-    <Provider value={client}>
-      <Component {...pageProps} />
-    </Provider>
+    <>
+      <Head>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <Provider value={client}>
+        <Component {...pageProps} />
+      </Provider>
+    </>
   );
 }

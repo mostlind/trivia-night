@@ -6,6 +6,8 @@ let AppConfig = ../types/AppConfig.dhall
 
 let Environment = ../types/Environment.dhall
 
+let Resources = ../types/Resources.dhall
+
 let envVars =
       λ(environment : Environment) →
         [ configMapEnvVar
@@ -23,7 +25,10 @@ let backendService
         , image = environment.appName ++ "-backend"
         , port = 3001
         , requests = { memory = "32Mi", cpu = "10m" }
-        , limits = { memory = "32Mi", cpu = "100m" }
+        , limits =
+            if    environment.useLimits
+            then  Some { memory = "32Mi", cpu = "100m" }
+            else  None Resources
         , envVars = envVars environment
         }
 

@@ -8,6 +8,8 @@ let Environment = ../types/Environment.dhall
 
 let kubernetes = ../imports/kubernetes.dhall
 
+let Resources = ../types/Resources.dhall
+
 let storybookService
     : Environment → AppConfig
     = λ(environment : Environment) →
@@ -16,7 +18,10 @@ let storybookService
         , image = environment.prefixedName "storybook"
         , port = 6006
         , requests = { memory = "64Mi", cpu = "25m" }
-        , limits = { memory = "256Mi", cpu = "100m" }
+        , limits =
+            if    environment.useLimits
+            then  Some { memory = "32Mi", cpu = "10m" }
+            else  None Resources
         , envVars = [] : List kubernetes.EnvVar.Type
         }
 

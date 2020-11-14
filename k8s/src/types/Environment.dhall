@@ -1,1 +1,5 @@
-{ baseHost : Text, appName : Text, prefixedName : Text → Text }
+{ baseHost : Text
+, appName : Text
+, prefixedName : Text → Text
+, useLimits : Bool
+}

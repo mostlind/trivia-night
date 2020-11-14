@@ -8,6 +8,8 @@ let Environment = ../types/Environment.dhall
 
 let Text/concatSep = https://prelude.dhall-lang.org/Text/concatSep
 
+let Resources = ../types/Resources.dhall
+
 let authHookUrl =
       λ(environment : Environment) →
         let backend = ./backend.dhall environment
@@ -63,7 +65,10 @@ let hasuraService
         , host = "hasura." ++ environment.baseHost
         , port = 8080
         , requests = { memory = "32Mi", cpu = "10m" }
-        , limits = { memory = "256Mi", cpu = "200m" }
+        , limits =
+            if    environment.useLimits
+            then  Some { memory = "256Mi", cpu = "200m" }
+            else  None Resources
         , envVars = envVars environment
         }
 
