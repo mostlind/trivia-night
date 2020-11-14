@@ -14,8 +14,8 @@ let storybookService
     : Environment → AppConfig
     = λ(environment : Environment) →
         { name = environment.prefixedName "storybook"
+        , image = environment.appName ++ "-storybook"
         , host = "storybook." ++ environment.baseHost
-        , image = environment.prefixedName "storybook"
         , port = 6006
         , requests = { memory = "32Mi", cpu = "10m" }
         , limits =
