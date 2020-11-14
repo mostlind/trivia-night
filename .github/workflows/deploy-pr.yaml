@@ -51,7 +51,7 @@ jobs:
       with:
         path: |
           ~/.skaffold/cache
-        key: ${{ runner.os }}-skaffold-${{ hashFiles('**') }} # add hash or something
+        key: ${{ runner.os }}-skaffold-${{ hashFiles('**') }}x
         restore-keys: |
           ${{ runner.os }}-skaffold-
 
