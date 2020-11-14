@@ -43,7 +43,7 @@ jobs:
       continue-on-error: true
     
     - name: List Docker images
-      uses: docker images -a
+      run: docker images -a
 
     - name: Deploy
       run: ./scripts/deploy-feature-env.sh $GITHUB_PR_NUMBER
