@@ -38,7 +38,8 @@ jobs:
     - name: Log in to Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 600
     
-    - uses: satackey/action-docker-layer-caching@v0.0.8
+    - name: Use Docker Build Caching
+      uses: satackey/action-docker-layer-caching@v0.0.8
 
     - name: Deploy
       run: ./scripts/deploy-feature-env.sh $GITHUB_PR_NUMBER
