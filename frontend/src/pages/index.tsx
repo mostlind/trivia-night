@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export default function Index() {
   // const [result, _refetch] = useIndexPageQuery();
   // const { data, fetching, error } = result;
@@ -19,5 +18,5 @@ export default function Index() {
   //   </Stack>
   // );
 
-  return <h1>hey</h1>;
+  return <h1>hey!</h1>;
 }

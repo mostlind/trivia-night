@@ -51,7 +51,10 @@ jobs:
       with:
         path: |
           ~/.skaffold/cache
-        key: ${{ runner.os }}-skaffold # check this later
+        key: ${{ runner.os }}-skaffold-${{ hashFiles('**') }} # add hash or something
+        restore-keys: |
+          ${{ runner.os }}-skaffold-
+
 
     - name: Deploy
       run: ./scripts/deploy-feature-env.sh $GITHUB_PR_NUMBER
