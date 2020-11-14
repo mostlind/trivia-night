@@ -55,6 +55,15 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-skaffold-
 
+    - name: Use Docker Build Caching
+      uses: satackey/action-docker-layer-caching@v0.0.8
+      continue-on-error: true
+
 
     - name: Deploy
       run: ./scripts/deploy-feature-env.sh $GITHUB_PR_NUMBER
+    
+    - name: Prune Old Images
+      run: docker image prune -a --force --filter "until=15m"
+
+    
