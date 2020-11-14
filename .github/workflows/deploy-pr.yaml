@@ -64,6 +64,6 @@ jobs:
       run: ./scripts/deploy-feature-env.sh $GITHUB_PR_NUMBER
     
     - name: Prune Old Images
-      run: docker image prune -a --force --filter "until=15m"
+      run: docker image prune --force --filter "until=15m"
 
     
