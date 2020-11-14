@@ -17,7 +17,7 @@ let storybookService
         , host = "storybook." ++ environment.baseHost
         , image = environment.prefixedName "storybook"
         , port = 6006
-        , requests = { memory = "64Mi", cpu = "25m" }
+        , requests = { memory = "32Mi", cpu = "10m" }
         , limits =
             if    environment.useLimits
             then  Some { memory = "32Mi", cpu = "10m" }
