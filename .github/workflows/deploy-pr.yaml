@@ -41,6 +41,21 @@ jobs:
     - name: Use Docker Build Caching
       uses: satackey/action-docker-layer-caching@v0.0.8
       continue-on-error: true
+
+    - name: Cache Dhall
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/dhall*
+        key: ${{ runner.os }}-${{ hashFiles('k8s/src/imports/*') }}
+
+
+    - name: Cache Skaffold
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.skaffold/config
+        key: ${{ runner.os }}-skaffold # check this later
     
     - name: List Docker images
       run: docker images -a
