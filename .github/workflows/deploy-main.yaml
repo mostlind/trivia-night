@@ -36,6 +36,7 @@ jobs:
 
     - name: Use Docker Build Caching
       uses: satackey/action-docker-layer-caching@v0.0.8
+      continue-on-error: true
 
     - name: Deploy
       run: ./scripts/deploy.sh

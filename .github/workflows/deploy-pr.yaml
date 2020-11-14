@@ -40,6 +40,10 @@ jobs:
     
     - name: Use Docker Build Caching
       uses: satackey/action-docker-layer-caching@v0.0.8
+      continue-on-error: true
+    
+    - name: List Docker images
+      uses: docker images -a
 
     - name: Deploy
       run: ./scripts/deploy-feature-env.sh $GITHUB_PR_NUMBER
