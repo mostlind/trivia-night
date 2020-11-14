@@ -40,7 +40,7 @@ jobs:
       with:
         path: |
           ~/.cache/dhall*
-        key: ${{ runner.os }}-${{ hashFiles('k8s/src/imports/*') }}
+        key: ${{ runner.os }}-teardown-${{ hashFiles('k8s/src/imports/*') }}
 
 
     - name: Cache Skaffold
@@ -48,9 +48,9 @@ jobs:
       with:
         path: |
           ~/.skaffold/cache
-        key: ${{ runner.os }}-skaffold-${{ hashFiles('**') }}
+        key: ${{ runner.os }}-teardown-skaffold-${{ hashFiles('**') }}
         restore-keys: |
-          ${{ runner.os }}-skaffold-
+          ${{ runner.os }}-teardown-skaffold-
 
 
     - name: Tear Down
