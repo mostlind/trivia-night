@@ -6,7 +6,7 @@ let AppConfig = ../types/AppConfig.dhall
 
 let Environment = ../types/Environment.dhall
 
-let Text/concatSep = https://prelude.dhall-lang.org/Text/concatSep
+let Text/concatSep = ../imports/concatSep.dhall
 
 let Resources = ../types/Resources.dhall
 
