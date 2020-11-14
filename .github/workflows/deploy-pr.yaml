@@ -41,6 +41,8 @@ jobs:
     - name: Use Docker Build Caching
       uses: satackey/action-docker-layer-caching@v0.0.8
       continue-on-error: true
+      with:
+        key: ${{runner.os}}-docker-cache
 
     - name: Cache Dhall
       uses: actions/cache@v2
