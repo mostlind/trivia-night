@@ -2,9 +2,9 @@ let AppConfig = ../types/AppConfig.dhall
 
 let kubernetes = ../imports/kubernetes.dhall
 
-let Optional/map = https://prelude.dhall-lang.org/Optional/map
+let Optional/map = ../imports/mapOption.dhall
 
-let Map = https://prelude.dhall-lang.org/Map/Type
+let Map = ../imports/mapType.dhall
 
 let Resources = ../types/Resources.dhall
 

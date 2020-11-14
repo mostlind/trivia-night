@@ -35,5 +35,23 @@ jobs:
     - name: Save Kubeconfig
       run: doctl kubernetes cluster kubeconfig save matts-k8s
 
+    - name: Cache Dhall
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/dhall*
+        key: ${{ runner.os }}-${{ hashFiles('k8s/src/imports/*') }}
+
+
+    - name: Cache Skaffold
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.skaffold/cache
+        key: ${{ runner.os }}-skaffold-${{ hashFiles('**') }}
+        restore-keys: |
+          ${{ runner.os }}-skaffold-
+
+
     - name: Tear Down
       run: ./scripts/delete-feature-env.sh $GITHUB_PR_NUMBER
