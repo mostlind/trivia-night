@@ -39,7 +39,7 @@ jobs:
       with:
         path: |
           ~/.cache/dhall*
-        key: ${{ runner.os }}-${{ hashFiles('k8s/src/imports/*') }}
+        key: ${{ runner.os }}-deploy-${{ hashFiles('k8s/src/imports/*') }}
 
 
     - name: Cache Skaffold
@@ -47,9 +47,9 @@ jobs:
       with:
         path: |
           ~/.skaffold/cache
-        key: ${{ runner.os }}-skaffold-${{ hashFiles('**') }}
+        key: ${{ runner.os }}-deploy-skaffold-${{ hashFiles('**') }}
         restore-keys: |
-          ${{ runner.os }}-skaffold-
+          ${{ runner.os }}-deploy-skaffold-
 
 
     - name: Deploy
