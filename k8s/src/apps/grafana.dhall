@@ -15,7 +15,7 @@ let grafanaService
     = λ(environment : Environment) →
         { name = environment.prefixedName "grafana"
         , host = "grafana." ++ environment.baseHost
-        , image = "grafana/grafana"
+        , image = "grafana/grafana:7.3.2"
         , port = 3000
         , requests = { memory = "32Mi", cpu = "10m" }
         , limits =
