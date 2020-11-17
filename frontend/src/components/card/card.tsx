@@ -6,7 +6,7 @@ import {
   MainText,
   SubText,
   Circle,
-} from "./card-style";
+} from "./card.style";
 
 export interface CardProps {
   mainText: string;
