@@ -1,6 +1,7 @@
 import { Stack } from "components/stack";
 import { useRouter } from "next/dist/client/router";
 import React, { useCallback } from "react";
+import { spacing } from "styles/theme";
 import { OperationResult } from "urql";
 import {
   useCreateGameMutation,
@@ -36,7 +37,7 @@ export default function AddGame() {
         createGame({ name }).then(routeToCreatedGame);
       }}
     >
-      <Stack direction="vertical" space={10}>
+      <Stack direction="vertical" space={spacing.medium}>
         <label htmlFor="game-name">Name</label>
         <input
           id="game-name"

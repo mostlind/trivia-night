@@ -1,6 +1,7 @@
 import { Stack } from "components/stack";
 import { QuestionComponentFragment } from "generated/graphql";
 import React from "react";
+import { spacing } from "styles/theme";
 
 interface QuestionFormSubmission {
   questionText: string;
@@ -39,7 +40,7 @@ export function QuestionForm({ question, onSubmit }: QuestionProps) {
         });
       }}
     >
-      <Stack direction="vertical" space={10}>
+      <Stack direction="vertical" space={spacing.medium}>
         <label htmlFor={"question-text"}>Question</label>
         <textarea
           name="question-text"

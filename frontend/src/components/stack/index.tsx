@@ -22,11 +22,11 @@ type JustifyContentOptions =
   | "initial"
   | "inherit";
 
-function margin(direction: Direction = "horizontal", space: number) {
+function margin(direction: Direction = "horizontal", space: string) {
   return direction === "horizontal"
     ? css`
         & > * {
-          margin-right: ${space}px;
+          margin-right: ${space};
           line-height: initial;
           &:last-child {
             margin-right: initial;
@@ -35,7 +35,7 @@ function margin(direction: Direction = "horizontal", space: number) {
       `
     : css`
         & > * {
-          margin-bottom: ${space}px;
+          margin-bottom: ${space};
           line-height: initial;
           &:last-child {
             margin-bottom: initial;
@@ -56,7 +56,7 @@ export const StackContainer = styled.div<StackProps>`
 
 export interface StackProps {
   direction?: Direction;
-  space: number;
+  space: string;
   children: ReactNode;
   className?: string;
   alignItems?: AlignItemsOptions;

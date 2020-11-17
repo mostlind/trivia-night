@@ -9,6 +9,7 @@ import {
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
+import { spacing } from "styles/theme";
 
 export default function ProjectPage() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function ProjectPage() {
   }
 
   return (
-    <Stack direction="vertical" space={10}>
+    <Stack direction="vertical" space={spacing.medium}>
       <Link href="/setup">Back to Games</Link>
       {/* TODO: Move form to seperate component */}
       <form
@@ -66,7 +67,7 @@ export default function ProjectPage() {
           }
         }}
       >
-        <Stack space={5} direction="horizontal">
+        <Stack space={spacing.small} direction="horizontal">
           <input name="game-name" defaultValue={game.name} />
           {nameSaved ? null : <button type="submit">Rename</button>}
         </Stack>

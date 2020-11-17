@@ -1,4 +1,4 @@
-const themeBase = 1;
+const themeBase = 1.4;
 
 export const spacing = {
   extraSmall: themeBase / 3 + "em",
