@@ -23,8 +23,8 @@ echo "Generating Kubernetes config file for feature environment PR-$2..."
 cd "$1"
 mkdir -p "generated"
 
-echo "./src/feature.dhall \"trivia-night\" $2" |  dhall-to-yaml --output "generated/out.yaml" --documents --generated-comment
+echo "(./package.dhall).kubernetesConfig (./environments/feature.dhall $2)" |  dhall-to-yaml --output "generated/out.yaml" --documents --generated-comment
 
-echo "(./src/environments/feature.dhall \"trivia-night\" $2).baseHost" | dhall-to-json | xargs > generated/baseHost
+echo "(./environments/feature.dhall $2).config.baseHost" | dhall-to-json | xargs > generated/baseHost
 
 echo "Config file written to $1/generated/out.yaml"
