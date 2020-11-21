@@ -1,1 +1,0 @@
-{ memory : Text, cpu : Text }
