@@ -29,6 +29,7 @@ let envVars =
                   ", "
                   [ "http://*." ++ environmentConfig.baseHost
                   , "http://" ++ environmentConfig.baseHost
+                  , "http://localhost:9695"
                   ]
             }
         , k8s.envVar
