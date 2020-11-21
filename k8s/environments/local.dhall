@@ -11,8 +11,7 @@ in  k8s.Environment::{
       , projectName = project.name
       }
     , apps =
-      [ ../apps/backend.dhall
-      , ../apps/frontend.dhall
+      [ ../apps/frontend.dhall
       , ../apps/hasura.dhall
       , ../apps/grafana.dhall
       , ../apps/storybook.dhall

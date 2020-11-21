@@ -6,13 +6,13 @@ let Text/concatSep =
 
 let authHookUrl =
       λ(environmentConfig : k8s.EnvironmentConfig.Type) →
-        let backend = ./backend.dhall environmentConfig
+        let frontend = ./frontend.dhall environmentConfig
 
         in      "http://"
-            ++  backend.name
+            ++  frontend.name
             ++  ":"
-            ++  Natural/show backend.port
-            ++  "/auth"
+            ++  Natural/show frontend.port
+            ++  "/api/auth"
 
 let envVars =
       λ(environmentConfig : k8s.EnvironmentConfig.Type) →

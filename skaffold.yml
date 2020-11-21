@@ -33,8 +33,6 @@ profiles:
             manual:
               - src: "src/**/*"
                 dest: .
-        - image: trivia-night-backend
-          context: backend
         - image: trivia-night-hasura
           context: hasura/dev-dockerfile
         - image: trivia-night-storybook
@@ -63,8 +61,6 @@ profiles:
               # ENV: production
               NEXT_PUBLIC_TODO_APP_BACKEND_URL: http://hasura.{{.BASE_HOST}}/v1/graphql
               NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL: ws://hasura.{{.BASE_HOST}}/v1/graphql
-        - image: trivia-night-backend
-          context: backend
         - image: trivia-night-hasura
           context: hasura
         - image: trivia-night-storybook
