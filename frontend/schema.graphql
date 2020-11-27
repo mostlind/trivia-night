@@ -15,6 +15,13 @@ input Boolean_comparison_exp {
   _neq: Boolean
   _nin: [Boolean!]
 }
+input CreateGameStateInput {
+  game_id: uuid!
+}
+type CreateGameStateOutput {
+  game_state: game_state
+  game_state_id: uuid!
+}
 """expression to compare columns of type Int. All fields are combined with logical 'AND'."""
 input Int_comparison_exp {
   _eq: Int
@@ -26,6 +33,12 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+input StartGameInput {
+  game_id: uuid!
+}
+type StartGameOutput {
+  id: uuid!
 }
 """expression to compare columns of type String. All fields are combined with logical 'AND'."""
 input String_comparison_exp {
@@ -480,8 +493,8 @@ columns and relationships of "game_state"
 """
 type game_state {
   """An object relationship"""
-  current_question: question_state!
-  current_question_id: uuid!
+  current_question: question_state
+  current_question_id: uuid
   """An object relationship"""
   game: game!
   game_id: uuid!
@@ -1094,6 +1107,7 @@ enum host_update_column {
   """column name"""
   updated_at
 }
+scalar json
 """mutation root"""
 type mutation_root {
   """
@@ -1357,6 +1371,10 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: team_on_conflict
   ): team
+  """
+  perform the action: "start_game"
+  """
+  start_game(game_id: uuid!): CreateGameStateOutput
   """
   update data of the table: "answer"
   """

@@ -132,7 +132,9 @@ tables:
           host_id:
             _eq: X-Hasura-User-Id
       columns:
+      - current_question_id
       - game_id
+      - id
       backend_only: false
   select_permissions:
   - role: host
@@ -285,6 +287,7 @@ tables:
               _eq: X-Hasura-User-Id
       columns:
       - game_state_id
+      - id
       - question_id
       backend_only: false
   select_permissions:
@@ -356,4 +359,42 @@ tables:
           game:
             host_id:
               _eq: X-Hasura-User-Id
-
+actions:
+- name: start_game
+  definition:
+    handler: http://trivia-night-frontend:3000/api/start-game
+    output_type: CreateGameStateOutput
+    arguments:
+    - name: game_id
+      type: uuid!
+    type: mutation
+    kind: synchronous
+  permissions:
+  - role: host
+custom_types:
+  input_objects:
+  - name: CreateGameStateInput
+    fields:
+    - name: game_id
+      type: uuid!
+  - name: StartGameInput
+    fields:
+    - name: game_id
+      type: uuid!
+  objects:
+  - name: CreateGameStateOutput
+    fields:
+    - name: game_state_id
+      type: uuid!
+    relationships:
+    - remote_table:
+        schema: public
+        name: game_state
+      name: game_state
+      type: object
+      field_mapping:
+        game_state_id: id
+  - name: StartGameOutput
+    fields:
+    - name: id
+      type: uuid!

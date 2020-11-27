@@ -1,0 +1,23 @@
+mutation CreateGameState(
+  $gameStateId: uuid!
+  $gameId: uuid!
+  $currentQuestionId: uuid!
+  $questionStates: question_state_arr_rel_insert_input!
+) {
+  insert_game_state_one(
+    object: {
+      id: $gameStateId
+      game_id: $gameId
+      question_states: $questionStates
+    }
+  ) {
+    id
+  }
+
+  update_game_state_by_pk(
+    pk_columns: { id: $gameStateId }
+    _set: { current_question_id: $currentQuestionId }
+  ) {
+    id
+  }
+}
