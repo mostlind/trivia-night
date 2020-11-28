@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  json: any;
   timestamptz: any;
   uuid: any;
 };
@@ -27,6 +28,16 @@ export type Boolean_Comparison_Exp = {
   _nin?: Maybe<Array<Scalars['Boolean']>>;
 };
 
+export type CreateGameStateInput = {
+  game_id: Scalars['uuid'];
+};
+
+export type CreateGameStateOutput = {
+  __typename?: 'CreateGameStateOutput';
+  game_state?: Maybe<Game_State>;
+  game_state_id: Scalars['uuid'];
+};
+
 /** expression to compare columns of type Int. All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: Maybe<Scalars['Int']>;
@@ -38,6 +49,15 @@ export type Int_Comparison_Exp = {
   _lte?: Maybe<Scalars['Int']>;
   _neq?: Maybe<Scalars['Int']>;
   _nin?: Maybe<Array<Scalars['Int']>>;
+};
+
+export type StartGameInput = {
+  game_id: Scalars['uuid'];
+};
+
+export type StartGameOutput = {
+  __typename?: 'StartGameOutput';
+  id: Scalars['uuid'];
 };
 
 /** expression to compare columns of type String. All fields are combined with logical 'AND'. */
@@ -512,8 +532,8 @@ export type Game_Set_Input = {
 export type Game_State = {
   __typename?: 'game_state';
   /** An object relationship */
-  current_question: Question_State;
-  current_question_id: Scalars['uuid'];
+  current_question?: Maybe<Question_State>;
+  current_question_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   game: Game;
   game_id: Scalars['uuid'];
@@ -1129,6 +1149,7 @@ export enum Host_Update_Column {
   UpdatedAt = 'updated_at'
 }
 
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
@@ -1204,6 +1225,8 @@ export type Mutation_Root = {
   insert_team?: Maybe<Team_Mutation_Response>;
   /** insert a single row into the table: "team" */
   insert_team_one?: Maybe<Team>;
+  /** perform the action: "start_game" */
+  start_game?: Maybe<CreateGameStateOutput>;
   /** update data of the table: "answer" */
   update_answer?: Maybe<Answer_Mutation_Response>;
   /** update single row of the table: "answer" */
@@ -1474,6 +1497,12 @@ export type Mutation_RootInsert_TeamArgs = {
 export type Mutation_RootInsert_Team_OneArgs = {
   object: Team_Insert_Input;
   on_conflict?: Maybe<Team_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootStart_GameArgs = {
+  game_id: Scalars['uuid'];
 };
 
 
@@ -2202,6 +2231,9 @@ export type Question_State = {
   game_states_aggregate: Game_State_Aggregate;
   id: Scalars['uuid'];
   /** An object relationship */
+  next_question_state?: Maybe<Question_State>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
   question: Question;
   question_id: Scalars['uuid'];
   /** An object relationship */
@@ -2294,6 +2326,8 @@ export type Question_State_Bool_Exp = {
   game_state_id?: Maybe<Uuid_Comparison_Exp>;
   game_states?: Maybe<Game_State_Bool_Exp>;
   id?: Maybe<Uuid_Comparison_Exp>;
+  next_question_state?: Maybe<Question_State_Bool_Exp>;
+  next_question_state_id?: Maybe<Uuid_Comparison_Exp>;
   question?: Maybe<Question_Bool_Exp>;
   question_id?: Maybe<Uuid_Comparison_Exp>;
   question_state_enum?: Maybe<Question_State_Enum_Bool_Exp>;
@@ -2487,6 +2521,8 @@ export type Question_State_Insert_Input = {
   game_state_id?: Maybe<Scalars['uuid']>;
   game_states?: Maybe<Game_State_Arr_Rel_Insert_Input>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state?: Maybe<Question_State_Obj_Rel_Insert_Input>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question?: Maybe<Question_Obj_Rel_Insert_Input>;
   question_id?: Maybe<Scalars['uuid']>;
   question_state_enum?: Maybe<Question_State_Enum_Obj_Rel_Insert_Input>;
@@ -2498,6 +2534,7 @@ export type Question_State_Max_Fields = {
   __typename?: 'question_state_max_fields';
   game_state_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -2505,6 +2542,7 @@ export type Question_State_Max_Fields = {
 export type Question_State_Max_Order_By = {
   game_state_id?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  next_question_state_id?: Maybe<Order_By>;
   question_id?: Maybe<Order_By>;
 };
 
@@ -2513,6 +2551,7 @@ export type Question_State_Min_Fields = {
   __typename?: 'question_state_min_fields';
   game_state_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -2520,6 +2559,7 @@ export type Question_State_Min_Fields = {
 export type Question_State_Min_Order_By = {
   game_state_id?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  next_question_state_id?: Maybe<Order_By>;
   question_id?: Maybe<Order_By>;
 };
 
@@ -2552,6 +2592,8 @@ export type Question_State_Order_By = {
   game_state_id?: Maybe<Order_By>;
   game_states_aggregate?: Maybe<Game_State_Aggregate_Order_By>;
   id?: Maybe<Order_By>;
+  next_question_state?: Maybe<Question_State_Order_By>;
+  next_question_state_id?: Maybe<Order_By>;
   question?: Maybe<Question_Order_By>;
   question_id?: Maybe<Order_By>;
   question_state_enum?: Maybe<Question_State_Enum_Order_By>;
@@ -2570,6 +2612,8 @@ export enum Question_State_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  NextQuestionStateId = 'next_question_state_id',
+  /** column name */
   QuestionId = 'question_id',
   /** column name */
   State = 'state'
@@ -2579,6 +2623,7 @@ export enum Question_State_Select_Column {
 export type Question_State_Set_Input = {
   game_state_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question_id?: Maybe<Scalars['uuid']>;
   state?: Maybe<Question_State_Enum_Enum>;
 };
@@ -2589,6 +2634,8 @@ export enum Question_State_Update_Column {
   GameStateId = 'game_state_id',
   /** column name */
   Id = 'id',
+  /** column name */
+  NextQuestionStateId = 'next_question_state_id',
   /** column name */
   QuestionId = 'question_id',
   /** column name */
@@ -3238,6 +3285,22 @@ export type GameSummaryComponentFragment = (
   )> }
 );
 
+export type GameSummary_StartGameMutationVariables = Exact<{
+  gameId: Scalars['uuid'];
+}>;
+
+
+export type GameSummary_StartGameMutation = (
+  { __typename?: 'mutation_root' }
+  & { start_game?: Maybe<(
+    { __typename?: 'CreateGameStateOutput' }
+    & { game_state?: Maybe<(
+      { __typename?: 'game_state' }
+      & Pick<Game_State, 'id'>
+    )> }
+  )> }
+);
+
 export type QuestionFormComponentFragment = (
   { __typename?: 'question' }
   & Pick<Question, 'id' | 'question_text' | 'point_value'>
@@ -3246,6 +3309,42 @@ export type QuestionFormComponentFragment = (
 export type QuestionComponentFragment = (
   { __typename?: 'question' }
   & Pick<Question, 'id' | 'game_id' | 'question_text' | 'point_value'>
+);
+
+export type CreateGameStateMutationVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+  gameId: Scalars['uuid'];
+  currentQuestionId: Scalars['uuid'];
+  questionStates: Question_State_Arr_Rel_Insert_Input;
+}>;
+
+
+export type CreateGameStateMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_game_state_one?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id'>
+  )>, update_game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id'>
+  )> }
+);
+
+export type StartGameApiRouteQueryVariables = Exact<{
+  gameId: Scalars['uuid'];
+}>;
+
+
+export type StartGameApiRouteQuery = (
+  { __typename?: 'query_root' }
+  & { game_by_pk?: Maybe<(
+    { __typename?: 'game' }
+    & Pick<Game, 'id'>
+    & { questions: Array<(
+      { __typename?: 'question' }
+      & Pick<Question, 'id'>
+    )> }
+  )> }
 );
 
 export type AnswerQuestionMutationVariables = Exact<{
@@ -3262,8 +3361,38 @@ export type AnswerQuestionMutation = (
   )> }
 );
 
+export type JoinGameCreateTeamMutationVariables = Exact<{
+  team: Team_Insert_Input;
+}>;
+
+
+export type JoinGameCreateTeamMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_team_one?: Maybe<(
+    { __typename?: 'team' }
+    & Pick<Team, 'id'>
+  )> }
+);
+
+export type JoinGamePageQueryVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type JoinGamePageQuery = (
+  { __typename?: 'query_root' }
+  & { game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id'>
+    & { game: (
+      { __typename?: 'game' }
+      & Pick<Game, 'name'>
+    ) }
+  )> }
+);
+
 export type ParticipantGameSubscriptionVariables = Exact<{
-  gameId: Scalars['uuid'];
+  gameStateId: Scalars['uuid'];
 }>;
 
 
@@ -3278,7 +3407,7 @@ export type ParticipantGameSubscription = (
     ), teams: Array<(
       { __typename?: 'team' }
       & Pick<Team, 'name'>
-    )>, current_question: (
+    )>, current_question?: Maybe<(
       { __typename?: 'question_state' }
       & Pick<Question_State, 'state'>
       & { question: (
@@ -3288,7 +3417,38 @@ export type ParticipantGameSubscription = (
         { __typename?: 'answer' }
         & Pick<Answer, 'value'>
       )> }
-    ) }
+    )> }
+  )> }
+);
+
+export type GameHostPageSubscriptionVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type GameHostPageSubscription = (
+  { __typename?: 'subscription_root' }
+  & { game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id' | 'state'>
+    & { teams: Array<(
+      { __typename?: 'team' }
+      & Pick<Team, 'id' | 'name'>
+    )>, current_question?: Maybe<(
+      { __typename?: 'question_state' }
+      & Pick<Question_State, 'id' | 'next_question_state_id' | 'state'>
+      & { question: (
+        { __typename?: 'question' }
+        & Pick<Question, 'question_text'>
+      ), answers: Array<(
+        { __typename?: 'answer' }
+        & Pick<Answer, 'value'>
+        & { team: (
+          { __typename?: 'team' }
+          & Pick<Team, 'id' | 'name'>
+        ) }
+      )> }
+    )> }
   )> }
 );
 
@@ -3378,16 +3538,19 @@ export type RenameGameMutation = (
   )> }
 );
 
-export type StartGameMutationVariables = Exact<{
+export type GamePage_StartGameMutationVariables = Exact<{
   gameId: Scalars['uuid'];
 }>;
 
 
-export type StartGameMutation = (
+export type GamePage_StartGameMutation = (
   { __typename?: 'mutation_root' }
-  & { insert_game_state_one?: Maybe<(
-    { __typename?: 'game_state' }
-    & Pick<Game_State, 'id'>
+  & { start_game?: Maybe<(
+    { __typename?: 'CreateGameStateOutput' }
+    & { game_state?: Maybe<(
+      { __typename?: 'game_state' }
+      & Pick<Game_State, 'id'>
+    )> }
   )> }
 );
 
@@ -3458,6 +3621,47 @@ export const QuestionFormComponentFragmentDoc = gql`
   point_value
 }
     `;
+export const GameSummary_StartGameDocument = gql`
+    mutation GameSummary_StartGame($gameId: uuid!) {
+  start_game(game_id: $gameId) {
+    game_state {
+      id
+    }
+  }
+}
+    `;
+
+export function useGameSummary_StartGameMutation() {
+  return Urql.useMutation<GameSummary_StartGameMutation, GameSummary_StartGameMutationVariables>(GameSummary_StartGameDocument);
+};
+export const CreateGameStateDocument = gql`
+    mutation CreateGameState($gameStateId: uuid!, $gameId: uuid!, $currentQuestionId: uuid!, $questionStates: question_state_arr_rel_insert_input!) {
+  insert_game_state_one(object: {id: $gameStateId, game_id: $gameId, question_states: $questionStates}) {
+    id
+  }
+  update_game_state_by_pk(pk_columns: {id: $gameStateId}, _set: {current_question_id: $currentQuestionId}) {
+    id
+  }
+}
+    `;
+
+export function useCreateGameStateMutation() {
+  return Urql.useMutation<CreateGameStateMutation, CreateGameStateMutationVariables>(CreateGameStateDocument);
+};
+export const StartGameApiRouteDocument = gql`
+    query StartGameApiRoute($gameId: uuid!) {
+  game_by_pk(id: $gameId) {
+    id
+    questions(order_by: {question_order: asc}) {
+      id
+    }
+  }
+}
+    `;
+
+export function useStartGameApiRouteQuery(options: Omit<Urql.UseQueryArgs<StartGameApiRouteQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<StartGameApiRouteQuery>({ query: StartGameApiRouteDocument, ...options });
+};
 export const AnswerQuestionDocument = gql`
     mutation AnswerQuestion($question_state_id: uuid!, $value: String!) {
   insert_answer_one(object: {question_state_id: $question_state_id, value: $value}) {
@@ -3469,9 +3673,34 @@ export const AnswerQuestionDocument = gql`
 export function useAnswerQuestionMutation() {
   return Urql.useMutation<AnswerQuestionMutation, AnswerQuestionMutationVariables>(AnswerQuestionDocument);
 };
+export const JoinGameCreateTeamDocument = gql`
+    mutation JoinGameCreateTeam($team: team_insert_input!) {
+  insert_team_one(object: $team) {
+    id
+  }
+}
+    `;
+
+export function useJoinGameCreateTeamMutation() {
+  return Urql.useMutation<JoinGameCreateTeamMutation, JoinGameCreateTeamMutationVariables>(JoinGameCreateTeamDocument);
+};
+export const JoinGamePageDocument = gql`
+    query JoinGamePage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    game {
+      name
+    }
+  }
+}
+    `;
+
+export function useJoinGamePageQuery(options: Omit<Urql.UseQueryArgs<JoinGamePageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<JoinGamePageQuery>({ query: JoinGamePageDocument, ...options });
+};
 export const ParticipantGameDocument = gql`
-    subscription ParticipantGame($gameId: uuid!) {
-  game_state_by_pk(id: $gameId) {
+    subscription ParticipantGame($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
     state
     game {
       name
@@ -3494,6 +3723,37 @@ export const ParticipantGameDocument = gql`
 
 export function useParticipantGameSubscription<TData = ParticipantGameSubscription>(options: Omit<Urql.UseSubscriptionArgs<ParticipantGameSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<ParticipantGameSubscription, TData>) {
   return Urql.useSubscription<ParticipantGameSubscription, TData, ParticipantGameSubscriptionVariables>({ query: ParticipantGameDocument, ...options }, handler);
+};
+export const GameHostPageDocument = gql`
+    subscription GameHostPage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    state
+    teams {
+      id
+      name
+    }
+    current_question {
+      id
+      next_question_state_id
+      state
+      question {
+        question_text
+      }
+      answers {
+        team {
+          id
+          name
+        }
+        value
+      }
+    }
+  }
+}
+    `;
+
+export function useGameHostPageSubscription<TData = GameHostPageSubscription>(options: Omit<Urql.UseSubscriptionArgs<GameHostPageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<GameHostPageSubscription, TData>) {
+  return Urql.useSubscription<GameHostPageSubscription, TData, GameHostPageSubscriptionVariables>({ query: GameHostPageDocument, ...options }, handler);
 };
 export const IndexPageDocument = gql`
     query IndexPage {
@@ -3572,16 +3832,18 @@ export const RenameGameDocument = gql`
 export function useRenameGameMutation() {
   return Urql.useMutation<RenameGameMutation, RenameGameMutationVariables>(RenameGameDocument);
 };
-export const StartGameDocument = gql`
-    mutation StartGame($gameId: uuid!) {
-  insert_game_state_one(object: {game_id: $gameId}) {
-    id
+export const GamePage_StartGameDocument = gql`
+    mutation GamePage_StartGame($gameId: uuid!) {
+  start_game(game_id: $gameId) {
+    game_state {
+      id
+    }
   }
 }
     `;
 
-export function useStartGameMutation() {
-  return Urql.useMutation<StartGameMutation, StartGameMutationVariables>(StartGameDocument);
+export function useGamePage_StartGameMutation() {
+  return Urql.useMutation<GamePage_StartGameMutation, GamePage_StartGameMutationVariables>(GamePage_StartGameDocument);
 };
 export const SwapQuestionOrderDocument = gql`
     mutation SwapQuestionOrder($question1Id: uuid!, $question1Order: Int!, $question2Id: uuid!, $question2Order: Int!) {

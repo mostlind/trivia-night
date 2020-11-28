@@ -132,7 +132,9 @@ tables:
           host_id:
             _eq: X-Hasura-User-Id
       columns:
+      - current_question_id
       - game_id
+      - id
       backend_only: false
   select_permissions:
   - role: host
@@ -254,6 +256,9 @@ tables:
   - name: game_state
     using:
       foreign_key_constraint_on: game_state_id
+  - name: next_question_state
+    using:
+      foreign_key_constraint_on: next_question_state_id
   - name: question
     using:
       foreign_key_constraint_on: question_id
@@ -285,6 +290,8 @@ tables:
               _eq: X-Hasura-User-Id
       columns:
       - game_state_id
+      - id
+      - next_question_state_id
       - question_id
       backend_only: false
   select_permissions:
@@ -293,6 +300,7 @@ tables:
       columns:
       - game_state_id
       - id
+      - next_question_state_id
       - question_id
       - state
       filter:
@@ -356,4 +364,57 @@ tables:
           game:
             host_id:
               _eq: X-Hasura-User-Id
-
+actions:
+- name: sendLoginEmail
+  definition:
+    handler: http://trivia-night-frontend:3000/api/send-auth-link
+    output_type: EmailSendStatus
+    arguments:
+    - name: email
+      type: String!
+    type: mutation
+    kind: synchronous
+  permissions:
+  - role: host
+- name: start_game
+  definition:
+    handler: http://trivia-night-frontend:3000/api/start-game
+    output_type: CreateGameStateOutput
+    arguments:
+    - name: game_id
+      type: uuid!
+    type: mutation
+    kind: synchronous
+  permissions:
+  - role: host
+custom_types:
+  input_objects:
+  - name: CreateGameStateInput
+    fields:
+    - name: game_id
+      type: uuid!
+  - name: StartGameInput
+    fields:
+    - name: game_id
+      type: uuid!
+  objects:
+  - name: CreateGameStateOutput
+    fields:
+    - name: game_state_id
+      type: uuid!
+    relationships:
+    - remote_table:
+        schema: public
+        name: game_state
+      name: game_state
+      type: object
+      field_mapping:
+        game_state_id: id
+  - name: StartGameOutput
+    fields:
+    - name: id
+      type: uuid!
+  - name: EmailSendStatus
+    fields:
+    - name: status
+      type: String!

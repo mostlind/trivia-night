@@ -1,4 +1,4 @@
-mutation GamePage_StartGame($gameId: uuid!) {
+mutation GameSummary_StartGame($gameId: uuid!) {
   start_game(game_id: $gameId) {
     game_state {
       id

@@ -4,7 +4,7 @@ import {
   useGamePageQuery,
   useSwapQuestionOrderMutation,
   useRenameGameMutation,
-  useStartGameMutation,
+  useGamePage_StartGameMutation,
 } from "generated/graphql";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
@@ -17,7 +17,7 @@ export default function ProjectPage() {
   const context = useMemo(() => ({ additionalTypenames: ["question"] }), []);
   const [_swapStatus, swapQuestionOrder] = useSwapQuestionOrderMutation();
   const [_renameStatus, renameGame] = useRenameGameMutation();
-  const [_startGameStatus, startGame] = useStartGameMutation();
+  const [_startGameStatus, startGame] = useGamePage_StartGameMutation();
   const [result, _refectch] = useGamePageQuery({
     variables: { gameId: gameId },
     context,

@@ -1,0 +1,8 @@
+query StartGameApiRoute($gameId: uuid!) {
+  game_by_pk(id: $gameId) {
+    id
+    questions(order_by: { question_order: asc }) {
+      id
+    }
+  }
+}
