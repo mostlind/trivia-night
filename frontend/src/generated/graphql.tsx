@@ -2231,6 +2231,9 @@ export type Question_State = {
   game_states_aggregate: Game_State_Aggregate;
   id: Scalars['uuid'];
   /** An object relationship */
+  next_question_state?: Maybe<Question_State>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
   question: Question;
   question_id: Scalars['uuid'];
   /** An object relationship */
@@ -2323,6 +2326,8 @@ export type Question_State_Bool_Exp = {
   game_state_id?: Maybe<Uuid_Comparison_Exp>;
   game_states?: Maybe<Game_State_Bool_Exp>;
   id?: Maybe<Uuid_Comparison_Exp>;
+  next_question_state?: Maybe<Question_State_Bool_Exp>;
+  next_question_state_id?: Maybe<Uuid_Comparison_Exp>;
   question?: Maybe<Question_Bool_Exp>;
   question_id?: Maybe<Uuid_Comparison_Exp>;
   question_state_enum?: Maybe<Question_State_Enum_Bool_Exp>;
@@ -2516,6 +2521,8 @@ export type Question_State_Insert_Input = {
   game_state_id?: Maybe<Scalars['uuid']>;
   game_states?: Maybe<Game_State_Arr_Rel_Insert_Input>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state?: Maybe<Question_State_Obj_Rel_Insert_Input>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question?: Maybe<Question_Obj_Rel_Insert_Input>;
   question_id?: Maybe<Scalars['uuid']>;
   question_state_enum?: Maybe<Question_State_Enum_Obj_Rel_Insert_Input>;
@@ -2527,6 +2534,7 @@ export type Question_State_Max_Fields = {
   __typename?: 'question_state_max_fields';
   game_state_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -2534,6 +2542,7 @@ export type Question_State_Max_Fields = {
 export type Question_State_Max_Order_By = {
   game_state_id?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  next_question_state_id?: Maybe<Order_By>;
   question_id?: Maybe<Order_By>;
 };
 
@@ -2542,6 +2551,7 @@ export type Question_State_Min_Fields = {
   __typename?: 'question_state_min_fields';
   game_state_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -2549,6 +2559,7 @@ export type Question_State_Min_Fields = {
 export type Question_State_Min_Order_By = {
   game_state_id?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  next_question_state_id?: Maybe<Order_By>;
   question_id?: Maybe<Order_By>;
 };
 
@@ -2581,6 +2592,8 @@ export type Question_State_Order_By = {
   game_state_id?: Maybe<Order_By>;
   game_states_aggregate?: Maybe<Game_State_Aggregate_Order_By>;
   id?: Maybe<Order_By>;
+  next_question_state?: Maybe<Question_State_Order_By>;
+  next_question_state_id?: Maybe<Order_By>;
   question?: Maybe<Question_Order_By>;
   question_id?: Maybe<Order_By>;
   question_state_enum?: Maybe<Question_State_Enum_Order_By>;
@@ -2599,6 +2612,8 @@ export enum Question_State_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  NextQuestionStateId = 'next_question_state_id',
+  /** column name */
   QuestionId = 'question_id',
   /** column name */
   State = 'state'
@@ -2608,6 +2623,7 @@ export enum Question_State_Select_Column {
 export type Question_State_Set_Input = {
   game_state_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  next_question_state_id?: Maybe<Scalars['uuid']>;
   question_id?: Maybe<Scalars['uuid']>;
   state?: Maybe<Question_State_Enum_Enum>;
 };
@@ -2618,6 +2634,8 @@ export enum Question_State_Update_Column {
   GameStateId = 'game_state_id',
   /** column name */
   Id = 'id',
+  /** column name */
+  NextQuestionStateId = 'next_question_state_id',
   /** column name */
   QuestionId = 'question_id',
   /** column name */
@@ -3343,8 +3361,38 @@ export type AnswerQuestionMutation = (
   )> }
 );
 
+export type JoinGameCreateTeamMutationVariables = Exact<{
+  team: Team_Insert_Input;
+}>;
+
+
+export type JoinGameCreateTeamMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_team_one?: Maybe<(
+    { __typename?: 'team' }
+    & Pick<Team, 'id'>
+  )> }
+);
+
+export type JoinGamePageQueryVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type JoinGamePageQuery = (
+  { __typename?: 'query_root' }
+  & { game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id'>
+    & { game: (
+      { __typename?: 'game' }
+      & Pick<Game, 'name'>
+    ) }
+  )> }
+);
+
 export type ParticipantGameSubscriptionVariables = Exact<{
-  gameId: Scalars['uuid'];
+  gameStateId: Scalars['uuid'];
 }>;
 
 
@@ -3368,6 +3416,37 @@ export type ParticipantGameSubscription = (
       ), answers: Array<(
         { __typename?: 'answer' }
         & Pick<Answer, 'value'>
+      )> }
+    )> }
+  )> }
+);
+
+export type GameHostPageSubscriptionVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type GameHostPageSubscription = (
+  { __typename?: 'subscription_root' }
+  & { game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id' | 'state'>
+    & { teams: Array<(
+      { __typename?: 'team' }
+      & Pick<Team, 'id' | 'name'>
+    )>, current_question?: Maybe<(
+      { __typename?: 'question_state' }
+      & Pick<Question_State, 'id' | 'next_question_state_id' | 'state'>
+      & { question: (
+        { __typename?: 'question' }
+        & Pick<Question, 'question_text'>
+      ), answers: Array<(
+        { __typename?: 'answer' }
+        & Pick<Answer, 'value'>
+        & { team: (
+          { __typename?: 'team' }
+          & Pick<Team, 'id' | 'name'>
+        ) }
       )> }
     )> }
   )> }
@@ -3594,9 +3673,34 @@ export const AnswerQuestionDocument = gql`
 export function useAnswerQuestionMutation() {
   return Urql.useMutation<AnswerQuestionMutation, AnswerQuestionMutationVariables>(AnswerQuestionDocument);
 };
+export const JoinGameCreateTeamDocument = gql`
+    mutation JoinGameCreateTeam($team: team_insert_input!) {
+  insert_team_one(object: $team) {
+    id
+  }
+}
+    `;
+
+export function useJoinGameCreateTeamMutation() {
+  return Urql.useMutation<JoinGameCreateTeamMutation, JoinGameCreateTeamMutationVariables>(JoinGameCreateTeamDocument);
+};
+export const JoinGamePageDocument = gql`
+    query JoinGamePage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    game {
+      name
+    }
+  }
+}
+    `;
+
+export function useJoinGamePageQuery(options: Omit<Urql.UseQueryArgs<JoinGamePageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<JoinGamePageQuery>({ query: JoinGamePageDocument, ...options });
+};
 export const ParticipantGameDocument = gql`
-    subscription ParticipantGame($gameId: uuid!) {
-  game_state_by_pk(id: $gameId) {
+    subscription ParticipantGame($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
     state
     game {
       name
@@ -3619,6 +3723,37 @@ export const ParticipantGameDocument = gql`
 
 export function useParticipantGameSubscription<TData = ParticipantGameSubscription>(options: Omit<Urql.UseSubscriptionArgs<ParticipantGameSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<ParticipantGameSubscription, TData>) {
   return Urql.useSubscription<ParticipantGameSubscription, TData, ParticipantGameSubscriptionVariables>({ query: ParticipantGameDocument, ...options }, handler);
+};
+export const GameHostPageDocument = gql`
+    subscription GameHostPage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    state
+    teams {
+      id
+      name
+    }
+    current_question {
+      id
+      next_question_state_id
+      state
+      question {
+        question_text
+      }
+      answers {
+        team {
+          id
+          name
+        }
+        value
+      }
+    }
+  }
+}
+    `;
+
+export function useGameHostPageSubscription<TData = GameHostPageSubscription>(options: Omit<Urql.UseSubscriptionArgs<GameHostPageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<GameHostPageSubscription, TData>) {
+  return Urql.useSubscription<GameHostPageSubscription, TData, GameHostPageSubscriptionVariables>({ query: GameHostPageDocument, ...options }, handler);
 };
 export const IndexPageDocument = gql`
     query IndexPage {

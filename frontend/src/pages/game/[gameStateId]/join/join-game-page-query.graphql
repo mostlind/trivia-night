@@ -1,0 +1,8 @@
+query JoinGamePage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    game {
+      name
+    }
+  }
+}

@@ -256,6 +256,9 @@ tables:
   - name: game_state
     using:
       foreign_key_constraint_on: game_state_id
+  - name: next_question_state
+    using:
+      foreign_key_constraint_on: next_question_state_id
   - name: question
     using:
       foreign_key_constraint_on: question_id
@@ -288,6 +291,7 @@ tables:
       columns:
       - game_state_id
       - id
+      - next_question_state_id
       - question_id
       backend_only: false
   select_permissions:
@@ -296,6 +300,7 @@ tables:
       columns:
       - game_state_id
       - id
+      - next_question_state_id
       - question_id
       - state
       filter:
@@ -360,6 +365,17 @@ tables:
             host_id:
               _eq: X-Hasura-User-Id
 actions:
+- name: sendLoginEmail
+  definition:
+    handler: http://trivia-night-frontend:3000/api/send-auth-link
+    output_type: EmailSendStatus
+    arguments:
+    - name: email
+      type: String!
+    type: mutation
+    kind: synchronous
+  permissions:
+  - role: host
 - name: start_game
   definition:
     handler: http://trivia-night-frontend:3000/api/start-game
@@ -398,3 +414,7 @@ custom_types:
     fields:
     - name: id
       type: uuid!
+  - name: EmailSendStatus
+    fields:
+    - name: status
+      type: String!

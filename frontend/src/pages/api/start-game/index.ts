@@ -2,6 +2,7 @@ import {
   CreateGameStateDocument,
   CreateGameStateMutation,
   CreateGameStateMutationVariables,
+  Question_State_Arr_Rel_Insert_Input,
   StartGameApiRouteDocument,
   StartGameApiRouteQuery,
   StartGameApiRouteQueryVariables,
@@ -49,8 +50,6 @@ export default async function StartGame(
     return res.status(404).json({ message: "game not found" });
   }
 
-  console.log("found the game", game);
-
   if (game.questions.length === 0) {
     return res
       .status(400)
@@ -58,10 +57,14 @@ export default async function StartGame(
   }
 
   const gameStateId = uuidv4();
-  const questionStates = game.questions.map((question) => ({
-    id: uuidv4(),
-    question_id: question.id,
-  }));
+  const qustionStateIds = game.questions.map(() => uuidv4());
+  const questionStates: Question_State_Arr_Rel_Insert_Input = {
+    data: game.questions.map((question, index) => ({
+      id: qustionStateIds[index],
+      question_id: question.id,
+      next_question_state_id: qustionStateIds[index + 1] ?? null,
+    })),
+  };
 
   const gameState = await client
     .mutation<CreateGameStateMutation, CreateGameStateMutationVariables>(
@@ -69,8 +72,8 @@ export default async function StartGame(
       {
         gameStateId,
         gameId: game.id,
-        currentQuestionId: questionStates[0].id,
-        questionStates: { data: questionStates },
+        currentQuestionId: questionStates.data[0].id,
+        questionStates,
       }
     )
     .toPromise();
@@ -81,5 +84,7 @@ export default async function StartGame(
     return res.status(400).json(gameQuery.error);
   }
 
-  res.status(200).json({ id: gameState.data?.insert_game_state_one!.id });
+  res
+    .status(200)
+    .json({ game_state_id: gameState.data?.insert_game_state_one!.id });
 }

@@ -1,0 +1,25 @@
+subscription GameHostPage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    state
+    teams {
+      id
+      name
+    }
+    current_question {
+      id
+      next_question_state_id
+      state
+      question {
+        question_text
+      }
+      answers {
+        team {
+          id
+          name
+        }
+        value
+      }
+    }
+  }
+}

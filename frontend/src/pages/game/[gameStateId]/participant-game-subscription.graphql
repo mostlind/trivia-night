@@ -1,5 +1,5 @@
-subscription ParticipantGame($gameId: uuid!) {
-  game_state_by_pk(id: $gameId) {
+subscription ParticipantGame($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
     state
     game {
       name

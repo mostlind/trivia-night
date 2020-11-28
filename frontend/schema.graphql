@@ -2163,6 +2163,9 @@ type question_state {
   ): game_state_aggregate!
   id: uuid!
   """An object relationship"""
+  next_question_state: question_state
+  next_question_state_id: uuid
+  """An object relationship"""
   question: question!
   question_id: uuid!
   """An object relationship"""
@@ -2209,6 +2212,8 @@ input question_state_bool_exp {
   game_state_id: uuid_comparison_exp
   game_states: game_state_bool_exp
   id: uuid_comparison_exp
+  next_question_state: question_state_bool_exp
+  next_question_state_id: uuid_comparison_exp
   question: question_bool_exp
   question_id: uuid_comparison_exp
   question_state_enum: question_state_enum_bool_exp
@@ -2405,6 +2410,8 @@ input question_state_insert_input {
   game_state_id: uuid
   game_states: game_state_arr_rel_insert_input
   id: uuid
+  next_question_state: question_state_obj_rel_insert_input
+  next_question_state_id: uuid
   question: question_obj_rel_insert_input
   question_id: uuid
   question_state_enum: question_state_enum_obj_rel_insert_input
@@ -2414,6 +2421,7 @@ input question_state_insert_input {
 type question_state_max_fields {
   game_state_id: uuid
   id: uuid
+  next_question_state_id: uuid
   question_id: uuid
 }
 """
@@ -2422,12 +2430,14 @@ order by max() on columns of table "question_state"
 input question_state_max_order_by {
   game_state_id: order_by
   id: order_by
+  next_question_state_id: order_by
   question_id: order_by
 }
 """aggregate min on columns"""
 type question_state_min_fields {
   game_state_id: uuid
   id: uuid
+  next_question_state_id: uuid
   question_id: uuid
 }
 """
@@ -2436,6 +2446,7 @@ order by min() on columns of table "question_state"
 input question_state_min_order_by {
   game_state_id: order_by
   id: order_by
+  next_question_state_id: order_by
   question_id: order_by
 }
 """
@@ -2471,6 +2482,8 @@ input question_state_order_by {
   game_state_id: order_by
   game_states_aggregate: game_state_aggregate_order_by
   id: order_by
+  next_question_state: question_state_order_by
+  next_question_state_id: order_by
   question: question_order_by
   question_id: order_by
   question_state_enum: question_state_enum_order_by
@@ -2491,6 +2504,8 @@ enum question_state_select_column {
   """column name"""
   id
   """column name"""
+  next_question_state_id
+  """column name"""
   question_id
   """column name"""
   state
@@ -2501,6 +2516,7 @@ input type for updating data in table "question_state"
 input question_state_set_input {
   game_state_id: uuid
   id: uuid
+  next_question_state_id: uuid
   question_id: uuid
   state: question_state_enum_enum
 }
@@ -2512,6 +2528,8 @@ enum question_state_update_column {
   game_state_id
   """column name"""
   id
+  """column name"""
+  next_question_state_id
   """column name"""
   question_id
   """column name"""

@@ -13,7 +13,18 @@ let frontendService =
             if    environmentConfig.useLimits
             then  Some { memory = "512Mi", cpu = "1000m" }
             else  None k8s.Resources
-        , envVars = [] : List k8s.EnvVar
+        , envVars =
+          [ k8s.configMapEnvVar
+              { name = "API_EMAIL_USER"
+              , configMap = environmentConfig.projectName ++ "-config"
+              , key = "api-email-user"
+              }
+          , k8s.configMapEnvVar
+              { name = "API_EMAIL_PASSWORD"
+              , configMap = environmentConfig.projectName ++ "-config"
+              , key = "api-email-password"
+              }
+          ]
         }
 
 in  frontendService
