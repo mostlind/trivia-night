@@ -13,7 +13,7 @@ export function GameSummary({ game }: GameProps) {
   const [_result, startGame] = useGameSummary_StartGameMutation();
   return (
     <h3>
-      <Link href={`/setup/${game.id}`}>{game.name}</Link>
+      <Link href={`/host/setup/${game.id}`}>{game.name}</Link>
       <button
         onClick={() => {
           startGame({ gameId: game.id });

@@ -24,6 +24,8 @@ let frontendService =
               , configMap = environmentConfig.projectName ++ "-config"
               , key = "api-email-password"
               }
+          , k8s.envVar
+              { name = "API_APP_BASE_HOST", value = environmentConfig.baseHost }
           ]
         }
 

@@ -2,8 +2,8 @@ module.exports = {
   async redirects() {
     return [
       {
-        source: "/setup/:gameId/questions",
-        destination: "/setup/:gameId",
+        source: "/host/setup/:gameId/questions",
+        destination: "/host/setup/:gameId",
         permanent: false,
       },
     ];

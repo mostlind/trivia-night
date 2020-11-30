@@ -43,7 +43,7 @@ export default function ProjectPage() {
 
   return (
     <Stack direction="vertical" space={spacing.medium}>
-      <Link href="/setup">Back to Games</Link>
+      <Link href="/host/setup">Back to Games</Link>
       {/* TODO: Move form to seperate component */}
       <form
         onSubmit={(e) => {
@@ -109,7 +109,9 @@ export default function ProjectPage() {
           );
         })}
         <li>
-          <Link href={`/setup/${game.id}/questions/create`}>Add Question</Link>
+          <Link href={`/host/setup/${game.id}/questions/create`}>
+            Add Question
+          </Link>
         </li>
       </ul>
       <button

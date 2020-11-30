@@ -1,5 +1,6 @@
 import {
   ParticipantGameSubscription,
+  useAnswerQuestionMutation,
   useParticipantGameSubscription,
 } from "generated/graphql";
 import { useRouter } from "next/dist/client/router";
@@ -10,10 +11,26 @@ interface ParticipantOpenQuestionProps {
 }
 
 function ParticipantOpenQuestion({ gameState }: ParticipantOpenQuestionProps) {
+  const [_status, answerQuestion] = useAnswerQuestionMutation();
   return (
     <>
       {gameState.game_state_by_pk?.current_question?.question.question_text}
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const currentQuestionId =
+            gameState.game_state_by_pk?.current_question?.id;
+          const formData = new FormData(e.currentTarget);
+          const answer = formData.get("answer");
+          if (typeof answer !== "string") {
+            throw new Error("whaaa?");
+          }
+          answerQuestion({
+            value: answer,
+            question_state_id: currentQuestionId,
+          });
+        }}
+      >
         <label htmlFor="answer">Answer</label>
         <textarea name="answer" id="answer"></textarea>
         <button type="submit">Submit</button>
@@ -33,6 +50,7 @@ export default function ParticipantOngoingGame() {
     variables: {
       gameStateId,
     },
+    pause: gameStateId === undefined,
   });
 
   if (result.error) {

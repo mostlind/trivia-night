@@ -3653,6 +3653,53 @@ export type QuestionComponentFragment = (
   & Pick<Question, 'id' | 'game_id' | 'question_text' | 'point_value'>
 );
 
+export type CreateTeamMutationVariables = Exact<{
+  team: Team_Insert_Input;
+}>;
+
+
+export type CreateTeamMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_team_one?: Maybe<(
+    { __typename?: 'team' }
+    & Pick<Team, 'id'>
+  )> }
+);
+
+export type DeleteOneTimePasswordMutationVariables = Exact<{
+  emailHash: Scalars['String'];
+  otpHash: Scalars['String'];
+}>;
+
+
+export type DeleteOneTimePasswordMutation = (
+  { __typename?: 'mutation_root' }
+  & { delete_one_time_password_by_pk?: Maybe<(
+    { __typename?: 'one_time_password' }
+    & { host: (
+      { __typename?: 'host' }
+      & Pick<Host, 'id'>
+    ) }
+  )> }
+);
+
+export type UpsertHostMutationVariables = Exact<{
+  emailHash: Scalars['String'];
+  oneTimePasswordHash: Scalars['String'];
+}>;
+
+
+export type UpsertHostMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_host_one?: Maybe<(
+    { __typename?: 'host' }
+    & Pick<Host, 'id'>
+  )>, insert_one_time_password_one?: Maybe<(
+    { __typename?: 'one_time_password' }
+    & Pick<One_Time_Password, 'email_hash'>
+  )> }
+);
+
 export type CreateGameStateMutationVariables = Exact<{
   gameStateId: Scalars['uuid'];
   gameId: Scalars['uuid'];
@@ -3703,36 +3750,6 @@ export type AnswerQuestionMutation = (
   )> }
 );
 
-export type JoinGameCreateTeamMutationVariables = Exact<{
-  team: Team_Insert_Input;
-}>;
-
-
-export type JoinGameCreateTeamMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_team_one?: Maybe<(
-    { __typename?: 'team' }
-    & Pick<Team, 'id'>
-  )> }
-);
-
-export type JoinGamePageQueryVariables = Exact<{
-  gameStateId: Scalars['uuid'];
-}>;
-
-
-export type JoinGamePageQuery = (
-  { __typename?: 'query_root' }
-  & { game_state_by_pk?: Maybe<(
-    { __typename?: 'game_state' }
-    & Pick<Game_State, 'id'>
-    & { game: (
-      { __typename?: 'game' }
-      & Pick<Game, 'name'>
-    ) }
-  )> }
-);
-
 export type ParticipantGameSubscriptionVariables = Exact<{
   gameStateId: Scalars['uuid'];
 }>;
@@ -3746,19 +3763,13 @@ export type ParticipantGameSubscription = (
     & { game: (
       { __typename?: 'game' }
       & Pick<Game, 'name'>
-    ), teams: Array<(
-      { __typename?: 'team' }
-      & Pick<Team, 'name'>
-    )>, current_question?: Maybe<(
+    ), current_question?: Maybe<(
       { __typename?: 'question_state' }
-      & Pick<Question_State, 'state'>
+      & Pick<Question_State, 'id' | 'state'>
       & { question: (
         { __typename?: 'question' }
         & Pick<Question, 'question_text'>
-      ), answers: Array<(
-        { __typename?: 'answer' }
-        & Pick<Answer, 'value'>
-      )> }
+      ) }
     )> }
   )> }
 );
@@ -3791,17 +3802,6 @@ export type GameHostPageSubscription = (
         ) }
       )> }
     )> }
-  )> }
-);
-
-export type IndexPageQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type IndexPageQuery = (
-  { __typename?: 'query_root' }
-  & { question: Array<(
-    { __typename?: 'question' }
-    & Pick<Question, 'id'>
   )> }
 );
 
@@ -3939,6 +3939,75 @@ export type GamesPageQuery = (
   )> }
 );
 
+export type IndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IndexPageQuery = (
+  { __typename?: 'query_root' }
+  & { question: Array<(
+    { __typename?: 'question' }
+    & Pick<Question, 'id'>
+  )> }
+);
+
+export type JoinGameCreateTeamMutationVariables = Exact<{
+  teamName: Scalars['String'];
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type JoinGameCreateTeamMutation = (
+  { __typename?: 'mutation_root' }
+  & { create_team?: Maybe<(
+    { __typename?: 'TeamToken' }
+    & Pick<TeamToken, 'token'>
+  )> }
+);
+
+export type JoinGamePageQueryVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type JoinGamePageQuery = (
+  { __typename?: 'query_root' }
+  & { game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id'>
+    & { game: (
+      { __typename?: 'game' }
+      & Pick<Game, 'name'>
+    ) }
+  )> }
+);
+
+export type AccessTokenFromOtpMutationVariables = Exact<{
+  emailHash: Scalars['String'];
+  oneTimePassword: Scalars['String'];
+}>;
+
+
+export type AccessTokenFromOtpMutation = (
+  { __typename?: 'mutation_root' }
+  & { access_token_from_otp?: Maybe<(
+    { __typename?: 'Token' }
+    & Pick<Token, 'token'>
+  )> }
+);
+
+export type HostLoginMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type HostLoginMutation = (
+  { __typename?: 'mutation_root' }
+  & { send_auth_link?: Maybe<(
+    { __typename?: 'EmailSendStatus' }
+    & Pick<EmailSendStatus, 'status'>
+  )> }
+);
+
 export const QuestionComponentFragmentDoc = gql`
     fragment QuestionComponent on question {
   id
@@ -3975,6 +4044,44 @@ export const GameSummary_StartGameDocument = gql`
 
 export function useGameSummary_StartGameMutation() {
   return Urql.useMutation<GameSummary_StartGameMutation, GameSummary_StartGameMutationVariables>(GameSummary_StartGameDocument);
+};
+export const CreateTeamDocument = gql`
+    mutation CreateTeam($team: team_insert_input!) {
+  insert_team_one(object: $team) {
+    id
+  }
+}
+    `;
+
+export function useCreateTeamMutation() {
+  return Urql.useMutation<CreateTeamMutation, CreateTeamMutationVariables>(CreateTeamDocument);
+};
+export const DeleteOneTimePasswordDocument = gql`
+    mutation DeleteOneTimePassword($emailHash: String!, $otpHash: String!) {
+  delete_one_time_password_by_pk(email_hash: $emailHash, one_time_password_hash: $otpHash) {
+    host {
+      id
+    }
+  }
+}
+    `;
+
+export function useDeleteOneTimePasswordMutation() {
+  return Urql.useMutation<DeleteOneTimePasswordMutation, DeleteOneTimePasswordMutationVariables>(DeleteOneTimePasswordDocument);
+};
+export const UpsertHostDocument = gql`
+    mutation UpsertHost($emailHash: String!, $oneTimePasswordHash: String!) {
+  insert_host_one(object: {email_hash: $emailHash}, on_conflict: {constraint: host_email_hash_key, update_columns: []}) {
+    id
+  }
+  insert_one_time_password_one(object: {email_hash: $emailHash, one_time_password_hash: $oneTimePasswordHash}) {
+    email_hash
+  }
+}
+    `;
+
+export function useUpsertHostMutation() {
+  return Urql.useMutation<UpsertHostMutation, UpsertHostMutationVariables>(UpsertHostDocument);
 };
 export const CreateGameStateDocument = gql`
     mutation CreateGameState($gameStateId: uuid!, $gameId: uuid!, $currentQuestionId: uuid!, $questionStates: question_state_arr_rel_insert_input!) {
@@ -4015,31 +4122,6 @@ export const AnswerQuestionDocument = gql`
 export function useAnswerQuestionMutation() {
   return Urql.useMutation<AnswerQuestionMutation, AnswerQuestionMutationVariables>(AnswerQuestionDocument);
 };
-export const JoinGameCreateTeamDocument = gql`
-    mutation JoinGameCreateTeam($team: team_insert_input!) {
-  insert_team_one(object: $team) {
-    id
-  }
-}
-    `;
-
-export function useJoinGameCreateTeamMutation() {
-  return Urql.useMutation<JoinGameCreateTeamMutation, JoinGameCreateTeamMutationVariables>(JoinGameCreateTeamDocument);
-};
-export const JoinGamePageDocument = gql`
-    query JoinGamePage($gameStateId: uuid!) {
-  game_state_by_pk(id: $gameStateId) {
-    id
-    game {
-      name
-    }
-  }
-}
-    `;
-
-export function useJoinGamePageQuery(options: Omit<Urql.UseQueryArgs<JoinGamePageQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<JoinGamePageQuery>({ query: JoinGamePageDocument, ...options });
-};
 export const ParticipantGameDocument = gql`
     subscription ParticipantGame($gameStateId: uuid!) {
   game_state_by_pk(id: $gameStateId) {
@@ -4047,16 +4129,11 @@ export const ParticipantGameDocument = gql`
     game {
       name
     }
-    teams {
-      name
-    }
     current_question {
+      id
       state
       question {
         question_text
-      }
-      answers {
-        value
       }
     }
   }
@@ -4096,17 +4173,6 @@ export const GameHostPageDocument = gql`
 
 export function useGameHostPageSubscription<TData = GameHostPageSubscription>(options: Omit<Urql.UseSubscriptionArgs<GameHostPageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<GameHostPageSubscription, TData>) {
   return Urql.useSubscription<GameHostPageSubscription, TData, GameHostPageSubscriptionVariables>({ query: GameHostPageDocument, ...options }, handler);
-};
-export const IndexPageDocument = gql`
-    query IndexPage {
-  question {
-    id
-  }
-}
-    `;
-
-export function useIndexPageQuery(options: Omit<Urql.UseQueryArgs<IndexPageQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<IndexPageQuery>({ query: IndexPageDocument, ...options });
 };
 export const GamePageDocument = gql`
     query GamePage($gameId: uuid!) {
@@ -4224,4 +4290,62 @@ export const GamesPageDocument = gql`
 
 export function useGamesPageQuery(options: Omit<Urql.UseQueryArgs<GamesPageQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GamesPageQuery>({ query: GamesPageDocument, ...options });
+};
+export const IndexPageDocument = gql`
+    query IndexPage {
+  question {
+    id
+  }
+}
+    `;
+
+export function useIndexPageQuery(options: Omit<Urql.UseQueryArgs<IndexPageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<IndexPageQuery>({ query: IndexPageDocument, ...options });
+};
+export const JoinGameCreateTeamDocument = gql`
+    mutation JoinGameCreateTeam($teamName: String!, $gameStateId: uuid!) {
+  create_team(teamName: $teamName, gameStateId: $gameStateId) {
+    token
+  }
+}
+    `;
+
+export function useJoinGameCreateTeamMutation() {
+  return Urql.useMutation<JoinGameCreateTeamMutation, JoinGameCreateTeamMutationVariables>(JoinGameCreateTeamDocument);
+};
+export const JoinGamePageDocument = gql`
+    query JoinGamePage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    game {
+      name
+    }
+  }
+}
+    `;
+
+export function useJoinGamePageQuery(options: Omit<Urql.UseQueryArgs<JoinGamePageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<JoinGamePageQuery>({ query: JoinGamePageDocument, ...options });
+};
+export const AccessTokenFromOtpDocument = gql`
+    mutation AccessTokenFromOTP($emailHash: String!, $oneTimePassword: String!) {
+  access_token_from_otp(credentials: {emailHash: $emailHash, oneTimePassword: $oneTimePassword}) {
+    token
+  }
+}
+    `;
+
+export function useAccessTokenFromOtpMutation() {
+  return Urql.useMutation<AccessTokenFromOtpMutation, AccessTokenFromOtpMutationVariables>(AccessTokenFromOtpDocument);
+};
+export const HostLoginDocument = gql`
+    mutation HostLogin($email: String!) {
+  send_auth_link(email: $email) {
+    status
+  }
+}
+    `;
+
+export function useHostLoginMutation() {
+  return Urql.useMutation<HostLoginMutation, HostLoginMutationVariables>(HostLoginDocument);
 };

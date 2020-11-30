@@ -22,6 +22,9 @@ type CreateGameStateOutput {
   game_state: game_state
   game_state_id: uuid!
 }
+type EmailSendStatus {
+  status: String!
+}
 """expression to compare columns of type Int. All fields are combined with logical 'AND'."""
 input Int_comparison_exp {
   _eq: Int
@@ -33,6 +36,10 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+input OTPCredentials {
+  emailHash: String!
+  oneTimePassword: String!
 }
 input StartGameInput {
   game_id: uuid!
@@ -57,6 +64,12 @@ input String_comparison_exp {
   _nlike: String
   _nsimilar: String
   _similar: String
+}
+type TeamToken {
+  token: String!
+}
+type Token {
+  token: String!
 }
 """
 A team's answer to a question
@@ -925,6 +938,7 @@ columns and relationships of "host"
 """
 type host {
   created_at: timestamptz
+  email_hash: String!
   """An array relationship"""
   games(
     """distinct select on columns"""
@@ -990,6 +1004,7 @@ input host_bool_exp {
   _not: host_bool_exp
   _or: [host_bool_exp]
   created_at: timestamptz_comparison_exp
+  email_hash: String_comparison_exp
   games: game_bool_exp
   id: uuid_comparison_exp
   updated_at: timestamptz_comparison_exp
@@ -999,6 +1014,8 @@ unique or primary key constraints on table "host"
 """
 enum host_constraint {
   """unique or primary key constraint"""
+  host_email_hash_key
+  """unique or primary key constraint"""
   host_pkey
 }
 """
@@ -1006,6 +1023,7 @@ input type for inserting data into table "host"
 """
 input host_insert_input {
   created_at: timestamptz
+  email_hash: String
   games: game_arr_rel_insert_input
   id: uuid
   updated_at: timestamptz
@@ -1013,6 +1031,7 @@ input host_insert_input {
 """aggregate max on columns"""
 type host_max_fields {
   created_at: timestamptz
+  email_hash: String
   id: uuid
   updated_at: timestamptz
 }
@@ -1021,12 +1040,14 @@ order by max() on columns of table "host"
 """
 input host_max_order_by {
   created_at: order_by
+  email_hash: order_by
   id: order_by
   updated_at: order_by
 }
 """aggregate min on columns"""
 type host_min_fields {
   created_at: timestamptz
+  email_hash: String
   id: uuid
   updated_at: timestamptz
 }
@@ -1035,6 +1056,7 @@ order by min() on columns of table "host"
 """
 input host_min_order_by {
   created_at: order_by
+  email_hash: order_by
   id: order_by
   updated_at: order_by
 }
@@ -1067,6 +1089,7 @@ ordering options when selecting data from "host"
 """
 input host_order_by {
   created_at: order_by
+  email_hash: order_by
   games_aggregate: game_aggregate_order_by
   id: order_by
   updated_at: order_by
@@ -1084,6 +1107,8 @@ enum host_select_column {
   """column name"""
   created_at
   """column name"""
+  email_hash
+  """column name"""
   id
   """column name"""
   updated_at
@@ -1093,6 +1118,7 @@ input type for updating data in table "host"
 """
 input host_set_input {
   created_at: timestamptz
+  email_hash: String
   id: uuid
   updated_at: timestamptz
 }
@@ -1103,13 +1129,35 @@ enum host_update_column {
   """column name"""
   created_at
   """column name"""
+  email_hash
+  """column name"""
   id
   """column name"""
   updated_at
 }
 scalar json
+"""expression to compare columns of type json. All fields are combined with logical 'AND'."""
+input json_comparison_exp {
+  _eq: json
+  _gt: json
+  _gte: json
+  _in: [json!]
+  _is_null: Boolean
+  _lt: json
+  _lte: json
+  _neq: json
+  _nin: [json!]
+}
 """mutation root"""
 type mutation_root {
+  """
+  perform the action: "access_token_from_otp"
+  """
+  access_token_from_otp(credentials: OTPCredentials!): Token
+  """
+  perform the action: "create_team"
+  """
+  create_team(gameStateId: uuid!, teamName: String!): TeamToken
   """
   delete data from the table: "answer"
   """
@@ -1165,6 +1213,17 @@ type mutation_root {
   delete single row from the table: "host"
   """
   delete_host_by_pk(id: uuid!): host
+  """
+  delete data from the table: "one_time_password"
+  """
+  delete_one_time_password(
+    """filter the rows which have to be deleted"""
+    where: one_time_password_bool_exp!
+  ): one_time_password_mutation_response
+  """
+  delete single row from the table: "one_time_password"
+  """
+  delete_one_time_password_by_pk(email_hash: String!, one_time_password_hash: String!): one_time_password
   """
   delete data from the table: "question"
   """
@@ -1300,6 +1359,24 @@ type mutation_root {
     on_conflict: host_on_conflict
   ): host
   """
+  insert data into the table: "one_time_password"
+  """
+  insert_one_time_password(
+    """the rows to be inserted"""
+    objects: [one_time_password_insert_input!]!
+    """on conflict condition"""
+    on_conflict: one_time_password_on_conflict
+  ): one_time_password_mutation_response
+  """
+  insert a single row into the table: "one_time_password"
+  """
+  insert_one_time_password_one(
+    """the row to be inserted"""
+    object: one_time_password_insert_input!
+    """on conflict condition"""
+    on_conflict: one_time_password_on_conflict
+  ): one_time_password
+  """
   insert data into the table: "question"
   """
   insert_question(
@@ -1371,6 +1448,10 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: team_on_conflict
   ): team
+  """
+  perform the action: "send_auth_link"
+  """
+  send_auth_link(email: String!): EmailSendStatus
   """
   perform the action: "start_game"
   """
@@ -1461,6 +1542,23 @@ type mutation_root {
     pk_columns: host_pk_columns_input!
   ): host
   """
+  update data of the table: "one_time_password"
+  """
+  update_one_time_password(
+    """sets the columns of the filtered rows to the given values"""
+    _set: one_time_password_set_input
+    """filter the rows which have to be updated"""
+    where: one_time_password_bool_exp!
+  ): one_time_password_mutation_response
+  """
+  update single row of the table: "one_time_password"
+  """
+  update_one_time_password_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: one_time_password_set_input
+    pk_columns: one_time_password_pk_columns_input!
+  ): one_time_password
+  """
   update data of the table: "question"
   """
   update_question(
@@ -1532,6 +1630,157 @@ type mutation_root {
     _set: team_set_input
     pk_columns: team_pk_columns_input!
   ): team
+}
+"""
+columns and relationships of "one_time_password"
+"""
+type one_time_password {
+  email_hash: String!
+  """An object relationship"""
+  host: host!
+  one_time_password_hash: String!
+}
+"""
+aggregated selection of "one_time_password"
+"""
+type one_time_password_aggregate {
+  aggregate: one_time_password_aggregate_fields
+  nodes: [one_time_password!]!
+}
+"""
+aggregate fields of "one_time_password"
+"""
+type one_time_password_aggregate_fields {
+  count(columns: [one_time_password_select_column!], distinct: Boolean): Int
+  max: one_time_password_max_fields
+  min: one_time_password_min_fields
+}
+"""
+order by aggregate values of table "one_time_password"
+"""
+input one_time_password_aggregate_order_by {
+  count: order_by
+  max: one_time_password_max_order_by
+  min: one_time_password_min_order_by
+}
+"""
+input type for inserting array relation for remote table "one_time_password"
+"""
+input one_time_password_arr_rel_insert_input {
+  data: [one_time_password_insert_input!]!
+  on_conflict: one_time_password_on_conflict
+}
+"""Boolean expression to filter rows from the table "one_time_password". All fields are combined with a logical 'AND'."""
+input one_time_password_bool_exp {
+  _and: [one_time_password_bool_exp]
+  _not: one_time_password_bool_exp
+  _or: [one_time_password_bool_exp]
+  email_hash: String_comparison_exp
+  host: host_bool_exp
+  one_time_password_hash: String_comparison_exp
+}
+"""
+unique or primary key constraints on table "one_time_password"
+"""
+enum one_time_password_constraint {
+  """unique or primary key constraint"""
+  one_time_password_pkey
+}
+"""
+input type for inserting data into table "one_time_password"
+"""
+input one_time_password_insert_input {
+  email_hash: String
+  host: host_obj_rel_insert_input
+  one_time_password_hash: String
+}
+"""aggregate max on columns"""
+type one_time_password_max_fields {
+  email_hash: String
+  one_time_password_hash: String
+}
+"""
+order by max() on columns of table "one_time_password"
+"""
+input one_time_password_max_order_by {
+  email_hash: order_by
+  one_time_password_hash: order_by
+}
+"""aggregate min on columns"""
+type one_time_password_min_fields {
+  email_hash: String
+  one_time_password_hash: String
+}
+"""
+order by min() on columns of table "one_time_password"
+"""
+input one_time_password_min_order_by {
+  email_hash: order_by
+  one_time_password_hash: order_by
+}
+"""
+response of any mutation on the table "one_time_password"
+"""
+type one_time_password_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+  """data of the affected rows by the mutation"""
+  returning: [one_time_password!]!
+}
+"""
+input type for inserting object relation for remote table "one_time_password"
+"""
+input one_time_password_obj_rel_insert_input {
+  data: one_time_password_insert_input!
+  on_conflict: one_time_password_on_conflict
+}
+"""
+on conflict condition type for table "one_time_password"
+"""
+input one_time_password_on_conflict {
+  constraint: one_time_password_constraint!
+  update_columns: [one_time_password_update_column!]!
+  where: one_time_password_bool_exp
+}
+"""
+ordering options when selecting data from "one_time_password"
+"""
+input one_time_password_order_by {
+  email_hash: order_by
+  host: host_order_by
+  one_time_password_hash: order_by
+}
+"""
+primary key columns input for table: "one_time_password"
+"""
+input one_time_password_pk_columns_input {
+  email_hash: String!
+  one_time_password_hash: String!
+}
+"""
+select columns of table "one_time_password"
+"""
+enum one_time_password_select_column {
+  """column name"""
+  email_hash
+  """column name"""
+  one_time_password_hash
+}
+"""
+input type for updating data in table "one_time_password"
+"""
+input one_time_password_set_input {
+  email_hash: String
+  one_time_password_hash: String
+}
+"""
+update columns of table "one_time_password"
+"""
+enum one_time_password_update_column {
+  """column name"""
+  email_hash
+  """column name"""
+  one_time_password_hash
 }
 """column ordering options"""
 enum order_by {
@@ -1710,6 +1959,38 @@ type query_root {
   ): host_aggregate!
   """fetch data from the table: "host" using primary key columns"""
   host_by_pk(id: uuid!): host
+  """
+  fetch data from the table: "one_time_password"
+  """
+  one_time_password(
+    """distinct select on columns"""
+    distinct_on: [one_time_password_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [one_time_password_order_by!]
+    """filter the rows returned"""
+    where: one_time_password_bool_exp
+  ): [one_time_password!]!
+  """
+  fetch aggregated fields from the table: "one_time_password"
+  """
+  one_time_password_aggregate(
+    """distinct select on columns"""
+    distinct_on: [one_time_password_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [one_time_password_order_by!]
+    """filter the rows returned"""
+    where: one_time_password_bool_exp
+  ): one_time_password_aggregate!
+  """fetch data from the table: "one_time_password" using primary key columns"""
+  one_time_password_by_pk(email_hash: String!, one_time_password_hash: String!): one_time_password
   """
   fetch data from the table: "question"
   """
@@ -2800,6 +3081,38 @@ type subscription_root {
   ): host_aggregate!
   """fetch data from the table: "host" using primary key columns"""
   host_by_pk(id: uuid!): host
+  """
+  fetch data from the table: "one_time_password"
+  """
+  one_time_password(
+    """distinct select on columns"""
+    distinct_on: [one_time_password_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [one_time_password_order_by!]
+    """filter the rows returned"""
+    where: one_time_password_bool_exp
+  ): [one_time_password!]!
+  """
+  fetch aggregated fields from the table: "one_time_password"
+  """
+  one_time_password_aggregate(
+    """distinct select on columns"""
+    distinct_on: [one_time_password_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [one_time_password_order_by!]
+    """filter the rows returned"""
+    where: one_time_password_bool_exp
+  ): one_time_password_aggregate!
+  """fetch data from the table: "one_time_password" using primary key columns"""
+  one_time_password_by_pk(email_hash: String!, one_time_password_hash: String!): one_time_password
   """
   fetch data from the table: "question"
   """

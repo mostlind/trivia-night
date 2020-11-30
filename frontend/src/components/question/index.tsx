@@ -38,7 +38,7 @@ export function Question({
     <div>
       <p>{question.question_text}</p>
       <p>Value: {question.point_value}</p>
-      <Link href={`/setup/${question.game_id}/questions/${question.id}`}>
+      <Link href={`/host/setup/${question.game_id}/questions/${question.id}`}>
         Edit
       </Link>
       <p>

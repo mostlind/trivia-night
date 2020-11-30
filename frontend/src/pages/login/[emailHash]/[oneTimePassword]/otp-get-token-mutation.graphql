@@ -1,0 +1,7 @@
+mutation AccessTokenFromOTP($emailHash: String!, $oneTimePassword: String!) {
+  access_token_from_otp(
+    credentials: { emailHash: $emailHash, oneTimePassword: $oneTimePassword }
+  ) {
+    token
+  }
+}

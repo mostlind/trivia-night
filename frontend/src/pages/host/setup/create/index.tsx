@@ -6,7 +6,7 @@ import { OperationResult } from "urql";
 import {
   useCreateGameMutation,
   CreateGameMutation,
-} from "../../../generated/graphql";
+} from "../../../../generated/graphql";
 
 export default function AddGame() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function AddGame() {
         throw new Error("huh?");
       }
 
-      router.push("/setup/" + gameId);
+      router.push("/host/setup/" + gameId);
     },
     [router]
   );

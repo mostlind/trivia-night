@@ -19,7 +19,7 @@ export default function Setup() {
       {req.data?.game.map((game) => (
         <GameSummary key={game.id} game={game} />
       ))}
-      <Link href="/setup/create">Add Game</Link>
+      <Link href="/host/setup/create">Add Game</Link>
     </>
   );
 }

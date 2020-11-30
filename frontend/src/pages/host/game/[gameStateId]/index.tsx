@@ -61,6 +61,7 @@ export default function GameHostPage() {
     variables: {
       gameStateId,
     },
+    pause: gameStateId === undefined,
   });
 
   if (game.error) {
