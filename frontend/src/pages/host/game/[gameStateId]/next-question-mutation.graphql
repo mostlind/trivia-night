@@ -1,0 +1,16 @@
+mutation NextQuestion($gameStateId: uuid!, $questionStateId: uuid!) {
+  update_game_state_by_pk(
+    pk_columns: { id: $gameStateId }
+    _set: { current_question_id: $questionStateId }
+  ) {
+    id
+    current_question_id
+  }
+
+  update_question_state_by_pk(
+    pk_columns: { id: $questionStateId }
+    _set: { state: open }
+  ) {
+    id
+  }
+}

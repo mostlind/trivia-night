@@ -1,0 +1,5 @@
+mutation JoinGameCreateTeam($teamName: String!, $gameStateId: uuid!) {
+  create_team(teamName: $teamName, gameStateId: $gameStateId) {
+    token
+  }
+}

@@ -29,22 +29,30 @@ export default function JoinGamePage() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log(e);
+          if (gameStateId === undefined) {
+            return;
+          }
           const formData = new FormData(e.currentTarget);
           const teamName = formData.get("team-name");
           if (typeof teamName !== "string") {
             throw new Error("weird");
           }
           createTeam({
-            team: {
-              game_state_id: gameStateId,
-              name: teamName,
-            },
-          }).then((data) => {
-            if (data.error) {
-              console.error(data.error);
-              throw new Error(data.error.message);
+            gameStateId,
+            teamName,
+          }).then((response) => {
+            if (response.error) {
+              console.error(response.error);
+              throw new Error(response.error.message);
             }
+
+            if (response.data?.create_team?.token === undefined) {
+              throw new Error("something weird happened");
+            }
+            localStorage.setItem(
+              `team-${gameStateId}-token`,
+              response.data?.create_team?.token
+            );
             router.push("/game/" + gameStateId);
           });
         }}

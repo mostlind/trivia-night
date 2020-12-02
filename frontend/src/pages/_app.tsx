@@ -1,18 +1,10 @@
 import "../styles/globals.css";
 import React from "react";
-import { NextWebVitalsMetric } from "next/app";
-import { devtoolsExchange } from "@urql/devtools";
-import { SubscriptionClient } from "subscriptions-transport-ws";
-import {
-  cacheExchange,
-  dedupExchange,
-  fetchExchange,
-  createClient,
-  Provider,
-  subscriptionExchange,
-  Exchange,
-} from "urql";
+import { AppProps, NextWebVitalsMetric } from "next/app";
+import { Provider } from "urql";
 import Head from "next/head";
+import { urqlClient } from "../util/urql-client";
+import { Router } from "next/dist/client/router";
 
 if (
   [
@@ -23,65 +15,65 @@ if (
   throw new Error("Must provide all environment variables");
 }
 
-const clientOnlyExchanges: Exchange[] = [];
+// export function reportWebVitals(metric: NextWebVitalsMetric) {
+//   // TODO: batch writes
+//   const client = urqlClient({});
+//   client
+//     .mutation(
+//       `
+//     mutation WriteMetrics($metrics: [frontend_metrics_insert_input!]!) {
+//       insert_frontend_metrics(objects: $metrics) {
+//         affected_rows
+//       }
+//     }
+//   `,
+//       { metrics: [metric] }
+//     )
+//     .toPromise();
+// }
 
-if (typeof window !== "undefined") {
-  const subscriptionClient = new SubscriptionClient(
-    process.env.NEXT_PUBLIC_TODO_APP_BACKEND_WEBSOCKET_URL!,
-    {
-      reconnect: true,
-      connectionParams: {
-        headers: {
-          Authorization: "Bearer host 324b7800-12f5-483c-a76e-8346ce107fb1",
-        },
-      },
+function getToken(router: Router) {
+  console.log({ ...router });
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  if (router.pathname.startsWith("/host")) {
+    const hostToken = localStorage.getItem("host-token");
+    if (hostToken === null) {
+      router.push("/login");
+      return;
     }
-  );
+    return hostToken;
+  }
 
-  clientOnlyExchanges.push(
-    subscriptionExchange({
-      forwardSubscription(operation) {
-        return subscriptionClient.request(operation);
-      },
-    })
-  );
+  if (router.pathname.startsWith("/game")) {
+    const gameStateId = router.query.gameStateId;
+    if (gameStateId === undefined) {
+      return null;
+    }
+    const teamToken = localStorage.getItem(
+      `team-${router.query.gameStateId}-token`
+    );
+
+    if (teamToken === null) {
+      router.push("/join/" + gameStateId);
+      return;
+    }
+
+    return teamToken;
+  }
+
+  return null;
 }
 
-const client = createClient({
-  url: process.env.NEXT_PUBLIC_TODO_APP_BACKEND_URL!,
-  fetchOptions() {
-    return {
-      headers: {
-        Authorization: "Bearer host 324b7800-12f5-483c-a76e-8346ce107fb1",
-      },
-    };
-  },
-  exchanges: [
-    devtoolsExchange,
-    dedupExchange,
-    cacheExchange,
-    fetchExchange,
-    ...clientOnlyExchanges,
-  ],
-});
-
-export function reportWebVitals(metric: NextWebVitalsMetric) {
-  // TODO: batch writes
-  client
-    .mutation(
-      `
-    mutation WriteMetrics($metrics: [frontend_metrics_insert_input!]!) {
-      insert_frontend_metrics(objects: $metrics) {
-        affected_rows
-      }
-    }
-  `,
-      { metrics: [metric] }
-    )
-    .toPromise();
-}
-
-export default function App({ Component, pageProps }: any) {
+export default function App({ Component, pageProps, router }: AppProps) {
+  const token = getToken(router);
+  const clientOptions: { accessToken?: string } = {};
+  if (token !== null) {
+    clientOptions.accessToken = token;
+  }
+  const client = urqlClient(clientOptions);
   return (
     <>
       <Head>

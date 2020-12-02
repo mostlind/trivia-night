@@ -1,0 +1,9 @@
+mutation ScoreQuestion($correct: Boolean!, $answerId: uuid!) {
+  update_answer_by_pk(
+    pk_columns: { id: { _eq: $answerId } }
+    _set: { correct: $correct }
+  ) {
+    id
+    correct
+  }
+}

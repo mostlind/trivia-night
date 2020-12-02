@@ -1,0 +1,17 @@
+mutation UpsertHost($emailHash: String!, $oneTimePasswordHash: String!) {
+  insert_host_one(
+    object: { email_hash: $emailHash }
+    on_conflict: { constraint: host_email_hash_key, update_columns: [] }
+  ) {
+    id
+  }
+
+  insert_one_time_password_one(
+    object: {
+      email_hash: $emailHash
+      one_time_password_hash: $oneTimePasswordHash
+    }
+  ) {
+    email_hash
+  }
+}

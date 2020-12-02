@@ -10,6 +10,21 @@ tables:
   - name: team
     using:
       foreign_key_constraint_on: team_id
+  insert_permissions:
+  - role: participant
+    permission:
+      check:
+        question_state:
+          game_state:
+            teams:
+              id:
+                _eq: X-Hasura-User-Id
+      set:
+        team_id: x-hasura-User-Id
+      columns:
+      - question_state_id
+      - value
+      backend_only: false
   select_permissions:
   - role: host
     permission:
@@ -25,6 +40,14 @@ tables:
             game:
               host_id:
                 _eq: X-Hasura-User-Id
+  - role: participant
+    permission:
+      columns:
+      - id
+      - value
+      filter:
+        team_id:
+          _eq: X-Hasura-User-Id
   update_permissions:
   - role: host
     permission:
@@ -71,6 +94,11 @@ tables:
       - name
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - name
+      filter: {}
   - role: host
     permission:
       columns:
@@ -81,6 +109,15 @@ tables:
       filter:
         host_id:
           _eq: X-Hasura-User-Id
+  - role: participant
+    permission:
+      columns:
+      - name
+      filter:
+        game_states:
+          teams:
+            id:
+              _eq: X-Hasura-User-Id
   update_permissions:
   - role: host
     permission:
@@ -137,6 +174,12 @@ tables:
       - id
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - game_id
+      - id
+      filter: {}
   - role: host
     permission:
       columns:
@@ -147,6 +190,17 @@ tables:
       filter:
         game:
           host_id:
+            _eq: X-Hasura-User-Id
+  - role: participant
+    permission:
+      columns:
+      - current_question_id
+      - game_id
+      - id
+      - state
+      filter:
+        teams:
+          id:
             _eq: X-Hasura-User-Id
   update_permissions:
   - role: host
@@ -188,6 +242,51 @@ tables:
         table:
           schema: public
           name: game
+  insert_permissions:
+  - role: api-user
+    permission:
+      check: {}
+      columns:
+      - email_hash
+      backend_only: false
+  select_permissions:
+  - role: api-user
+    permission:
+      columns:
+      - id
+      filter: {}
+  update_permissions:
+  - role: api-user
+    permission:
+      columns:
+      - email_hash
+      filter: {}
+      check: {}
+- table:
+    schema: public
+    name: one_time_password
+  object_relationships:
+  - name: host
+    using:
+      foreign_key_constraint_on: email_hash
+  insert_permissions:
+  - role: api-user
+    permission:
+      check: {}
+      columns:
+      - email_hash
+      - one_time_password_hash
+      backend_only: false
+  select_permissions:
+  - role: api-user
+    permission:
+      columns:
+      - email_hash
+      filter: {}
+  delete_permissions:
+  - role: api-user
+    permission:
+      filter: {}
 - table:
     schema: public
     name: question
@@ -230,6 +329,17 @@ tables:
         game:
           host_id:
             _eq: X-Hasura-User-Id
+  - role: participant
+    permission:
+      columns:
+      - point_value
+      - question_text
+      filter:
+        question_states:
+          game_state:
+            teams:
+              id:
+                _eq: X-Hasura-User-Id
   update_permissions:
   - role: host
     permission:
@@ -308,6 +418,17 @@ tables:
           game:
             host_id:
               _eq: X-Hasura-User-Id
+  - role: participant
+    permission:
+      columns:
+      - id
+      - question_id
+      - state
+      filter:
+        game_state:
+          teams:
+            id:
+              _eq: X-Hasura-User-Id
   update_permissions:
   - role: host
     permission:
@@ -352,7 +473,20 @@ tables:
         table:
           schema: public
           name: answer
+  insert_permissions:
+  - role: api-user
+    permission:
+      check: {}
+      columns:
+      - game_state_id
+      - name
+      backend_only: false
   select_permissions:
+  - role: api-user
+    permission:
+      columns:
+      - id
+      filter: {}
   - role: host
     permission:
       columns:
@@ -365,7 +499,31 @@ tables:
             host_id:
               _eq: X-Hasura-User-Id
 actions:
-- name: sendLoginEmail
+- name: access_token_from_otp
+  definition:
+    handler: http://trivia-night-frontend:3000/api/otp-login
+    output_type: Token
+    arguments:
+    - name: credentials
+      type: OTPCredentials!
+    type: mutation
+    kind: synchronous
+  permissions:
+  - role: anonymous
+- name: create_team
+  definition:
+    handler: http://trivia-night-frontend:3000/api/create-team
+    output_type: TeamToken
+    arguments:
+    - name: teamName
+      type: String!
+    - name: gameStateId
+      type: uuid!
+    type: mutation
+    kind: synchronous
+  permissions:
+  - role: anonymous
+- name: send_auth_link
   definition:
     handler: http://trivia-night-frontend:3000/api/send-auth-link
     output_type: EmailSendStatus
@@ -375,7 +533,7 @@ actions:
     type: mutation
     kind: synchronous
   permissions:
-  - role: host
+  - role: anonymous
 - name: start_game
   definition:
     handler: http://trivia-night-frontend:3000/api/start-game
@@ -397,6 +555,12 @@ custom_types:
     fields:
     - name: game_id
       type: uuid!
+  - name: OTPCredentials
+    fields:
+    - name: emailHash
+      type: String!
+    - name: oneTimePassword
+      type: String!
   objects:
   - name: CreateGameStateOutput
     fields:
@@ -417,4 +581,12 @@ custom_types:
   - name: EmailSendStatus
     fields:
     - name: status
+      type: String!
+  - name: Token
+    fields:
+    - name: token
+      type: String!
+  - name: TeamToken
+    fields:
+    - name: token
       type: String!

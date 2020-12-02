@@ -1,0 +1,10 @@
+mutation DeleteOneTimePassword($emailHash: String!, $otpHash: String!) {
+  delete_one_time_password_by_pk(
+    email_hash: $emailHash
+    one_time_password_hash: $otpHash
+  ) {
+    host {
+      id
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation CreateTeam($team: team_insert_input!) {
+  insert_team_one(object: $team) {
+    id
+  }
+}

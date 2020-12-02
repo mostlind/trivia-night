@@ -14,6 +14,8 @@ subscription GameHostPage($gameStateId: uuid!) {
         question_text
       }
       answers {
+        id
+        correct
         team {
           id
           name

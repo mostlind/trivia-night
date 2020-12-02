@@ -20,7 +20,7 @@ export default function ProjectPage() {
           question_text: question.questionText,
           point_value: question.pointValue,
         }).then(() => {
-          router.push(`/setup/${gameId}`);
+          router.push(`/host/setup/${gameId}`);
         });
       }}
     />

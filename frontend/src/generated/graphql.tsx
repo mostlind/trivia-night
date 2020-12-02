@@ -38,6 +38,11 @@ export type CreateGameStateOutput = {
   game_state_id: Scalars['uuid'];
 };
 
+export type EmailSendStatus = {
+  __typename?: 'EmailSendStatus';
+  status: Scalars['String'];
+};
+
 /** expression to compare columns of type Int. All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: Maybe<Scalars['Int']>;
@@ -49,6 +54,11 @@ export type Int_Comparison_Exp = {
   _lte?: Maybe<Scalars['Int']>;
   _neq?: Maybe<Scalars['Int']>;
   _nin?: Maybe<Array<Scalars['Int']>>;
+};
+
+export type OtpCredentials = {
+  emailHash: Scalars['String'];
+  oneTimePassword: Scalars['String'];
 };
 
 export type StartGameInput = {
@@ -77,6 +87,16 @@ export type String_Comparison_Exp = {
   _nlike?: Maybe<Scalars['String']>;
   _nsimilar?: Maybe<Scalars['String']>;
   _similar?: Maybe<Scalars['String']>;
+};
+
+export type TeamToken = {
+  __typename?: 'TeamToken';
+  token: Scalars['String'];
+};
+
+export type Token = {
+  __typename?: 'Token';
+  token: Scalars['String'];
 };
 
 /**
@@ -959,6 +979,7 @@ export enum Game_Update_Column {
 export type Host = {
   __typename?: 'host';
   created_at?: Maybe<Scalars['timestamptz']>;
+  email_hash: Scalars['String'];
   /** An array relationship */
   games: Array<Game>;
   /** An aggregated array relationship */
@@ -1038,6 +1059,7 @@ export type Host_Bool_Exp = {
   _not?: Maybe<Host_Bool_Exp>;
   _or?: Maybe<Array<Maybe<Host_Bool_Exp>>>;
   created_at?: Maybe<Timestamptz_Comparison_Exp>;
+  email_hash?: Maybe<String_Comparison_Exp>;
   games?: Maybe<Game_Bool_Exp>;
   id?: Maybe<Uuid_Comparison_Exp>;
   updated_at?: Maybe<Timestamptz_Comparison_Exp>;
@@ -1046,12 +1068,15 @@ export type Host_Bool_Exp = {
 /** unique or primary key constraints on table "host" */
 export enum Host_Constraint {
   /** unique or primary key constraint */
+  HostEmailHashKey = 'host_email_hash_key',
+  /** unique or primary key constraint */
   HostPkey = 'host_pkey'
 }
 
 /** input type for inserting data into table "host" */
 export type Host_Insert_Input = {
   created_at?: Maybe<Scalars['timestamptz']>;
+  email_hash?: Maybe<Scalars['String']>;
   games?: Maybe<Game_Arr_Rel_Insert_Input>;
   id?: Maybe<Scalars['uuid']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
@@ -1061,6 +1086,7 @@ export type Host_Insert_Input = {
 export type Host_Max_Fields = {
   __typename?: 'host_max_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
+  email_hash?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
@@ -1068,6 +1094,7 @@ export type Host_Max_Fields = {
 /** order by max() on columns of table "host" */
 export type Host_Max_Order_By = {
   created_at?: Maybe<Order_By>;
+  email_hash?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
 };
@@ -1076,6 +1103,7 @@ export type Host_Max_Order_By = {
 export type Host_Min_Fields = {
   __typename?: 'host_min_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
+  email_hash?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
@@ -1083,6 +1111,7 @@ export type Host_Min_Fields = {
 /** order by min() on columns of table "host" */
 export type Host_Min_Order_By = {
   created_at?: Maybe<Order_By>;
+  email_hash?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
 };
@@ -1112,6 +1141,7 @@ export type Host_On_Conflict = {
 /** ordering options when selecting data from "host" */
 export type Host_Order_By = {
   created_at?: Maybe<Order_By>;
+  email_hash?: Maybe<Order_By>;
   games_aggregate?: Maybe<Game_Aggregate_Order_By>;
   id?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
@@ -1127,6 +1157,8 @@ export enum Host_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  EmailHash = 'email_hash',
+  /** column name */
   Id = 'id',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -1135,6 +1167,7 @@ export enum Host_Select_Column {
 /** input type for updating data in table "host" */
 export type Host_Set_Input = {
   created_at?: Maybe<Scalars['timestamptz']>;
+  email_hash?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
@@ -1144,15 +1177,34 @@ export enum Host_Update_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  EmailHash = 'email_hash',
+  /** column name */
   Id = 'id',
   /** column name */
   UpdatedAt = 'updated_at'
 }
 
 
+/** expression to compare columns of type json. All fields are combined with logical 'AND'. */
+export type Json_Comparison_Exp = {
+  _eq?: Maybe<Scalars['json']>;
+  _gt?: Maybe<Scalars['json']>;
+  _gte?: Maybe<Scalars['json']>;
+  _in?: Maybe<Array<Scalars['json']>>;
+  _is_null?: Maybe<Scalars['Boolean']>;
+  _lt?: Maybe<Scalars['json']>;
+  _lte?: Maybe<Scalars['json']>;
+  _neq?: Maybe<Scalars['json']>;
+  _nin?: Maybe<Array<Scalars['json']>>;
+};
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
+  /** perform the action: "access_token_from_otp" */
+  access_token_from_otp?: Maybe<Token>;
+  /** perform the action: "create_team" */
+  create_team?: Maybe<TeamToken>;
   /** delete data from the table: "answer" */
   delete_answer?: Maybe<Answer_Mutation_Response>;
   /** delete single row from the table: "answer" */
@@ -1173,6 +1225,10 @@ export type Mutation_Root = {
   delete_host?: Maybe<Host_Mutation_Response>;
   /** delete single row from the table: "host" */
   delete_host_by_pk?: Maybe<Host>;
+  /** delete data from the table: "one_time_password" */
+  delete_one_time_password?: Maybe<One_Time_Password_Mutation_Response>;
+  /** delete single row from the table: "one_time_password" */
+  delete_one_time_password_by_pk?: Maybe<One_Time_Password>;
   /** delete data from the table: "question" */
   delete_question?: Maybe<Question_Mutation_Response>;
   /** delete single row from the table: "question" */
@@ -1209,6 +1265,10 @@ export type Mutation_Root = {
   insert_host?: Maybe<Host_Mutation_Response>;
   /** insert a single row into the table: "host" */
   insert_host_one?: Maybe<Host>;
+  /** insert data into the table: "one_time_password" */
+  insert_one_time_password?: Maybe<One_Time_Password_Mutation_Response>;
+  /** insert a single row into the table: "one_time_password" */
+  insert_one_time_password_one?: Maybe<One_Time_Password>;
   /** insert data into the table: "question" */
   insert_question?: Maybe<Question_Mutation_Response>;
   /** insert a single row into the table: "question" */
@@ -1225,6 +1285,8 @@ export type Mutation_Root = {
   insert_team?: Maybe<Team_Mutation_Response>;
   /** insert a single row into the table: "team" */
   insert_team_one?: Maybe<Team>;
+  /** perform the action: "send_auth_link" */
+  send_auth_link?: Maybe<EmailSendStatus>;
   /** perform the action: "start_game" */
   start_game?: Maybe<CreateGameStateOutput>;
   /** update data of the table: "answer" */
@@ -1247,6 +1309,10 @@ export type Mutation_Root = {
   update_host?: Maybe<Host_Mutation_Response>;
   /** update single row of the table: "host" */
   update_host_by_pk?: Maybe<Host>;
+  /** update data of the table: "one_time_password" */
+  update_one_time_password?: Maybe<One_Time_Password_Mutation_Response>;
+  /** update single row of the table: "one_time_password" */
+  update_one_time_password_by_pk?: Maybe<One_Time_Password>;
   /** update data of the table: "question" */
   update_question?: Maybe<Question_Mutation_Response>;
   /** update single row of the table: "question" */
@@ -1263,6 +1329,19 @@ export type Mutation_Root = {
   update_team?: Maybe<Team_Mutation_Response>;
   /** update single row of the table: "team" */
   update_team_by_pk?: Maybe<Team>;
+};
+
+
+/** mutation root */
+export type Mutation_RootAccess_Token_From_OtpArgs = {
+  credentials: OtpCredentials;
+};
+
+
+/** mutation root */
+export type Mutation_RootCreate_TeamArgs = {
+  gameStateId: Scalars['uuid'];
+  teamName: Scalars['String'];
 };
 
 
@@ -1323,6 +1402,19 @@ export type Mutation_RootDelete_HostArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Host_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_One_Time_PasswordArgs = {
+  where: One_Time_Password_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_One_Time_Password_By_PkArgs = {
+  email_hash: Scalars['String'];
+  one_time_password_hash: Scalars['String'];
 };
 
 
@@ -1445,6 +1537,20 @@ export type Mutation_RootInsert_Host_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_One_Time_PasswordArgs = {
+  objects: Array<One_Time_Password_Insert_Input>;
+  on_conflict?: Maybe<One_Time_Password_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_One_Time_Password_OneArgs = {
+  object: One_Time_Password_Insert_Input;
+  on_conflict?: Maybe<One_Time_Password_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_QuestionArgs = {
   objects: Array<Question_Insert_Input>;
   on_conflict?: Maybe<Question_On_Conflict>;
@@ -1497,6 +1603,12 @@ export type Mutation_RootInsert_TeamArgs = {
 export type Mutation_RootInsert_Team_OneArgs = {
   object: Team_Insert_Input;
   on_conflict?: Maybe<Team_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootSend_Auth_LinkArgs = {
+  email: Scalars['String'];
 };
 
 
@@ -1577,6 +1689,20 @@ export type Mutation_RootUpdate_Host_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_One_Time_PasswordArgs = {
+  _set?: Maybe<One_Time_Password_Set_Input>;
+  where: One_Time_Password_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_One_Time_Password_By_PkArgs = {
+  _set?: Maybe<One_Time_Password_Set_Input>;
+  pk_columns: One_Time_Password_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_QuestionArgs = {
   _inc?: Maybe<Question_Inc_Input>;
   _set?: Maybe<Question_Set_Input>;
@@ -1633,6 +1759,156 @@ export type Mutation_RootUpdate_Team_By_PkArgs = {
   pk_columns: Team_Pk_Columns_Input;
 };
 
+/** columns and relationships of "one_time_password" */
+export type One_Time_Password = {
+  __typename?: 'one_time_password';
+  email_hash: Scalars['String'];
+  /** An object relationship */
+  host: Host;
+  one_time_password_hash: Scalars['String'];
+};
+
+/** aggregated selection of "one_time_password" */
+export type One_Time_Password_Aggregate = {
+  __typename?: 'one_time_password_aggregate';
+  aggregate?: Maybe<One_Time_Password_Aggregate_Fields>;
+  nodes: Array<One_Time_Password>;
+};
+
+/** aggregate fields of "one_time_password" */
+export type One_Time_Password_Aggregate_Fields = {
+  __typename?: 'one_time_password_aggregate_fields';
+  count?: Maybe<Scalars['Int']>;
+  max?: Maybe<One_Time_Password_Max_Fields>;
+  min?: Maybe<One_Time_Password_Min_Fields>;
+};
+
+
+/** aggregate fields of "one_time_password" */
+export type One_Time_Password_Aggregate_FieldsCountArgs = {
+  columns?: Maybe<Array<One_Time_Password_Select_Column>>;
+  distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "one_time_password" */
+export type One_Time_Password_Aggregate_Order_By = {
+  count?: Maybe<Order_By>;
+  max?: Maybe<One_Time_Password_Max_Order_By>;
+  min?: Maybe<One_Time_Password_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "one_time_password" */
+export type One_Time_Password_Arr_Rel_Insert_Input = {
+  data: Array<One_Time_Password_Insert_Input>;
+  on_conflict?: Maybe<One_Time_Password_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "one_time_password". All fields are combined with a logical 'AND'. */
+export type One_Time_Password_Bool_Exp = {
+  _and?: Maybe<Array<Maybe<One_Time_Password_Bool_Exp>>>;
+  _not?: Maybe<One_Time_Password_Bool_Exp>;
+  _or?: Maybe<Array<Maybe<One_Time_Password_Bool_Exp>>>;
+  email_hash?: Maybe<String_Comparison_Exp>;
+  host?: Maybe<Host_Bool_Exp>;
+  one_time_password_hash?: Maybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "one_time_password" */
+export enum One_Time_Password_Constraint {
+  /** unique or primary key constraint */
+  OneTimePasswordPkey = 'one_time_password_pkey'
+}
+
+/** input type for inserting data into table "one_time_password" */
+export type One_Time_Password_Insert_Input = {
+  email_hash?: Maybe<Scalars['String']>;
+  host?: Maybe<Host_Obj_Rel_Insert_Input>;
+  one_time_password_hash?: Maybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type One_Time_Password_Max_Fields = {
+  __typename?: 'one_time_password_max_fields';
+  email_hash?: Maybe<Scalars['String']>;
+  one_time_password_hash?: Maybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "one_time_password" */
+export type One_Time_Password_Max_Order_By = {
+  email_hash?: Maybe<Order_By>;
+  one_time_password_hash?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type One_Time_Password_Min_Fields = {
+  __typename?: 'one_time_password_min_fields';
+  email_hash?: Maybe<Scalars['String']>;
+  one_time_password_hash?: Maybe<Scalars['String']>;
+};
+
+/** order by min() on columns of table "one_time_password" */
+export type One_Time_Password_Min_Order_By = {
+  email_hash?: Maybe<Order_By>;
+  one_time_password_hash?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "one_time_password" */
+export type One_Time_Password_Mutation_Response = {
+  __typename?: 'one_time_password_mutation_response';
+  /** number of affected rows by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data of the affected rows by the mutation */
+  returning: Array<One_Time_Password>;
+};
+
+/** input type for inserting object relation for remote table "one_time_password" */
+export type One_Time_Password_Obj_Rel_Insert_Input = {
+  data: One_Time_Password_Insert_Input;
+  on_conflict?: Maybe<One_Time_Password_On_Conflict>;
+};
+
+/** on conflict condition type for table "one_time_password" */
+export type One_Time_Password_On_Conflict = {
+  constraint: One_Time_Password_Constraint;
+  update_columns: Array<One_Time_Password_Update_Column>;
+  where?: Maybe<One_Time_Password_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "one_time_password" */
+export type One_Time_Password_Order_By = {
+  email_hash?: Maybe<Order_By>;
+  host?: Maybe<Host_Order_By>;
+  one_time_password_hash?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "one_time_password" */
+export type One_Time_Password_Pk_Columns_Input = {
+  email_hash: Scalars['String'];
+  one_time_password_hash: Scalars['String'];
+};
+
+/** select columns of table "one_time_password" */
+export enum One_Time_Password_Select_Column {
+  /** column name */
+  EmailHash = 'email_hash',
+  /** column name */
+  OneTimePasswordHash = 'one_time_password_hash'
+}
+
+/** input type for updating data in table "one_time_password" */
+export type One_Time_Password_Set_Input = {
+  email_hash?: Maybe<Scalars['String']>;
+  one_time_password_hash?: Maybe<Scalars['String']>;
+};
+
+/** update columns of table "one_time_password" */
+export enum One_Time_Password_Update_Column {
+  /** column name */
+  EmailHash = 'email_hash',
+  /** column name */
+  OneTimePasswordHash = 'one_time_password_hash'
+}
+
 /** column ordering options */
 export enum Order_By {
   /** in the ascending order, nulls last */
@@ -1682,6 +1958,12 @@ export type Query_Root = {
   host_aggregate: Host_Aggregate;
   /** fetch data from the table: "host" using primary key columns */
   host_by_pk?: Maybe<Host>;
+  /** fetch data from the table: "one_time_password" */
+  one_time_password: Array<One_Time_Password>;
+  /** fetch aggregated fields from the table: "one_time_password" */
+  one_time_password_aggregate: One_Time_Password_Aggregate;
+  /** fetch data from the table: "one_time_password" using primary key columns */
+  one_time_password_by_pk?: Maybe<One_Time_Password>;
   /** fetch data from the table: "question" */
   question: Array<Question>;
   /** fetch aggregated fields from the table: "question" */
@@ -1836,6 +2118,33 @@ export type Query_RootHost_AggregateArgs = {
 /** query root */
 export type Query_RootHost_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+/** query root */
+export type Query_RootOne_Time_PasswordArgs = {
+  distinct_on?: Maybe<Array<One_Time_Password_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<One_Time_Password_Order_By>>;
+  where?: Maybe<One_Time_Password_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootOne_Time_Password_AggregateArgs = {
+  distinct_on?: Maybe<Array<One_Time_Password_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<One_Time_Password_Order_By>>;
+  where?: Maybe<One_Time_Password_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootOne_Time_Password_By_PkArgs = {
+  email_hash: Scalars['String'];
+  one_time_password_hash: Scalars['String'];
 };
 
 
@@ -2784,6 +3093,12 @@ export type Subscription_Root = {
   host_aggregate: Host_Aggregate;
   /** fetch data from the table: "host" using primary key columns */
   host_by_pk?: Maybe<Host>;
+  /** fetch data from the table: "one_time_password" */
+  one_time_password: Array<One_Time_Password>;
+  /** fetch aggregated fields from the table: "one_time_password" */
+  one_time_password_aggregate: One_Time_Password_Aggregate;
+  /** fetch data from the table: "one_time_password" using primary key columns */
+  one_time_password_by_pk?: Maybe<One_Time_Password>;
   /** fetch data from the table: "question" */
   question: Array<Question>;
   /** fetch aggregated fields from the table: "question" */
@@ -2938,6 +3253,33 @@ export type Subscription_RootHost_AggregateArgs = {
 /** subscription root */
 export type Subscription_RootHost_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+/** subscription root */
+export type Subscription_RootOne_Time_PasswordArgs = {
+  distinct_on?: Maybe<Array<One_Time_Password_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<One_Time_Password_Order_By>>;
+  where?: Maybe<One_Time_Password_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootOne_Time_Password_AggregateArgs = {
+  distinct_on?: Maybe<Array<One_Time_Password_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<One_Time_Password_Order_By>>;
+  where?: Maybe<One_Time_Password_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootOne_Time_Password_By_PkArgs = {
+  email_hash: Scalars['String'];
+  one_time_password_hash: Scalars['String'];
 };
 
 
@@ -3311,6 +3653,53 @@ export type QuestionComponentFragment = (
   & Pick<Question, 'id' | 'game_id' | 'question_text' | 'point_value'>
 );
 
+export type CreateTeamMutationVariables = Exact<{
+  team: Team_Insert_Input;
+}>;
+
+
+export type CreateTeamMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_team_one?: Maybe<(
+    { __typename?: 'team' }
+    & Pick<Team, 'id'>
+  )> }
+);
+
+export type DeleteOneTimePasswordMutationVariables = Exact<{
+  emailHash: Scalars['String'];
+  otpHash: Scalars['String'];
+}>;
+
+
+export type DeleteOneTimePasswordMutation = (
+  { __typename?: 'mutation_root' }
+  & { delete_one_time_password_by_pk?: Maybe<(
+    { __typename?: 'one_time_password' }
+    & { host: (
+      { __typename?: 'host' }
+      & Pick<Host, 'id'>
+    ) }
+  )> }
+);
+
+export type UpsertHostMutationVariables = Exact<{
+  emailHash: Scalars['String'];
+  oneTimePasswordHash: Scalars['String'];
+}>;
+
+
+export type UpsertHostMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_host_one?: Maybe<(
+    { __typename?: 'host' }
+    & Pick<Host, 'id'>
+  )>, insert_one_time_password_one?: Maybe<(
+    { __typename?: 'one_time_password' }
+    & Pick<One_Time_Password, 'email_hash'>
+  )> }
+);
+
 export type CreateGameStateMutationVariables = Exact<{
   gameStateId: Scalars['uuid'];
   gameId: Scalars['uuid'];
@@ -3361,36 +3750,6 @@ export type AnswerQuestionMutation = (
   )> }
 );
 
-export type JoinGameCreateTeamMutationVariables = Exact<{
-  team: Team_Insert_Input;
-}>;
-
-
-export type JoinGameCreateTeamMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_team_one?: Maybe<(
-    { __typename?: 'team' }
-    & Pick<Team, 'id'>
-  )> }
-);
-
-export type JoinGamePageQueryVariables = Exact<{
-  gameStateId: Scalars['uuid'];
-}>;
-
-
-export type JoinGamePageQuery = (
-  { __typename?: 'query_root' }
-  & { game_state_by_pk?: Maybe<(
-    { __typename?: 'game_state' }
-    & Pick<Game_State, 'id'>
-    & { game: (
-      { __typename?: 'game' }
-      & Pick<Game, 'name'>
-    ) }
-  )> }
-);
-
 export type ParticipantGameSubscriptionVariables = Exact<{
   gameStateId: Scalars['uuid'];
 }>;
@@ -3404,20 +3763,27 @@ export type ParticipantGameSubscription = (
     & { game: (
       { __typename?: 'game' }
       & Pick<Game, 'name'>
-    ), teams: Array<(
-      { __typename?: 'team' }
-      & Pick<Team, 'name'>
-    )>, current_question?: Maybe<(
+    ), current_question?: Maybe<(
       { __typename?: 'question_state' }
-      & Pick<Question_State, 'state'>
+      & Pick<Question_State, 'id' | 'state'>
       & { question: (
         { __typename?: 'question' }
         & Pick<Question, 'question_text'>
-      ), answers: Array<(
-        { __typename?: 'answer' }
-        & Pick<Answer, 'value'>
-      )> }
+      ) }
     )> }
+  )> }
+);
+
+export type CloseQuestionMutationVariables = Exact<{
+  questionStateId: Scalars['uuid'];
+}>;
+
+
+export type CloseQuestionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_question_state_by_pk?: Maybe<(
+    { __typename?: 'question_state' }
+    & Pick<Question_State, 'id' | 'state'>
   )> }
 );
 
@@ -3442,7 +3808,7 @@ export type GameHostPageSubscription = (
         & Pick<Question, 'question_text'>
       ), answers: Array<(
         { __typename?: 'answer' }
-        & Pick<Answer, 'value'>
+        & Pick<Answer, 'id' | 'correct' | 'value'>
         & { team: (
           { __typename?: 'team' }
           & Pick<Team, 'id' | 'name'>
@@ -3452,14 +3818,34 @@ export type GameHostPageSubscription = (
   )> }
 );
 
-export type IndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+export type NextQuestionMutationVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+  questionStateId: Scalars['uuid'];
+}>;
 
 
-export type IndexPageQuery = (
-  { __typename?: 'query_root' }
-  & { question: Array<(
-    { __typename?: 'question' }
-    & Pick<Question, 'id'>
+export type NextQuestionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id' | 'current_question_id'>
+  )>, update_question_state_by_pk?: Maybe<(
+    { __typename?: 'question_state' }
+    & Pick<Question_State, 'id'>
+  )> }
+);
+
+export type ScoreQuestionMutationVariables = Exact<{
+  correct: Scalars['Boolean'];
+  answerId: Scalars['uuid'];
+}>;
+
+
+export type ScoreQuestionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_answer_by_pk?: Maybe<(
+    { __typename?: 'answer' }
+    & Pick<Answer, 'id' | 'correct'>
   )> }
 );
 
@@ -3597,6 +3983,75 @@ export type GamesPageQuery = (
   )> }
 );
 
+export type IndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IndexPageQuery = (
+  { __typename?: 'query_root' }
+  & { question: Array<(
+    { __typename?: 'question' }
+    & Pick<Question, 'id'>
+  )> }
+);
+
+export type JoinGameCreateTeamMutationVariables = Exact<{
+  teamName: Scalars['String'];
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type JoinGameCreateTeamMutation = (
+  { __typename?: 'mutation_root' }
+  & { create_team?: Maybe<(
+    { __typename?: 'TeamToken' }
+    & Pick<TeamToken, 'token'>
+  )> }
+);
+
+export type JoinGamePageQueryVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type JoinGamePageQuery = (
+  { __typename?: 'query_root' }
+  & { game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id'>
+    & { game: (
+      { __typename?: 'game' }
+      & Pick<Game, 'name'>
+    ) }
+  )> }
+);
+
+export type AccessTokenFromOtpMutationVariables = Exact<{
+  emailHash: Scalars['String'];
+  oneTimePassword: Scalars['String'];
+}>;
+
+
+export type AccessTokenFromOtpMutation = (
+  { __typename?: 'mutation_root' }
+  & { access_token_from_otp?: Maybe<(
+    { __typename?: 'Token' }
+    & Pick<Token, 'token'>
+  )> }
+);
+
+export type HostLoginMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type HostLoginMutation = (
+  { __typename?: 'mutation_root' }
+  & { send_auth_link?: Maybe<(
+    { __typename?: 'EmailSendStatus' }
+    & Pick<EmailSendStatus, 'status'>
+  )> }
+);
+
 export const QuestionComponentFragmentDoc = gql`
     fragment QuestionComponent on question {
   id
@@ -3633,6 +4088,44 @@ export const GameSummary_StartGameDocument = gql`
 
 export function useGameSummary_StartGameMutation() {
   return Urql.useMutation<GameSummary_StartGameMutation, GameSummary_StartGameMutationVariables>(GameSummary_StartGameDocument);
+};
+export const CreateTeamDocument = gql`
+    mutation CreateTeam($team: team_insert_input!) {
+  insert_team_one(object: $team) {
+    id
+  }
+}
+    `;
+
+export function useCreateTeamMutation() {
+  return Urql.useMutation<CreateTeamMutation, CreateTeamMutationVariables>(CreateTeamDocument);
+};
+export const DeleteOneTimePasswordDocument = gql`
+    mutation DeleteOneTimePassword($emailHash: String!, $otpHash: String!) {
+  delete_one_time_password_by_pk(email_hash: $emailHash, one_time_password_hash: $otpHash) {
+    host {
+      id
+    }
+  }
+}
+    `;
+
+export function useDeleteOneTimePasswordMutation() {
+  return Urql.useMutation<DeleteOneTimePasswordMutation, DeleteOneTimePasswordMutationVariables>(DeleteOneTimePasswordDocument);
+};
+export const UpsertHostDocument = gql`
+    mutation UpsertHost($emailHash: String!, $oneTimePasswordHash: String!) {
+  insert_host_one(object: {email_hash: $emailHash}, on_conflict: {constraint: host_email_hash_key, update_columns: []}) {
+    id
+  }
+  insert_one_time_password_one(object: {email_hash: $emailHash, one_time_password_hash: $oneTimePasswordHash}) {
+    email_hash
+  }
+}
+    `;
+
+export function useUpsertHostMutation() {
+  return Urql.useMutation<UpsertHostMutation, UpsertHostMutationVariables>(UpsertHostDocument);
 };
 export const CreateGameStateDocument = gql`
     mutation CreateGameState($gameStateId: uuid!, $gameId: uuid!, $currentQuestionId: uuid!, $questionStates: question_state_arr_rel_insert_input!) {
@@ -3673,31 +4166,6 @@ export const AnswerQuestionDocument = gql`
 export function useAnswerQuestionMutation() {
   return Urql.useMutation<AnswerQuestionMutation, AnswerQuestionMutationVariables>(AnswerQuestionDocument);
 };
-export const JoinGameCreateTeamDocument = gql`
-    mutation JoinGameCreateTeam($team: team_insert_input!) {
-  insert_team_one(object: $team) {
-    id
-  }
-}
-    `;
-
-export function useJoinGameCreateTeamMutation() {
-  return Urql.useMutation<JoinGameCreateTeamMutation, JoinGameCreateTeamMutationVariables>(JoinGameCreateTeamDocument);
-};
-export const JoinGamePageDocument = gql`
-    query JoinGamePage($gameStateId: uuid!) {
-  game_state_by_pk(id: $gameStateId) {
-    id
-    game {
-      name
-    }
-  }
-}
-    `;
-
-export function useJoinGamePageQuery(options: Omit<Urql.UseQueryArgs<JoinGamePageQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<JoinGamePageQuery>({ query: JoinGamePageDocument, ...options });
-};
 export const ParticipantGameDocument = gql`
     subscription ParticipantGame($gameStateId: uuid!) {
   game_state_by_pk(id: $gameStateId) {
@@ -3705,16 +4173,11 @@ export const ParticipantGameDocument = gql`
     game {
       name
     }
-    teams {
-      name
-    }
     current_question {
+      id
       state
       question {
         question_text
-      }
-      answers {
-        value
       }
     }
   }
@@ -3723,6 +4186,18 @@ export const ParticipantGameDocument = gql`
 
 export function useParticipantGameSubscription<TData = ParticipantGameSubscription>(options: Omit<Urql.UseSubscriptionArgs<ParticipantGameSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<ParticipantGameSubscription, TData>) {
   return Urql.useSubscription<ParticipantGameSubscription, TData, ParticipantGameSubscriptionVariables>({ query: ParticipantGameDocument, ...options }, handler);
+};
+export const CloseQuestionDocument = gql`
+    mutation CloseQuestion($questionStateId: uuid!) {
+  update_question_state_by_pk(pk_columns: {id: $questionStateId}, _set: {state: closed}) {
+    id
+    state
+  }
+}
+    `;
+
+export function useCloseQuestionMutation() {
+  return Urql.useMutation<CloseQuestionMutation, CloseQuestionMutationVariables>(CloseQuestionDocument);
 };
 export const GameHostPageDocument = gql`
     subscription GameHostPage($gameStateId: uuid!) {
@@ -3741,6 +4216,8 @@ export const GameHostPageDocument = gql`
         question_text
       }
       answers {
+        id
+        correct
         team {
           id
           name
@@ -3755,16 +4232,32 @@ export const GameHostPageDocument = gql`
 export function useGameHostPageSubscription<TData = GameHostPageSubscription>(options: Omit<Urql.UseSubscriptionArgs<GameHostPageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<GameHostPageSubscription, TData>) {
   return Urql.useSubscription<GameHostPageSubscription, TData, GameHostPageSubscriptionVariables>({ query: GameHostPageDocument, ...options }, handler);
 };
-export const IndexPageDocument = gql`
-    query IndexPage {
-  question {
+export const NextQuestionDocument = gql`
+    mutation NextQuestion($gameStateId: uuid!, $questionStateId: uuid!) {
+  update_game_state_by_pk(pk_columns: {id: $gameStateId}, _set: {current_question_id: $questionStateId}) {
+    id
+    current_question_id
+  }
+  update_question_state_by_pk(pk_columns: {id: $questionStateId}, _set: {state: open}) {
     id
   }
 }
     `;
 
-export function useIndexPageQuery(options: Omit<Urql.UseQueryArgs<IndexPageQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<IndexPageQuery>({ query: IndexPageDocument, ...options });
+export function useNextQuestionMutation() {
+  return Urql.useMutation<NextQuestionMutation, NextQuestionMutationVariables>(NextQuestionDocument);
+};
+export const ScoreQuestionDocument = gql`
+    mutation ScoreQuestion($correct: Boolean!, $answerId: uuid!) {
+  update_answer_by_pk(pk_columns: {id: {_eq: $answerId}}, _set: {correct: $correct}) {
+    id
+    correct
+  }
+}
+    `;
+
+export function useScoreQuestionMutation() {
+  return Urql.useMutation<ScoreQuestionMutation, ScoreQuestionMutationVariables>(ScoreQuestionDocument);
 };
 export const GamePageDocument = gql`
     query GamePage($gameId: uuid!) {
@@ -3882,4 +4375,62 @@ export const GamesPageDocument = gql`
 
 export function useGamesPageQuery(options: Omit<Urql.UseQueryArgs<GamesPageQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GamesPageQuery>({ query: GamesPageDocument, ...options });
+};
+export const IndexPageDocument = gql`
+    query IndexPage {
+  question {
+    id
+  }
+}
+    `;
+
+export function useIndexPageQuery(options: Omit<Urql.UseQueryArgs<IndexPageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<IndexPageQuery>({ query: IndexPageDocument, ...options });
+};
+export const JoinGameCreateTeamDocument = gql`
+    mutation JoinGameCreateTeam($teamName: String!, $gameStateId: uuid!) {
+  create_team(teamName: $teamName, gameStateId: $gameStateId) {
+    token
+  }
+}
+    `;
+
+export function useJoinGameCreateTeamMutation() {
+  return Urql.useMutation<JoinGameCreateTeamMutation, JoinGameCreateTeamMutationVariables>(JoinGameCreateTeamDocument);
+};
+export const JoinGamePageDocument = gql`
+    query JoinGamePage($gameStateId: uuid!) {
+  game_state_by_pk(id: $gameStateId) {
+    id
+    game {
+      name
+    }
+  }
+}
+    `;
+
+export function useJoinGamePageQuery(options: Omit<Urql.UseQueryArgs<JoinGamePageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<JoinGamePageQuery>({ query: JoinGamePageDocument, ...options });
+};
+export const AccessTokenFromOtpDocument = gql`
+    mutation AccessTokenFromOTP($emailHash: String!, $oneTimePassword: String!) {
+  access_token_from_otp(credentials: {emailHash: $emailHash, oneTimePassword: $oneTimePassword}) {
+    token
+  }
+}
+    `;
+
+export function useAccessTokenFromOtpMutation() {
+  return Urql.useMutation<AccessTokenFromOtpMutation, AccessTokenFromOtpMutationVariables>(AccessTokenFromOtpDocument);
+};
+export const HostLoginDocument = gql`
+    mutation HostLogin($email: String!) {
+  send_auth_link(email: $email) {
+    status
+  }
+}
+    `;
+
+export function useHostLoginMutation() {
+  return Urql.useMutation<HostLoginMutation, HostLoginMutationVariables>(HostLoginDocument);
 };

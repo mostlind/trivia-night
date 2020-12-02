@@ -1,0 +1,5 @@
+mutation HostLogin($email: String!) {
+  send_auth_link(email: $email) {
+    status
+  }
+}

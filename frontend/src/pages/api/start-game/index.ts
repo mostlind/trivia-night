@@ -11,21 +11,19 @@ import { createClient } from "urql";
 import { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
 
-const client = createClient({
-  url: "http://trivia-night-hasura:8080/v1/graphql",
-  fetchOptions() {
-    return {
-      headers: {
-        Authorization: "Bearer host 324b7800-12f5-483c-a76e-8346ce107fb1",
-      },
-    };
-  },
-});
-
 export default async function StartGame(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const client = createClient({
+    url: "http://trivia-night-hasura:8080/v1/graphql",
+    fetchOptions: {
+      headers: {
+        Authorization: `Bearer ${req.body?.session_variables["x-hasura-backend-token"]}`,
+      },
+    },
+  });
+
   if (req.body?.input?.game_id === undefined) {
     return res
       .status(400)

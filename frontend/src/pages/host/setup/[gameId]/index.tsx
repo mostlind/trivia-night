@@ -43,7 +43,7 @@ export default function ProjectPage() {
 
   return (
     <Stack direction="vertical" space={spacing.medium}>
-      <Link href="/setup">Back to Games</Link>
+      <Link href="/host/setup">Back to Games</Link>
       {/* TODO: Move form to seperate component */}
       <form
         onSubmit={(e) => {
@@ -109,12 +109,21 @@ export default function ProjectPage() {
           );
         })}
         <li>
-          <Link href={`/setup/${game.id}/questions/create`}>Add Question</Link>
+          <Link href={`/host/setup/${game.id}/questions/create`}>
+            Add Question
+          </Link>
         </li>
       </ul>
       <button
         onClick={() => {
-          startGame({ gameId: game.id });
+          startGame({ gameId: game.id }).then((res) => {
+            if (res.error) {
+              console.log(res.error);
+              throw new Error(res.error.message);
+            }
+
+            router.push("/host/game/" + data?.game_by_pk?.id);
+          });
         }}
       >
         Start Game

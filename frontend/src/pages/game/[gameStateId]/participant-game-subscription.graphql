@@ -4,16 +4,11 @@ subscription ParticipantGame($gameStateId: uuid!) {
     game {
       name
     }
-    teams {
-      name
-    }
     current_question {
+      id
       state
       question {
         question_text
-      }
-      answers {
-        value
       }
     }
   }

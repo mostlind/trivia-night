@@ -1,0 +1,1 @@
+CREATE TABLE "public"."one_time_password"("email_hash" text NOT NULL, "one_time_password_hash" text NOT NULL, PRIMARY KEY ("email_hash","one_time_password_hash") , FOREIGN KEY ("email_hash") REFERENCES "public"."host"("email_hash") ON UPDATE cascade ON DELETE cascade);
