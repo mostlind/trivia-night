@@ -116,7 +116,14 @@ export default function ProjectPage() {
       </ul>
       <button
         onClick={() => {
-          startGame({ gameId: game.id });
+          startGame({ gameId: game.id }).then((res) => {
+            if (res.error) {
+              console.log(res.error);
+              throw new Error(res.error.message);
+            }
+
+            router.push("/host/game/" + data?.game_by_pk?.id);
+          });
         }}
       >
         Start Game

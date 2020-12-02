@@ -3774,6 +3774,19 @@ export type ParticipantGameSubscription = (
   )> }
 );
 
+export type CloseQuestionMutationVariables = Exact<{
+  questionStateId: Scalars['uuid'];
+}>;
+
+
+export type CloseQuestionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_question_state_by_pk?: Maybe<(
+    { __typename?: 'question_state' }
+    & Pick<Question_State, 'id' | 'state'>
+  )> }
+);
+
 export type GameHostPageSubscriptionVariables = Exact<{
   gameStateId: Scalars['uuid'];
 }>;
@@ -3795,13 +3808,44 @@ export type GameHostPageSubscription = (
         & Pick<Question, 'question_text'>
       ), answers: Array<(
         { __typename?: 'answer' }
-        & Pick<Answer, 'value'>
+        & Pick<Answer, 'id' | 'correct' | 'value'>
         & { team: (
           { __typename?: 'team' }
           & Pick<Team, 'id' | 'name'>
         ) }
       )> }
     )> }
+  )> }
+);
+
+export type NextQuestionMutationVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+  questionStateId: Scalars['uuid'];
+}>;
+
+
+export type NextQuestionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id' | 'current_question_id'>
+  )>, update_question_state_by_pk?: Maybe<(
+    { __typename?: 'question_state' }
+    & Pick<Question_State, 'id'>
+  )> }
+);
+
+export type ScoreQuestionMutationVariables = Exact<{
+  correct: Scalars['Boolean'];
+  answerId: Scalars['uuid'];
+}>;
+
+
+export type ScoreQuestionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_answer_by_pk?: Maybe<(
+    { __typename?: 'answer' }
+    & Pick<Answer, 'id' | 'correct'>
   )> }
 );
 
@@ -4143,6 +4187,18 @@ export const ParticipantGameDocument = gql`
 export function useParticipantGameSubscription<TData = ParticipantGameSubscription>(options: Omit<Urql.UseSubscriptionArgs<ParticipantGameSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<ParticipantGameSubscription, TData>) {
   return Urql.useSubscription<ParticipantGameSubscription, TData, ParticipantGameSubscriptionVariables>({ query: ParticipantGameDocument, ...options }, handler);
 };
+export const CloseQuestionDocument = gql`
+    mutation CloseQuestion($questionStateId: uuid!) {
+  update_question_state_by_pk(pk_columns: {id: $questionStateId}, _set: {state: closed}) {
+    id
+    state
+  }
+}
+    `;
+
+export function useCloseQuestionMutation() {
+  return Urql.useMutation<CloseQuestionMutation, CloseQuestionMutationVariables>(CloseQuestionDocument);
+};
 export const GameHostPageDocument = gql`
     subscription GameHostPage($gameStateId: uuid!) {
   game_state_by_pk(id: $gameStateId) {
@@ -4160,6 +4216,8 @@ export const GameHostPageDocument = gql`
         question_text
       }
       answers {
+        id
+        correct
         team {
           id
           name
@@ -4173,6 +4231,33 @@ export const GameHostPageDocument = gql`
 
 export function useGameHostPageSubscription<TData = GameHostPageSubscription>(options: Omit<Urql.UseSubscriptionArgs<GameHostPageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<GameHostPageSubscription, TData>) {
   return Urql.useSubscription<GameHostPageSubscription, TData, GameHostPageSubscriptionVariables>({ query: GameHostPageDocument, ...options }, handler);
+};
+export const NextQuestionDocument = gql`
+    mutation NextQuestion($gameStateId: uuid!, $questionStateId: uuid!) {
+  update_game_state_by_pk(pk_columns: {id: $gameStateId}, _set: {current_question_id: $questionStateId}) {
+    id
+    current_question_id
+  }
+  update_question_state_by_pk(pk_columns: {id: $questionStateId}, _set: {state: open}) {
+    id
+  }
+}
+    `;
+
+export function useNextQuestionMutation() {
+  return Urql.useMutation<NextQuestionMutation, NextQuestionMutationVariables>(NextQuestionDocument);
+};
+export const ScoreQuestionDocument = gql`
+    mutation ScoreQuestion($correct: Boolean!, $answerId: uuid!) {
+  update_answer_by_pk(pk_columns: {id: {_eq: $answerId}}, _set: {correct: $correct}) {
+    id
+    correct
+  }
+}
+    `;
+
+export function useScoreQuestionMutation() {
+  return Urql.useMutation<ScoreQuestionMutation, ScoreQuestionMutationVariables>(ScoreQuestionDocument);
 };
 export const GamePageDocument = gql`
     query GamePage($gameId: uuid!) {

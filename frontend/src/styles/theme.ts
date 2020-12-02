@@ -8,3 +8,9 @@ export const spacing = {
   extraLarge: (themeBase * 8) / 3 + "em",
   xxLarge: (themeBase * 16) / 3 + "em",
 };
+
+export const colors = {
+  darkBg: "#171630",
+  medBg: "#171630",
+  lightBg: "#312f55",
+};
