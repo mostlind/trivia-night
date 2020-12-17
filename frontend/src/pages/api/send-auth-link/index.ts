@@ -50,7 +50,7 @@ export default async function StartGame(
     .toPromise();
 
   if (result.error) {
-    res.status(400).send({ status: result.error.message });
+    res.status(400).send({ message: result.error.message });
     return;
   }
 
@@ -59,7 +59,7 @@ export default async function StartGame(
   await transport
     .sendMail({
       from: process.env.API_EMAIL_USER,
-      to: "mostlind@gmail.com",
+      to: email,
       subject: "Trivia Night App",
       html: `
       <h1>Please use the below link to sign into Trivia Night as a host</h1>
@@ -72,6 +72,6 @@ export default async function StartGame(
     })
     .catch((err) => {
       console.log("failed at sending mail");
-      res.status(400).json({ status: "error" });
+      res.status(400).json({ message: "error" });
     });
 }

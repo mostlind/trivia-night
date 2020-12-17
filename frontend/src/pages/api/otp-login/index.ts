@@ -46,12 +46,12 @@ export default async function TokenFromOneTimePassword(
     .toPromise();
 
   if (result.error) {
-    res.status(400).send({ status: result.error.message });
+    res.status(400).send({ message: result.error.message });
     return;
   }
 
   if (result.data?.delete_one_time_password_by_pk?.host === undefined) {
-    res.status(400).send({ status: "login credentials didn't exist" });
+    res.status(400).send({ message: "login credentials didn't exist" });
     return;
   }
 

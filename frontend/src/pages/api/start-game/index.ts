@@ -39,7 +39,7 @@ export default async function StartGame(
     .toPromise();
 
   if (gameQuery.error) {
-    return res.status(400).json(gameQuery.error);
+    return res.status(400).json({ mesage: gameQuery.error });
   }
 
   const game = gameQuery.data?.game_by_pk;
@@ -79,7 +79,7 @@ export default async function StartGame(
   console.log("wrote game state", gameState);
 
   if (gameState.error) {
-    return res.status(400).json(gameQuery.error);
+    return res.status(400).json({ mesage: gameState.error });
   }
 
   res

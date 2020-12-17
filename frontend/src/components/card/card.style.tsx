@@ -5,15 +5,24 @@ import { Stack } from "../stack";
 interface ContainerProps {
   backgroundColor: string;
   hoverColor: string;
+  borderColor: string;
+  textColor?: string;
 }
 
 export const Container = styled(Stack)`
   background-color: ${(props: ContainerProps) => props.backgroundColor};
+  border: 1px solid ${(props: ContainerProps) => props.borderColor};
   padding: 0.8em ${spacing.medium};
-  border-radius: 7px 7px;
+  border-radius: 11px 11px;
+  color: ${(props: ContainerProps) => props.textColor ?? "000"};
   cursor: pointer;
+  min-height: 4rem;
 
   transition: all 200ms ease-out;
+
+  &:focus {
+    background-color: ${(props: ContainerProps) => props.hoverColor};
+  }
   &:hover {
     background-color: ${(props: ContainerProps) => props.hoverColor};
   }

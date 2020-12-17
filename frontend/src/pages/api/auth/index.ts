@@ -22,13 +22,12 @@ export default function Auth(req: NextApiRequest, res: NextApiResponse<Data>) {
   const items = token.split(" ");
 
   if (items[0] !== "Bearer") {
-    res.status(401).json({ response: "no" } as any);
+    res.status(401).json({ message: "no" } as any);
     return;
   }
 
   try {
     const thing = jwt.verify(items[1], "1234") as any;
-    console.log(thing);
 
     res.status(200).json({
       "X-Hasura-Role": thing.role,
@@ -36,6 +35,6 @@ export default function Auth(req: NextApiRequest, res: NextApiResponse<Data>) {
       "X-Hasura-Backend-Token": backendToken,
     });
   } catch (e) {
-    res.status(401).json({ response: "no" } as any);
+    res.status(401).json({ message: "no" } as any);
   }
 }

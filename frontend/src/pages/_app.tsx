@@ -33,7 +33,6 @@ if (
 // }
 
 function getToken(router: Router) {
-  console.log({ ...router });
   if (typeof window === "undefined") {
     return null;
   }

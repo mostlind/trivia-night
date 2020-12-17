@@ -1,3 +1,6 @@
+import { Card } from "components/card/card";
+import Input from "components/input";
+import { Layout } from "components/layout";
 import { Question } from "components/question";
 import { Stack } from "components/stack";
 import {
@@ -42,45 +45,65 @@ export default function ProjectPage() {
   }
 
   return (
-    <Stack direction="vertical" space={spacing.medium}>
-      <Link href="/host/setup">Back to Games</Link>
-      {/* TODO: Move form to seperate component */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const name = formData.get("game-name");
-          if (typeof name !== "string") {
-            throw new Error("how?");
-          }
-          renameGame({ gameId: game.id, name }).then(() => {
-            setNameSaved(true);
-          });
-        }}
-        onChange={(e) => {
-          const formData = new FormData(e.currentTarget);
-          const name = formData.get("game-name");
-          if (name === game.name) {
-            setNameSaved(true);
-          } else {
-            setNameSaved(false);
-          }
-        }}
-      >
-        <Stack space={spacing.small} direction="horizontal">
-          <input name="game-name" defaultValue={game.name} />
-          {nameSaved ? null : <button type="submit">Rename</button>}
-        </Stack>
-      </form>
-      <h3>Questions</h3>
-      <ul>
-        {/* TODO: Move mapper function out of return statement */}
-        {game.questions.map((question, index, arr) => {
-          const prev = arr[index - 1];
-          const next = arr[index + 1];
-          return (
-            <li key={question.id}>
+    <Layout title={game.name}>
+      <Stack direction="vertical" space={spacing.medium}>
+        <Link href="/host/setup">Back to Games</Link>
+        {/* TODO: Move form to seperate component */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            const name = formData.get("game-name");
+            if (typeof name !== "string") {
+              throw new Error("how?");
+            }
+            renameGame({ gameId: game.id, name }).then(() => {
+              setNameSaved(true);
+            });
+          }}
+          onChange={(e) => {
+            const formData = new FormData(e.currentTarget);
+            const name = formData.get("game-name");
+            if (name === game.name) {
+              setNameSaved(true);
+            } else {
+              setNameSaved(false);
+            }
+          }}
+        >
+          <Stack space={spacing.small} direction="horizontal">
+            <Input
+              label="Game Name"
+              placeholder="game name"
+              name="game-name"
+              defaultValue={game.name}
+            />
+            {nameSaved ? null : <button type="submit">Rename</button>}
+          </Stack>
+        </form>
+        <button
+          onClick={() => {
+            startGame({ gameId: game.id }).then((res) => {
+              if (res.error) {
+                console.log(res.error);
+                throw new Error(res.error.message);
+              }
+
+              router.push("/host/game/" + data?.game_by_pk?.id);
+            });
+          }}
+        >
+          Start Game
+        </button>
+        <h3>Questions</h3>
+        <Stack direction="vertical" space={spacing.small}>
+          {/* TODO: Move mapper function out of return statement */}
+          {game.questions.map((question, index, arr) => {
+            const prev = arr[index - 1];
+            const next = arr[index + 1];
+            return (
               <Question
+                key={question.id}
                 question={question}
                 onReorderUp={
                   prev !== undefined
@@ -105,29 +128,22 @@ export default function ProjectPage() {
                     : undefined
                 }
               />
-            </li>
-          );
-        })}
-        <li>
-          <Link href={`/host/setup/${game.id}/questions/create`}>
-            Add Question
-          </Link>
-        </li>
-      </ul>
-      <button
-        onClick={() => {
-          startGame({ gameId: game.id }).then((res) => {
-            if (res.error) {
-              console.log(res.error);
-              throw new Error(res.error.message);
-            }
+            );
+          })}
 
-            router.push("/host/game/" + data?.game_by_pk?.id);
-          });
-        }}
-      >
-        Start Game
-      </button>
-    </Stack>
+          <Link href={`/host/setup/${game.id}/questions/create`}>
+            <a>
+              <Card
+                mainText="Add Question"
+                borderColor="white"
+                backgroundColor="transparent"
+                hoverColor="rgba(255, 255, 255, 0.05)"
+                textColor="white"
+              ></Card>
+            </a>
+          </Link>
+        </Stack>
+      </Stack>
+    </Layout>
   );
 }

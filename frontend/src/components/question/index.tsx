@@ -1,3 +1,4 @@
+import { Card } from "components/card/card";
 import { QuestionComponentFragment } from "generated/graphql";
 import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -35,45 +36,54 @@ export function Question({
   }, [onReorderUp === undefined, onReorderDown === undefined, refocous]);
 
   return (
-    <div>
-      <p>{question.question_text}</p>
-      <p>Value: {question.point_value}</p>
-      <Link href={`/host/setup/${question.game_id}/questions/${question.id}`}>
-        Edit
-      </Link>
-      <p>
-        Reorder:{" "}
-        <button
-          ref={upRef}
-          type="button"
-          disabled={onReorderUp === undefined}
-          onClick={() => {
-            const shouldRefocus = document.activeElement === upRef.current;
-            onReorderUp?.().then(() => {
-              if (shouldRefocus) {
-                setRefocus(Math.random());
-              }
-            });
-          }}
-        >
-          Up
-        </button>
-        <button
-          ref={downRef}
-          type="button"
-          disabled={onReorderDown === undefined}
-          onClick={() => {
-            const shouldRefocus = document.activeElement === downRef.current;
-            onReorderDown?.().then(() => {
-              if (shouldRefocus) {
-                setRefocus(Math.random());
-              }
-            });
-          }}
-        >
-          Down
-        </button>
-      </p>
-    </div>
+    <Link href={`/host/setup/${question.game_id}/questions/${question.id}`}>
+      <a>
+        <Card
+          mainText={question.question_text}
+          subText={`Value: ${question.point_value}`}
+          backgroundColor={"rgba(255, 255, 255, 0.75)"}
+          hoverColor={"rgba(255, 255, 255, 1)"}
+          textColor="#000"
+          borderColor="rgba(255, 255, 255, 0.75)"
+          button={
+            <p>
+              Reorder:{" "}
+              <button
+                ref={upRef}
+                type="button"
+                disabled={onReorderUp === undefined}
+                onClick={() => {
+                  const shouldRefocus =
+                    document.activeElement === upRef.current;
+                  onReorderUp?.().then(() => {
+                    if (shouldRefocus) {
+                      setRefocus(Math.random());
+                    }
+                  });
+                }}
+              >
+                Up
+              </button>
+              <button
+                ref={downRef}
+                type="button"
+                disabled={onReorderDown === undefined}
+                onClick={() => {
+                  const shouldRefocus =
+                    document.activeElement === downRef.current;
+                  onReorderDown?.().then(() => {
+                    if (shouldRefocus) {
+                      setRefocus(Math.random());
+                    }
+                  });
+                }}
+              >
+                Down
+              </button>
+            </p>
+          }
+        />
+      </a>
+    </Link>
   );
 }

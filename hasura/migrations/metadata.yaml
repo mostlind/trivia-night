@@ -99,6 +99,11 @@ tables:
       columns:
       - name
       filter: {}
+  - role: api-user
+    permission:
+      columns:
+      - id
+      filter: {}
   - role: host
     permission:
       columns:
@@ -162,6 +167,14 @@ tables:
           schema: public
           name: team
   insert_permissions:
+  - role: api-user
+    permission:
+      check: {}
+      columns:
+      - current_question_id
+      - game_id
+      - id
+      backend_only: false
   - role: host
     permission:
       check:
@@ -178,6 +191,11 @@ tables:
     permission:
       columns:
       - game_id
+      - id
+      filter: {}
+  - role: api-user
+    permission:
+      columns:
       - id
       filter: {}
   - role: host
@@ -203,6 +221,12 @@ tables:
           id:
             _eq: X-Hasura-User-Id
   update_permissions:
+  - role: api-user
+    permission:
+      columns:
+      - current_question_id
+      filter: {}
+      check: null
   - role: host
     permission:
       columns:
@@ -315,6 +339,12 @@ tables:
       - question_text
       backend_only: false
   select_permissions:
+  - role: api-user
+    permission:
+      columns:
+      - id
+      - question_order
+      filter: {}
   - role: host
     permission:
       columns:
@@ -391,6 +421,14 @@ tables:
           schema: public
           name: game_state
   insert_permissions:
+  - role: api-user
+    permission:
+      check: {}
+      columns:
+      - id
+      - next_question_state_id
+      - question_id
+      backend_only: false
   - role: host
     permission:
       check:

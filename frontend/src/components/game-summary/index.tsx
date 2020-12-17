@@ -1,3 +1,4 @@
+import { Card } from "components/card/card";
 import {
   GameSummaryComponentFragment,
   useGameSummary_StartGameMutation,
@@ -14,22 +15,34 @@ export function GameSummary({ game }: GameProps) {
   const router = useRouter();
   const [_result, startGame] = useGameSummary_StartGameMutation();
   return (
-    <h3>
-      <Link href={`/host/setup/${game.id}`}>{game.name}</Link>
-      <button
-        onClick={() => {
-          startGame({ gameId: game.id }).then((res) => {
-            if (res.error) {
-              console.log(res.error);
-              throw new Error(res.error.message);
-            }
+    <Link href={`/host/setup/${game.id}`}>
+      <a>
+        <Card
+          mainText={game.name}
+          backgroundColor={"#759cff"}
+          hoverColor="#4b76e0"
+          button={
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                startGame({ gameId: game.id }).then((res) => {
+                  if (res.error) {
+                    console.log(res.error);
+                    throw new Error(res.error.message);
+                  }
 
-            router.push("/host/game/" + res.data?.start_game?.game_state?.id);
-          });
-        }}
-      >
-        Start
-      </button>
-    </h3>
+                  router.push(
+                    "/host/game/" + res.data?.start_game?.game_state?.id
+                  );
+                });
+              }}
+            >
+              Start
+            </button>
+          }
+        />
+      </a>
+    </Link>
   );
 }
