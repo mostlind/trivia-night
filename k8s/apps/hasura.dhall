@@ -1,5 +1,4 @@
-let k8s =
-      https://raw.githubusercontent.com/mostlind/dhall-k8s/main/package.dhall
+let k8s = ../imports/dhall-k8s.dhall
 
 let Text/concatSep =
       https://prelude.dhall-lang.org/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
@@ -11,7 +10,7 @@ let authHookUrl =
         in      "http://"
             ++  frontend.name
             ++  ":"
-            ++  Natural/show frontend.port
+            ++  Integer/show frontend.port
             ++  "/api/auth"
 
 let envVars =
@@ -58,7 +57,7 @@ let hasuraService =
         , name = environmentConfig.prefix ++ "hasura"
         , image = environmentConfig.projectName ++ "-hasura"
         , host = "hasura." ++ environmentConfig.baseHost
-        , port = 8080
+        , port = +8080
         , requests = { memory = "32Mi", cpu = "10m" }
         , limits =
             if    environmentConfig.useLimits

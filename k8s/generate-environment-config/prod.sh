@@ -14,7 +14,7 @@ echo "Generating production Kubernetes config file..."
 cd "$1"
 mkdir -p "generated"
 
-echo "(https://raw.githubusercontent.com/mostlind/dhall-k8s/main/package.dhall).kubernetesConfig ./environments/prod.dhall" |  dhall-to-yaml --output "generated/out.yaml" --documents --generated-comment
+echo "(./imports/dhall-k8s.dhall).kubernetesConfig ./environments/prod.dhall" |  dhall-to-yaml --output "generated/out.yaml" --documents --generated-comment
 
 echo "(./environments/prod.dhall).config.baseHost" | dhall-to-json | xargs > generated/baseHost
 

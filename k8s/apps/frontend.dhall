@@ -1,5 +1,4 @@
-let k8s =
-      https://raw.githubusercontent.com/mostlind/dhall-k8s/main/package.dhall
+let k8s = ../imports/dhall-k8s.dhall
 
 let frontendService =
       λ(environmentConfig : k8s.EnvironmentConfig.Type) →
@@ -7,7 +6,7 @@ let frontendService =
         , name = environmentConfig.prefix ++ "frontend"
         , image = environmentConfig.projectName ++ "-frontend"
         , host = environmentConfig.baseHost
-        , port = 3000
+        , port = +3000
         , requests = { memory = "64Mi", cpu = "10m" }
         , limits =
             if    environmentConfig.useLimits

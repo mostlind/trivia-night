@@ -1,5 +1,4 @@
-let k8s =
-      https://raw.githubusercontent.com/mostlind/dhall-k8s/main/package.dhall
+let k8s = ../imports/dhall-k8s.dhall
 
 let project = ../project.dhall
 
