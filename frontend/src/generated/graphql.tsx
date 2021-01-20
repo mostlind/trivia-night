@@ -3643,6 +3643,42 @@ export type GameSummary_StartGameMutation = (
   )> }
 );
 
+export type HostClosedQuestionComponentFragment = (
+  { __typename?: 'question_state' }
+  & { next_question_state?: Maybe<(
+    { __typename?: 'question_state' }
+    & Pick<Question_State, 'id'>
+  )>, closedQuestionAnswers: Array<(
+    { __typename?: 'answer' }
+    & Pick<Answer, 'id' | 'correct' | 'value'>
+    & { team: (
+      { __typename?: 'team' }
+      & Pick<Team, 'id' | 'name'>
+    ) }
+  )> }
+);
+
+export type HostOpenQuestionComponentFragment = (
+  { __typename?: 'game_state' }
+  & { current_question?: Maybe<(
+    { __typename?: 'question_state' }
+    & Pick<Question_State, 'id'>
+    & { answers: Array<(
+      { __typename?: 'answer' }
+      & { team: (
+        { __typename?: 'team' }
+        & Pick<Team, 'id'>
+      ) }
+    )>, question: (
+      { __typename?: 'question' }
+      & Pick<Question, 'question_text'>
+    ) }
+  )>, teams: Array<(
+    { __typename?: 'team' }
+    & Pick<Team, 'name' | 'id'>
+  )> }
+);
+
 export type QuestionFormComponentFragment = (
   { __typename?: 'question' }
   & Pick<Question, 'id' | 'question_text' | 'point_value'>
@@ -3787,6 +3823,19 @@ export type CloseQuestionMutation = (
   )> }
 );
 
+export type EndGameMutationVariables = Exact<{
+  gameStateId: Scalars['uuid'];
+}>;
+
+
+export type EndGameMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_game_state_by_pk?: Maybe<(
+    { __typename?: 'game_state' }
+    & Pick<Game_State, 'id' | 'state'>
+  )> }
+);
+
 export type GameHostPageSubscriptionVariables = Exact<{
   gameStateId: Scalars['uuid'];
 }>;
@@ -3796,25 +3845,13 @@ export type GameHostPageSubscription = (
   { __typename?: 'subscription_root' }
   & { game_state_by_pk?: Maybe<(
     { __typename?: 'game_state' }
-    & Pick<Game_State, 'id' | 'state'>
-    & { teams: Array<(
-      { __typename?: 'team' }
-      & Pick<Team, 'id' | 'name'>
-    )>, current_question?: Maybe<(
+    & Pick<Game_State, 'id'>
+    & { current_question?: Maybe<(
       { __typename?: 'question_state' }
-      & Pick<Question_State, 'id' | 'next_question_state_id' | 'state'>
-      & { question: (
-        { __typename?: 'question' }
-        & Pick<Question, 'question_text'>
-      ), answers: Array<(
-        { __typename?: 'answer' }
-        & Pick<Answer, 'id' | 'correct' | 'value'>
-        & { team: (
-          { __typename?: 'team' }
-          & Pick<Team, 'id' | 'name'>
-        ) }
-      )> }
+      & Pick<Question_State, 'state'>
+      & HostClosedQuestionComponentFragment
     )> }
+    & HostOpenQuestionComponentFragment
   )> }
 );
 
@@ -3832,6 +3869,19 @@ export type NextQuestionMutation = (
   )>, update_question_state_by_pk?: Maybe<(
     { __typename?: 'question_state' }
     & Pick<Question_State, 'id'>
+  )> }
+);
+
+export type OpenQuestionMutationVariables = Exact<{
+  questionStateId: Scalars['uuid'];
+}>;
+
+
+export type OpenQuestionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_question_state_by_pk?: Maybe<(
+    { __typename?: 'question_state' }
+    & Pick<Question_State, 'id' | 'state'>
   )> }
 );
 
@@ -4069,6 +4119,41 @@ export const GameSummaryComponentFragmentDoc = gql`
   }
 }
     ${QuestionComponentFragmentDoc}`;
+export const HostClosedQuestionComponentFragmentDoc = gql`
+    fragment HostClosedQuestionComponent on question_state {
+  next_question_state {
+    id
+  }
+  closedQuestionAnswers: answers(order_by: {team: {name: desc}}) {
+    id
+    correct
+    value
+    team {
+      id
+      name
+    }
+  }
+}
+    `;
+export const HostOpenQuestionComponentFragmentDoc = gql`
+    fragment HostOpenQuestionComponent on game_state {
+  current_question {
+    id
+    answers {
+      team {
+        id
+      }
+    }
+    question {
+      question_text
+    }
+  }
+  teams(order_by: {name: desc}) {
+    name
+    id
+  }
+}
+    `;
 export const QuestionFormComponentFragmentDoc = gql`
     fragment QuestionFormComponent on question {
   id
@@ -4199,35 +4284,31 @@ export const CloseQuestionDocument = gql`
 export function useCloseQuestionMutation() {
   return Urql.useMutation<CloseQuestionMutation, CloseQuestionMutationVariables>(CloseQuestionDocument);
 };
+export const EndGameDocument = gql`
+    mutation EndGame($gameStateId: uuid!) {
+  update_game_state_by_pk(pk_columns: {id: $gameStateId}, _set: {state: ended}) {
+    id
+    state
+  }
+}
+    `;
+
+export function useEndGameMutation() {
+  return Urql.useMutation<EndGameMutation, EndGameMutationVariables>(EndGameDocument);
+};
 export const GameHostPageDocument = gql`
     subscription GameHostPage($gameStateId: uuid!) {
   game_state_by_pk(id: $gameStateId) {
     id
-    state
-    teams {
-      id
-      name
-    }
+    ...HostOpenQuestionComponent
     current_question {
-      id
-      next_question_state_id
       state
-      question {
-        question_text
-      }
-      answers {
-        id
-        correct
-        team {
-          id
-          name
-        }
-        value
-      }
+      ...HostClosedQuestionComponent
     }
   }
 }
-    `;
+    ${HostOpenQuestionComponentFragmentDoc}
+${HostClosedQuestionComponentFragmentDoc}`;
 
 export function useGameHostPageSubscription<TData = GameHostPageSubscription>(options: Omit<Urql.UseSubscriptionArgs<GameHostPageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<GameHostPageSubscription, TData>) {
   return Urql.useSubscription<GameHostPageSubscription, TData, GameHostPageSubscriptionVariables>({ query: GameHostPageDocument, ...options }, handler);
@@ -4247,9 +4328,21 @@ export const NextQuestionDocument = gql`
 export function useNextQuestionMutation() {
   return Urql.useMutation<NextQuestionMutation, NextQuestionMutationVariables>(NextQuestionDocument);
 };
+export const OpenQuestionDocument = gql`
+    mutation OpenQuestion($questionStateId: uuid!) {
+  update_question_state_by_pk(pk_columns: {id: $questionStateId}, _set: {state: open}) {
+    id
+    state
+  }
+}
+    `;
+
+export function useOpenQuestionMutation() {
+  return Urql.useMutation<OpenQuestionMutation, OpenQuestionMutationVariables>(OpenQuestionDocument);
+};
 export const ScoreQuestionDocument = gql`
     mutation ScoreQuestion($correct: Boolean!, $answerId: uuid!) {
-  update_answer_by_pk(pk_columns: {id: {_eq: $answerId}}, _set: {correct: $correct}) {
+  update_answer_by_pk(pk_columns: {id: $answerId}, _set: {correct: $correct}) {
     id
     correct
   }

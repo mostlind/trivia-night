@@ -1,4 +1,4 @@
-import { Card } from "components/card/card";
+import { Card } from "components/card";
 import { QuestionComponentFragment } from "generated/graphql";
 import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";

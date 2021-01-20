@@ -1,0 +1,14 @@
+fragment HostClosedQuestionComponent on question_state {
+  next_question_state {
+    id
+  }
+  closedQuestionAnswers: answers(order_by: { team: { name: desc } }) {
+    id
+    correct
+    value
+    team {
+      id
+      name
+    }
+  }
+}

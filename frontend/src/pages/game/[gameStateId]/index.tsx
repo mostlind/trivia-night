@@ -1,5 +1,6 @@
 import {
   ParticipantGameSubscription,
+  Question_State_Enum_Enum,
   useAnswerQuestionMutation,
   useParticipantGameSubscription,
 } from "generated/graphql";
@@ -7,28 +8,27 @@ import { useRouter } from "next/dist/client/router";
 import React from "react";
 
 interface ParticipantOpenQuestionProps {
-  gameState: ParticipantGameSubscription;
+  gameState: ParticipantGameSubscription["game_state_by_pk"];
+  onAnswerQuestion: (answer: string) => void;
 }
 
-function ParticipantOpenQuestion({ gameState }: ParticipantOpenQuestionProps) {
-  const [_status, answerQuestion] = useAnswerQuestionMutation();
+function ParticipantOpenQuestion({
+  gameState,
+  onAnswerQuestion,
+}: ParticipantOpenQuestionProps) {
   return (
     <>
-      {gameState.game_state_by_pk?.current_question?.question.question_text}
+      {gameState?.current_question?.question.question_text}
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const currentQuestionId =
-            gameState.game_state_by_pk?.current_question?.id;
+          const currentQuestionId = gameState?.current_question?.id;
           const formData = new FormData(e.currentTarget);
           const answer = formData.get("answer");
           if (typeof answer !== "string") {
             throw new Error("whaaa?");
           }
-          answerQuestion({
-            value: answer,
-            question_state_id: currentQuestionId,
-          });
+          onAnswerQuestion(answer);
         }}
       >
         <label htmlFor="answer">Answer</label>
@@ -63,11 +63,52 @@ export default function ParticipantOngoingGame() {
 
   return (
     <>
-      <h1>{result.data?.game_state_by_pk?.game.name}</h1>
-      <h1>Open Question</h1>
-      <ParticipantOpenQuestion gameState={result.data} />
-      <h1>Closed Question</h1>
-      <ParticipantClosedQuestion />
+      <States foundGame={result.data.game_state_by_pk} />
     </>
   );
+}
+
+function States({
+  foundGame,
+}: {
+  foundGame: ParticipantGameSubscription["game_state_by_pk"];
+}) {
+  const [_status, answerQuestion] = useAnswerQuestionMutation();
+
+  switch (foundGame?.current_question?.state) {
+    case Question_State_Enum_Enum.NotOpened: {
+      return (
+        <>
+          <h1>Waiting on the host to open this question</h1>
+        </>
+      );
+    }
+
+    case Question_State_Enum_Enum.Open: {
+      return (
+        <ParticipantOpenQuestion
+          gameState={foundGame}
+          onAnswerQuestion={(answer) => {
+            answerQuestion({
+              value: answer,
+              question_state_id: foundGame.current_question?.id,
+            });
+          }}
+        />
+      );
+    }
+
+    case Question_State_Enum_Enum.Closed: {
+      return <ParticipantClosedQuestion />;
+    }
+
+    case Question_State_Enum_Enum.Scored: {
+      return <h1>I don't think I'm going to use this one</h1>;
+    }
+
+    case undefined:
+    case null: {
+      return <h1>Hmm</h1>;
+    }
+  }
 }

@@ -1,0 +1,17 @@
+fragment HostOpenQuestionComponent on game_state {
+  current_question {
+    id
+    answers {
+      team {
+        id
+      }
+    }
+    question {
+      question_text
+    }
+  }
+  teams(order_by: { name: desc }) {
+    name
+    id
+  }
+}

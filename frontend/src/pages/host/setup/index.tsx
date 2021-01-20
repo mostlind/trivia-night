@@ -3,7 +3,7 @@ import { useGamesPageQuery } from "generated/graphql";
 import { Layout } from "../../../components/layout";
 import Link from "next/link";
 import React from "react";
-import { Card } from "components/card/card";
+import { Card } from "components/card";
 import { Stack } from "components/stack";
 import { spacing } from "styles/theme";
 

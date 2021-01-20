@@ -1,0 +1,9 @@
+mutation EndGame($gameStateId: uuid!) {
+  update_game_state_by_pk(
+    pk_columns: { id: $gameStateId }
+    _set: { state: ended }
+  ) {
+    id
+    state
+  }
+}

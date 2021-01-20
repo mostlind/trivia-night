@@ -1,0 +1,9 @@
+mutation OpenQuestion($questionStateId: uuid!) {
+  update_question_state_by_pk(
+    pk_columns: { id: $questionStateId }
+    _set: { state: open }
+  ) {
+    id
+    state
+  }
+}

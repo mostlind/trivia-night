@@ -5,100 +5,17 @@ import {
   useScoreQuestionMutation,
   useNextQuestionMutation,
   useCloseQuestionMutation,
+  Question_State_Enum_Enum,
+  useOpenQuestionMutation,
+  useEndGameMutation,
 } from "generated/graphql";
 import { useRouter } from "next/dist/client/router";
-
-interface OpenQuestionProps {
-  gameState: GameHostPageSubscription;
-}
-
-function OpenQuestion({ gameState }: OpenQuestionProps) {
-  const [_closeQuestionStatus, closeQuestion] = useCloseQuestionMutation();
-  return (
-    <>
-      <h1>
-        {gameState.game_state_by_pk?.current_question?.question.question_text}
-      </h1>
-      <button
-        onClick={() => {
-          closeQuestion({
-            questionStateId: gameState.game_state_by_pk?.current_question?.id,
-          });
-        }}
-      >
-        Close Question
-      </button>
-      {gameState.game_state_by_pk?.teams.map((team) => {
-        const hasAnswered = gameState.game_state_by_pk?.current_question?.answers.find(
-          (answer) => answer.team.id === team.id
-        );
-        return (
-          <h2>
-            {team.name}:
-            {hasAnswered !== undefined ? "answered" : "not answered"}
-          </h2>
-        );
-      })}
-    </>
-  );
-}
-
-interface ClosedQuestionProps {
-  gameState: GameHostPageSubscription;
-}
-
-function ClosedQuestion({ gameState }: ClosedQuestionProps) {
-  const [_scoreQuestionStatus, scoreQuestion] = useScoreQuestionMutation();
-  const [_nextQuestionStatus, nextQuestion] = useNextQuestionMutation();
-  return (
-    <>
-      {gameState.game_state_by_pk?.current_question?.answers.map((answer) => {
-        return (
-          <h3>
-            <h3>
-              {answer.team.name}: {answer.value}
-            </h3>
-            <button
-              disabled={answer.correct !== null && !answer.correct}
-              onClick={() => {
-                scoreQuestion({ answerId: answer.id, correct: true });
-              }}
-            >
-              Right
-            </button>
-            <button
-              disabled={answer.correct !== null && answer.correct}
-              onClick={() => {
-                scoreQuestion({ answerId: answer.id, correct: false });
-              }}
-            >
-              Wrong
-            </button>
-          </h3>
-        );
-      })}
-      <button
-        disabled={
-          gameState.game_state_by_pk?.current_question
-            ?.next_question_state_id === undefined
-        }
-        onClick={() => {
-          nextQuestion({
-            gameStateId: gameState.game_state_by_pk?.id,
-            questionStateId:
-              gameState.game_state_by_pk?.current_question
-                ?.next_question_state_id,
-          });
-        }}
-      >
-        Next Question
-      </button>
-    </>
-  );
-}
+import { HostClosedQuestion } from "components/host-closed-question";
+import { HostOpenQuestion } from "components/host-open-question";
 
 export default function GameHostPage() {
   const router = useRouter();
+
   const { gameStateId } = router.query;
   const [game] = useGameHostPageSubscription({
     variables: {
@@ -116,15 +33,84 @@ export default function GameHostPage() {
     return <h1>Loading...</h1>;
   }
 
-  console.log(game);
+  const foundGame = game.data.game_state_by_pk;
+
+  if (foundGame === undefined) {
+    return <h1>Couldn't find that game</h1>;
+  }
 
   return (
     <>
-      <pre>{JSON.stringify(game.data, null, 2)}</pre>
-      <h1>Open Question</h1>
-      <OpenQuestion gameState={game.data!} />
-      <h1>Closed Question</h1>
-      <ClosedQuestion gameState={game.data!} />
+      <pre>{JSON.stringify(foundGame, null, 2)}</pre>
+      <States foundGame={foundGame}></States>
     </>
   );
+}
+
+function States({
+  foundGame,
+}: {
+  foundGame: GameHostPageSubscription["game_state_by_pk"];
+}) {
+  const [_scoreQuestionStatus, scoreQuestion] = useScoreQuestionMutation();
+  const [_nextQuestionStatus, nextQuestion] = useNextQuestionMutation();
+  const [_openQuestionStatus, openQuestion] = useOpenQuestionMutation();
+  const [_closeQuestionStatus, closeQuestion] = useCloseQuestionMutation();
+  const [_endGameStatus, endGame] = useEndGameMutation();
+
+  switch (foundGame?.current_question?.state) {
+    case Question_State_Enum_Enum.NotOpened: {
+      return (
+        <>
+          <h1>Not Opened</h1>
+          <button
+            type="button"
+            onClick={() =>
+              openQuestion({ questionStateId: foundGame.current_question?.id })
+            }
+          >
+            Open
+          </button>
+        </>
+      );
+    }
+
+    case Question_State_Enum_Enum.Open: {
+      return (
+        <HostOpenQuestion
+          game={foundGame}
+          onCloseQuestion={(questionStateId) =>
+            closeQuestion({ questionStateId })
+          }
+        />
+      );
+    }
+
+    case Question_State_Enum_Enum.Closed: {
+      return (
+        <HostClosedQuestion
+          onScoreQuestion={({ answerId, correct }) =>
+            scoreQuestion({ answerId, correct })
+          }
+          onNextQuestion={(nextQuestionId) =>
+            nextQuestion({
+              gameStateId: foundGame.id,
+              questionStateId: nextQuestionId,
+            })
+          }
+          currentQuestion={foundGame.current_question}
+          onEndGame={() => endGame()}
+        />
+      );
+    }
+
+    case Question_State_Enum_Enum.Scored: {
+      return <h1>I don't think I'm going to use this one</h1>;
+    }
+
+    case undefined:
+    case null: {
+      return <h1>Hmm</h1>;
+    }
+  }
 }

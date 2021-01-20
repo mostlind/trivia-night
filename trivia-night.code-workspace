@@ -10,10 +10,10 @@
       "path": "./hasura"
     },
     {
-      "path": "graphql-codegen"
+      "path": "./graphql-codegen"
     },
     {
-      "path": "k8s"
+      "path": "./k8s"
     }
   ]
 }
