@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/mostlind/dhall-k8s/e7597abf006881ef96958ae8583a068b42b96220/package.dhall sha256:4edb6534365c1c059dce05d952fc51382a420e1ee8c3438be57c2dca471ee839
