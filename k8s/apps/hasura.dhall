@@ -3,6 +3,9 @@ let k8s = ../imports/dhall-k8s.dhall
 let Text/concatSep =
       https://prelude.dhall-lang.org/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
+let Integer/abs =
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/87993319329f3c00920d6e882365276925a4aa6a/Prelude/Integer/abs
+
 let authHookUrl =
       λ(environmentConfig : k8s.EnvironmentConfig.Type) →
         let frontend = ./frontend.dhall environmentConfig
@@ -10,7 +13,7 @@ let authHookUrl =
         in      "http://"
             ++  frontend.name
             ++  ":"
-            ++  Integer/show frontend.port
+            ++  Natural/show (Integer/abs frontend.port)
             ++  "/api/auth"
 
 let envVars =
